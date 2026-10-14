@@ -1145,6 +1145,433 @@
           "next": null
         }
       }
+    },
+    {
+      "id": "side_51_magma_crab_smith",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "铁匠 巴顿",
+          "text": "熔岩蟹的甲壳能扛住三次正面冲击，但它们只在火山口附近出没。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "铁匠 巴顿",
+          "text": "我想要一整块完好的甲壳，不要碎片，碎片我的炉子不收。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "铁匠 巴顿",
+          "text": "打的时候别站在它的喷气口前面，那会烫掉你半条眉毛。",
+          "choices": [
+            {
+              "text": "我会注意安全。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "smith_safe"
+                ]
+              }
+            },
+            {
+              "text": "我皮糙肉厚，不怕烫。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "smith_brave"
+                ]
+              }
+            }
+          ]
+        },
+        "n4": {
+          "speaker": "铁匠 巴顿",
+          "text": "拿到了就来找我，我给你打一副像样的护手。",
+          "next": null
+        },
+        "c1": {
+          "speaker": "铁匠 巴顿",
+          "text": "这才像话，活着回来比什么都强。",
+          "next": "n4"
+        },
+        "c2": {
+          "speaker": "铁匠 巴顿",
+          "text": "皮糙肉厚的人我见多了，多数都没回来。",
+          "next": "n4"
+        }
+      }
+    },
+    {
+      "id": "side_52_witch_hermit",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "林间隐士 罗兰",
+          "text": "那个女巫不是邪恶的，她只是被遗忘太久了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "林间隐士 罗兰",
+          "text": "她的诅咒落在荆棘上，让每一棵树都记得一件不该记得的事。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "林间隐士 罗兰",
+          "text": "如果你能打败她，我会告诉你怎么解开那段记忆。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_54_titan_dust_scholar",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "学者 伊莎",
+          "text": "沙尘巨人的骨头里埋着古老的符文，它们会随着风化逐渐显现。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "学者 伊莎",
+          "text": "我需要你把它的脊骨完整地带出来，这样才能拼出它的结构。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "学者 伊莎",
+          "text": "拼完之后，也许能知道这片沙漠曾经是什么样子。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "学者 伊莎",
+          "text": "别让沙暴把笔记吹走，那是我三年的心血。",
+          "choices": [
+            {
+              "text": "我会小心保管笔记。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "scholar_keep"
+                ]
+              }
+            },
+            {
+              "text": "笔记不过是纸，我更关心骨头。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "scholar_bone"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "学者 伊莎",
+          "text": "谢谢你，这份笔记对我很重要。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "学者 伊莎",
+          "text": "骨头固然重要，但笔记才是答案。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_55_matriarch_nest",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "渔夫 杰克",
+          "text": "泥沼母亲的巢穴在湖心的沉岛上，去那里的人没有一个说得清路。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "渔夫 杰克",
+          "text": "它的卵会孵出水蛭，水蛭会把人拖进湖底。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "渔夫 杰克",
+          "text": "带上火把和绳子，火能驱赶水蛭，绳子能拉你回来。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "渔夫 杰克",
+          "text": "我的小船借给你，但你要在日落前回来还给我。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_57_hound_keeper",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "驯兽师 梅",
+          "text": "裂隙猎犬不是天生凶恶的，它们是被人用裂隙碎片驯养的。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "驯兽师 梅",
+          "text": "有人在背后养着它们，用碎片控制它们的意志。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "驯兽师 梅",
+          "text": "如果你能拿回项圈，它们就会恢复本来的样子。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "驯兽师 梅",
+          "text": "但愿你找到的人不是我认识的人。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_60_archive_keeper",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "档案员 柯南",
+          "text": "灰烬档案馆藏着守望队三百年的记录，其中有几页被撕掉了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "档案员 柯南",
+          "text": "撕掉的那几页记载着第一次裂隙开启的日期。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "档案员 柯南",
+          "text": "如果你能在废墟里找回碎片，我会告诉你它们说了什么。",
+          "choices": [
+            {
+              "text": "我愿意帮你找回。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "archive_help"
+                ]
+              }
+            },
+            {
+              "text": "历史和我无关，我只要报酬。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "archive_pay"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "档案员 柯南",
+          "text": "太好了，我这里有地图可以给你。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "档案员 柯南",
+          "text": "报酬会有，但我不能保证你满意。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_61_helm_smith",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "铁匠 贝拉",
+          "text": "灰烬头盔的订单已经堆到门口了，但我缺一块好的护额。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "铁匠 贝拉",
+          "text": "猎犬的皮能做护额，但必须是活的时候剥下来的，死的皮会裂。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "铁匠 贝拉",
+          "text": "我说的是实话，别想着偷懒。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_63_blade_maker",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "剑匠 卡恩",
+          "text": "裂隙刃是用裂隙碎片和普通钢混合锻成的，火候难掌握。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "剑匠 卡恩",
+          "text": "余烬魔像的核心能提供足够的热量，但它不会轻易交出来。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "剑匠 卡恩",
+          "text": "如果你能带回完整的核心，我就给你一把好剑。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "剑匠 卡恩",
+          "text": "别问我为什么，我只是想看到它完成。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_65_caravan_guide",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "商队向导 艾伦",
+          "text": "沙暴横渡是一条只有我知道的路，但最近风向变了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "商队向导 艾伦",
+          "text": "蝎子和鬣狗都会被沙暴逼出来，它们会一起袭击过路的人。",
+          "choices": [
+            {
+              "text": "我可以陪你走一段。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "guide_join"
+                ]
+              }
+            },
+            {
+              "text": "我只负责清道路，之后自己走。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "guide_solo"
+                ]
+              }
+            }
+          ]
+        },
+        "n3": {
+          "speaker": "商队向导 艾伦",
+          "text": "如果你能帮我清理掉它们，我的商队就能继续走。",
+          "next": null
+        },
+        "c1": {
+          "speaker": "商队向导 艾伦",
+          "text": "好，结伴走的路，总是比独行安全。",
+          "next": "n3"
+        },
+        "c2": {
+          "speaker": "商队向导 艾伦",
+          "text": "明白了，路清干净就是你的功劳。",
+          "next": "n3"
+        }
+      }
+    },
+    {
+      "id": "side_66_lantern_keeper",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "灯塔守 莫拉",
+          "text": "沼泽幽影害怕灯光，但它们也会被灯光吸引。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "灯塔守 莫拉",
+          "text": "我在湖边立了七盏灯笼，每盏都要用裂隙碎片点亮。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "灯塔守 莫拉",
+          "text": "如果你能帮我找回散落的碎片，灯笼会重新亮起来。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_69_bridge_builder",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "木匠 本",
+          "text": "树皮桥是这片林子唯一的通道，但老树倒了之后桥也断了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "木匠 本",
+          "text": "我需要三根结实的老木头，树皮鹿的角能当作固定桩。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "木匠 本",
+          "text": "修好之后，林子里的商人都能过来了，你也算积了功德。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_70_ferryman",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "摆渡人 卡伦",
+          "text": "死河的船夫从不说自己的名字，但我可以告诉你，我曾经是守望兵。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "摆渡人 卡伦",
+          "text": "泥沼蟾蜍在河口守着死水，它们吃掉了所有想渡河的人。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "摆渡人 卡伦",
+          "text": "清理掉它们，我就能重新渡人过河。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "摆渡人 卡伦",
+          "text": "记住，过河之后不要回头看。",
+          "choices": [
+            {
+              "text": "我会记住。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "ferry_remember"
+                ]
+              }
+            },
+            {
+              "text": "我想回头看看。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "ferry_look"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "摆渡人 卡伦",
+          "text": "很好，那你就能安全过河。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "摆渡人 卡伦",
+          "text": "那你就得留下来，当我的船客。",
+          "next": null
+        }
+      }
     }
   ]
 }

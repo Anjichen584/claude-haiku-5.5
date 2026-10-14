@@ -1774,6 +1774,580 @@
       "rewards": {
         "exp": 1800
       }
+    },
+    {
+      "id": "side_51_magma_crab_shell",
+      "type": "side",
+      "title": "熔岩蟹的甲壳",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "elite_magma_crab",
+          "count": 1,
+          "text": "击败熔岩蟹"
+        },
+        {
+          "type": "collect",
+          "target": "ash_plate",
+          "count": 1,
+          "text": "收集 1 件灰烬板甲材料"
+        }
+      ],
+      "rewards": {
+        "exp": 520,
+        "gold": 220
+      }
+    },
+    {
+      "id": "side_52_grove_witch_curse",
+      "type": "side",
+      "title": "林中女巫的诅咒",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "elite_grove_witch",
+          "count": 1,
+          "text": "击败林中女巫"
+        },
+        {
+          "type": "kill",
+          "target": "thorn_sprite",
+          "count": 3,
+          "text": "清除 3 个荆棘精灵"
+        }
+      ],
+      "rewards": {
+        "exp": 540,
+        "gold": 230
+      }
+    },
+    {
+      "id": "side_53_war_chief_banner",
+      "type": "side",
+      "title": "战旗与酒杯",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "elite_war_chief",
+          "count": 1,
+          "text": "击败战争酋长"
+        },
+        {
+          "type": "kill",
+          "target": "plains_raider",
+          "count": 3,
+          "text": "击败 3 名平原掠夺者"
+        }
+      ],
+      "rewards": {
+        "exp": 560,
+        "gold": 240
+      }
+    },
+    {
+      "id": "side_54_dust_titan_bones",
+      "type": "side",
+      "title": "沙尘巨人的骨头",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "elite_dust_titan",
+          "count": 1,
+          "text": "击败沙尘巨人"
+        },
+        {
+          "type": "collect",
+          "target": "iron_sword",
+          "count": 1,
+          "text": "收集 1 把铁剑"
+        }
+      ],
+      "rewards": {
+        "exp": 580,
+        "gold": 250
+      }
+    },
+    {
+      "id": "side_55_matriarch_eggs",
+      "type": "side",
+      "title": "泥沼母亲的卵",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "elite_bog_matriarch",
+          "count": 1,
+          "text": "击败泥沼母亲"
+        },
+        {
+          "type": "kill",
+          "target": "bog_leech",
+          "count": 4,
+          "text": "清除 4 只沼泽水蛭"
+        }
+      ],
+      "rewards": {
+        "exp": 600,
+        "gold": 260
+      }
+    },
+    {
+      "id": "side_56_shaman_mask",
+      "type": "side",
+      "title": "萨满的面具",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "elite_mire_shaman",
+          "count": 1,
+          "text": "击败泥沼萨满"
+        },
+        {
+          "type": "reach",
+          "target": "mire_shrine",
+          "text": "回到泥沼神龛"
+        }
+      ],
+      "rewards": {
+        "exp": 580,
+        "gold": 240
+      }
+    },
+    {
+      "id": "side_57_hound_leash",
+      "type": "side",
+      "title": "猎犬的项圈",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "elite_rift_hound",
+          "count": 1,
+          "text": "击败裂隙猎犬"
+        },
+        {
+          "type": "collect",
+          "target": "rift_shard",
+          "count": 4,
+          "text": "收集 4 块裂隙碎片"
+        }
+      ],
+      "rewards": {
+        "exp": 620,
+        "gold": 270
+      }
+    },
+    {
+      "id": "side_58_colossus_rot",
+      "type": "side",
+      "title": "巨像的腐肉",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "elite_rot_colossus",
+          "count": 1,
+          "text": "击败腐化巨像"
+        },
+        {
+          "type": "kill",
+          "target": "rot_crawler",
+          "count": 5,
+          "text": "清理 5 只腐化爬行者"
+        }
+      ],
+      "rewards": {
+        "exp": 640,
+        "gold": 280
+      }
+    },
+    {
+      "id": "side_59_alpha_fang",
+      "type": "side",
+      "title": "霜狼头领的獠牙",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "elite_frost_alpha",
+          "count": 1,
+          "text": "击败霜狼头领"
+        },
+        {
+          "type": "kill",
+          "target": "frost_wolf",
+          "count": 3,
+          "text": "猎杀 3 只霜狼"
+        }
+      ],
+      "rewards": {
+        "exp": 500,
+        "gold": 210
+      }
+    },
+    {
+      "id": "side_60_ash_archive",
+      "type": "side",
+      "title": "灰烬档案馆",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "reach",
+          "target": "ash_archive",
+          "text": "前往灰烬档案馆"
+        },
+        {
+          "type": "collect",
+          "target": "rift_shard",
+          "count": 2,
+          "text": "收集 2 块裂隙碎片"
+        }
+      ],
+      "rewards": {
+        "exp": 300,
+        "gold": 120
+      }
+    },
+    {
+      "id": "side_61_ash_helm_order",
+      "type": "side",
+      "title": "灰烬头盔的订单",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "collect",
+          "target": "ash_helm",
+          "count": 1,
+          "text": "收集 1 顶灰烬头盔"
+        },
+        {
+          "type": "kill",
+          "target": "ember_hound",
+          "count": 3,
+          "text": "猎杀 3 只余烬猎犬"
+        }
+      ],
+      "rewards": {
+        "exp": 330,
+        "gold": 140
+      }
+    },
+    {
+      "id": "side_62_stride_race",
+      "type": "side",
+      "title": "疾行者的比赛",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "grass_stalker",
+          "count": 4,
+          "text": "猎杀 4 只草原潜猎者"
+        },
+        {
+          "type": "collect",
+          "target": "stride_boots",
+          "count": 1,
+          "text": "收集 1 双疾行靴材料"
+        }
+      ],
+      "rewards": {
+        "exp": 340,
+        "gold": 150
+      }
+    },
+    {
+      "id": "side_63_blade_forge",
+      "type": "side",
+      "title": "裂隙刃的锻造",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "collect",
+          "target": "rift_blade",
+          "count": 1,
+          "text": "收集 1 件裂隙刃材料"
+        },
+        {
+          "type": "kill",
+          "target": "cinder_golem",
+          "count": 1,
+          "text": "击碎 1 尊余烬魔像"
+        }
+      ],
+      "rewards": {
+        "exp": 420,
+        "gold": 180
+      }
+    },
+    {
+      "id": "side_64_snowbound_camp",
+      "type": "side",
+      "title": "雪封营地",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "icicle_slime",
+          "count": 6,
+          "text": "清理 6 只冰晶史莱姆"
+        },
+        {
+          "type": "reach",
+          "target": "frost_camp",
+          "text": "抵达霜原营地"
+        }
+      ],
+      "rewards": {
+        "exp": 260,
+        "gold": 100
+      }
+    },
+    {
+      "id": "side_65_sandstorm_crossing",
+      "type": "side",
+      "title": "沙暴横渡",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "sand_scorpion",
+          "count": 4,
+          "text": "猎杀 4 只沙漠蝎"
+        },
+        {
+          "type": "kill",
+          "target": "dust_hyena",
+          "count": 3,
+          "text": "驱散 3 只沙尘鬣狗"
+        }
+      ],
+      "rewards": {
+        "exp": 330,
+        "gold": 130
+      }
+    },
+    {
+      "id": "side_66_marsh_lantern",
+      "type": "side",
+      "title": "沼泽灯笼",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "swamp_wraith",
+          "count": 4,
+          "text": "驱散 4 个沼泽幽影"
+        },
+        {
+          "type": "collect",
+          "target": "rift_shard",
+          "count": 2,
+          "text": "收集 2 块裂隙碎片"
+        }
+      ],
+      "rewards": {
+        "exp": 380,
+        "gold": 160
+      }
+    },
+    {
+      "id": "side_67_hollow_bell",
+      "type": "side",
+      "title": "空洞之钟",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "hollow_owl",
+          "count": 5,
+          "text": "击落 5 只空洞猫头鹰"
+        },
+        {
+          "type": "kill",
+          "target": "ash_crow",
+          "count": 4,
+          "text": "击落 4 只灰烬乌鸦"
+        }
+      ],
+      "rewards": {
+        "exp": 310,
+        "gold": 120
+      }
+    },
+    {
+      "id": "side_68_rift_rat_cleanup",
+      "type": "side",
+      "title": "裂隙鼠清剿",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "frost_rat",
+          "count": 8,
+          "text": "清剿 8 只霜原鼠"
+        },
+        {
+          "type": "kill",
+          "target": "gravel_mite",
+          "count": 6,
+          "text": "清剿 6 只砂砾螨"
+        }
+      ],
+      "rewards": {
+        "exp": 250,
+        "gold": 95
+      }
+    },
+    {
+      "id": "side_69_bark_bridge",
+      "type": "side",
+      "title": "树皮桥",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "bark_stag",
+          "count": 4,
+          "text": "猎杀 4 只树皮鹿"
+        },
+        {
+          "type": "reach",
+          "target": "bark_bridge",
+          "text": "修复树皮桥"
+        }
+      ],
+      "rewards": {
+        "exp": 300,
+        "gold": 120
+      }
+    },
+    {
+      "id": "side_70_dead_river_boat",
+      "type": "side",
+      "title": "死河渡船",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "mire_toad",
+          "count": 5,
+          "text": "清除 5 只泥沼蟾蜍"
+        },
+        {
+          "type": "collect",
+          "target": "scholar_robe",
+          "count": 1,
+          "text": "收集 1 件学者长袍材料"
+        }
+      ],
+      "rewards": {
+        "exp": 280,
+        "gold": 110
+      }
+    },
+    {
+      "id": "hidden_06_void_bell",
+      "type": "hidden",
+      "title": "虚空之钟",
+      "requires": [
+        "hidden_05_void_lullaby"
+      ],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "boss_core_warden",
+          "count": 1,
+          "text": "击败核心守卫"
+        },
+        {
+          "type": "reach",
+          "target": "rift_core_whisper",
+          "text": "回到裂隙核心的低语之处"
+        }
+      ],
+      "rewards": {
+        "exp": 2000
+      }
+    },
+    {
+      "id": "hidden_07_glacier_mirror",
+      "type": "hidden",
+      "title": "冰川之镜",
+      "requires": [
+        "hidden_02_frozen_echo"
+      ],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "boss_frozen_colossus",
+          "count": 1,
+          "text": "击败冰封巨像"
+        },
+        {
+          "type": "collect",
+          "target": "rift_shard",
+          "count": 5,
+          "text": "收集 5 块裂隙碎片"
+        }
+      ],
+      "rewards": {
+        "exp": 2000
+      }
+    },
+    {
+      "id": "hidden_08_ember_crown",
+      "type": "hidden",
+      "title": "余烬王冠",
+      "requires": [
+        "hidden_03_ember_memory"
+      ],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "boss_ember_titan",
+          "count": 1,
+          "text": "击败余烬泰坦"
+        },
+        {
+          "type": "kill",
+          "target": "elite_magma_crab",
+          "count": 1,
+          "text": "击败熔岩蟹"
+        }
+      ],
+      "rewards": {
+        "exp": 2100
+      }
+    },
+    {
+      "id": "hidden_09_dune_oath",
+      "type": "hidden",
+      "title": "沙丘的誓言",
+      "requires": [
+        "hidden_04_grove_promise"
+      ],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "boss_dune_regent",
+          "count": 1,
+          "text": "击败沙丘摄政者"
+        },
+        {
+          "type": "talk",
+          "target": "ashguard_captain",
+          "text": "向守望队长复述誓言"
+        }
+      ],
+      "rewards": {
+        "exp": 2200
+      }
     }
   ]
 }
