@@ -17,9 +17,10 @@ const GATE_RADIUS = 2;
 import { surfaceSpawnsForChunk, type EncounterRequest, type SurfaceSpawn } from '../world/encounters';
 import { activeQuestLog, formatQuestLog } from '../narrative/questLog';
 import { formatInventory, inventoryLines } from '../state/inventory';
+import { combatStats, cycleSlot, EQUIP_SLOTS, SLOT_LABEL } from '../state/equipment';
 import { getSession, persistSession, setSession } from '../state/sessionStore';
 import { newSession, type GameSession } from '../state/session';
-import type { EnemyDef, QuestDef } from '../data/schema';
+import type { EnemyDef, ItemDef, QuestDef } from '../data/schema';
 import { grantQuestRewards } from '../state/rewards';
 import type { QuestCompletion } from '../narrative/QuestManager';
 
@@ -99,6 +100,10 @@ export class OverworldScene extends Phaser.Scene {
   private keyI!: Phaser.Input.Keyboard.Key;
   private invPanel!: Phaser.GameObjects.Text;
   private invPanelOpen = false;
+  private keyC!: Phaser.Input.Keyboard.Key;
+  private equipPanel!: Phaser.GameObjects.Text;
+  private equipPanelOpen = false;
+  private itemDefs: readonly ItemDef[] = [];
   /** 战败返回后的剩余保护时间 */
   private graceMs = 0;
   /** 已进入战斗，正在切换场景，阻止重复触发 */
@@ -123,6 +128,7 @@ export class OverworldScene extends Phaser.Scene {
     this.enemyDefs = data.enemies;
     this.questDefs = data.quests;
     this.itemNames = new Map(data.items.map((i) => [i.id, i.name]));
+    this.itemDefs = data.items;
 
     // 场景实例会被复用，所有运行时状态都要在这里重置
     this.chunks = new Map();
@@ -165,6 +171,7 @@ export class OverworldScene extends Phaser.Scene {
     this.keyQ = keyboard.addKey('Q');
     this.keyK = keyboard.addKey('K');
     this.keyI = keyboard.addKey('I');
+    this.keyC = keyboard.addKey('C');
     keyboard.on('keydown', this.onDigitKey, this);
     // 场景重新进入时移除旧监听，否则数字键会重复触发
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => keyboard.off('keydown', this.onDigitKey, this));
@@ -200,6 +207,11 @@ export class OverworldScene extends Phaser.Scene {
       backgroundColor: '#0b0a1acc', padding: { x: 10, y: 8 },
     }).setScrollFactor(0).setDepth(250).setVisible(false);
     this.invPanelOpen = false;
+    this.equipPanel = this.add.text(16, 260, '', {
+      fontFamily: 'sans-serif', fontSize: '14px', color: '#f4f0ff', lineSpacing: 4,
+      backgroundColor: '#0b0a1acc', padding: { x: 10, y: 8 },
+    }).setScrollFactor(0).setDepth(250).setVisible(false);
+    this.equipPanelOpen = false;
 
     this.player.setPosition(this.tileX * TILE_PX, this.tileY * TILE_PX);
     this.syncChunks();
@@ -224,6 +236,7 @@ export class OverworldScene extends Phaser.Scene {
     if (Phaser.Input.Keyboard.JustDown(this.keyQ)) this.toggleQuestPanel();
     if (Phaser.Input.Keyboard.JustDown(this.keyK)) this.saveGame();
     if (Phaser.Input.Keyboard.JustDown(this.keyI)) this.toggleInventoryPanel();
+    if (Phaser.Input.Keyboard.JustDown(this.keyC)) this.toggleEquipPanel();
     if (Phaser.Input.Keyboard.JustDown(this.keyE)) this.tryStartTalk();
 
     let mx = 0;
@@ -245,6 +258,7 @@ export class OverworldScene extends Phaser.Scene {
     if (this.toast.visible && this.time.now > this.toastUntil) this.toast.setVisible(false);
     if (this.questPanelOpen) this.refreshQuestPanel();
     if (this.invPanelOpen) this.refreshInventoryPanel();
+    if (this.equipPanelOpen) this.refreshEquipPanel();
     this.syncToSession();
     this.updateEnvironment();
   }
@@ -272,6 +286,27 @@ export class OverworldScene extends Phaser.Scene {
     this.questPanelOpen = !this.questPanelOpen;
     this.questPanel.setVisible(this.questPanelOpen);
     if (this.questPanelOpen) this.refreshQuestPanel();
+  }
+
+  private toggleEquipPanel(): void {
+    this.equipPanelOpen = !this.equipPanelOpen;
+    this.equipPanel.setVisible(this.equipPanelOpen);
+    if (this.equipPanelOpen) this.refreshEquipPanel();
+  }
+
+  private refreshEquipPanel(): void {
+    const eq = this.session.player.equipment;
+    const stats = combatStats(eq, this.itemDefs);
+    const rows = EQUIP_SLOTS.map((slot, i) => {
+      const id = eq[slot];
+      const name = id ? (this.itemNames.get(id) ?? id) : '—';
+      return `[${i + 1}] ${SLOT_LABEL[slot]}：${name}`;
+    });
+    this.equipPanel.setText([
+      '装备（C 关闭 · 数字键切换）',
+      ...rows,
+      `攻击 ${stats.attack}   防御 ${stats.defense}`,
+    ].join('\n'));
   }
 
   private toggleInventoryPanel(): void {
@@ -444,6 +479,12 @@ export class OverworldScene extends Phaser.Scene {
   }
 
   private onDigitKey(e: KeyboardEvent): void {
+    // 装备面板打开且不在对话中：数字键 1–4 切换对应槽位
+    if (!this.talk && this.equipPanelOpen && /^[1-4]$/.test(e.key)) {
+      cycleSlot(this.session, EQUIP_SLOTS[Number(e.key) - 1], this.itemDefs);
+      this.refreshEquipPanel();
+      return;
+    }
     if (!this.talk || !/^[1-9]$/.test(e.key)) return;
     const visible = this.talk.runner.choices();
     const pick = visible[Number(e.key) - 1];

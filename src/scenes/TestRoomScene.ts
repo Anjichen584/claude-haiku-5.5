@@ -14,6 +14,7 @@ import type { QuestCompletion } from '../narrative/QuestManager';
 import { getRun, getSession, persistSession, setRun } from '../state/sessionStore';
 import { applyGains, grantQuestRewards } from '../state/rewards';
 import { killGains, rollDrops } from '../state/killRewards';
+import { combatStats } from '../state/equipment';
 import { MAX_DUNGEON_FLOOR, PLAYER_MAX_HP, type GameSession } from '../state/session';
 import { combatGains, markCleared } from '../dungeon/run';
 import type { EncounterRequest } from '../world/encounters';
@@ -83,6 +84,8 @@ export class TestRoomScene extends Phaser.Scene {
   private log: string[] = [];
   /** 从地表进入时非空；此时胜负会写回会话并返回地表 */
   private encounter: EncounterRequest | null = null;
+  /** 本场战斗使用的属性（由装备决定） */
+  private stats = { attack: PLAYER.attack, defense: PLAYER.defense, maxHp: PLAYER.maxHp };
   private session: GameSession | null = null;
   private completions: QuestCompletion[] = [];
   /** 本场战斗获得的击杀奖励与掉落文字 */
@@ -226,10 +229,12 @@ export class TestRoomScene extends Phaser.Scene {
 
     this.px = 320;
     this.py = display.baseHeight / 2;
-    this.playerActor = new Actor({ maxHp: PLAYER.maxHp, staggerMs: 150 });
+    // 战斗属性由装备决定（没有会话时为基础属性）
+    this.stats = combatStats(this.session?.player.equipment ?? {}, loadGameData().items);
+    this.playerActor = new Actor({ maxHp: this.stats.maxHp, staggerMs: 150 });
     if (this.session) {
       // 生命从会话带入（已被击败的刷新点不会再次进入）
-      this.playerActor.hp = Math.max(1, Math.min(PLAYER.maxHp, this.session.player.hp));
+      this.playerActor.hp = Math.max(1, Math.min(this.stats.maxHp, this.session.player.hp));
     }
     this.playerBody = this.add.circle(this.px, this.py, PLAYER.radius, 0x7aa2ff);
     this.attackCooldownMs = 0;
@@ -329,7 +334,7 @@ export class TestRoomScene extends Phaser.Scene {
       if (dist <= PLAYER.attackReachPx + ENEMY_RADIUS && inFront) {
         const element: Element = 'none';
         const dmg = calculateDamage(
-          { attack: PLAYER.attack, multiplier: 1, element, critical: false },
+          { attack: this.stats.attack, multiplier: 1, element, critical: false },
           { defense: enemy.def.defense, element: (enemy.def.element as Element) ?? 'none' },
         );
         this.damageEnemy(enemy, dmg);
@@ -383,7 +388,7 @@ export class TestRoomScene extends Phaser.Scene {
       if (decision.shouldAttack) {
         const dmg = calculateDamage(
           { attack: enemy.def.attack, multiplier: 1, element: (enemy.def.element as Element) ?? 'none', critical: false },
-          { defense: PLAYER.defense },
+          { defense: this.stats.defense },
         );
         const applied = this.playerActor.receiveDamage(dmg);
         if (applied > 0) this.pushLog(`${enemy.def.name} 造成 ${applied} 点伤害`);
