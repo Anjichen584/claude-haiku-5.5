@@ -566,7 +566,7 @@
     },
     {
       "id": "npc_side_98_hyena_den",
-      "name": "驿站管理员 扎克",
+      "name": "驿站守卫 洛基",
       "location": "titan_gate",
       "dialogueId": "npc_side_98_hyena_den_delivery"
     },
