@@ -12,21 +12,41 @@
               "text": "我需要帮助。",
               "next": "n2",
               "effects": {
-                "setFlags": ["met_captain"],
-                "reputation": { "ashguard": 5 },
-                "startQuest": ["main_01_first_rift"]
+                "setFlags": [
+                  "met_captain"
+                ],
+                "reputation": {
+                  "ashguard": 5
+                },
+                "startQuest": [
+                  "main_01_first_rift"
+                ]
               }
             },
             {
               "text": "与你无关。",
               "next": "n3",
-              "condition": { "reputation": { "ashguard": { "gte": -20 } } },
-              "effects": { "reputation": { "ashguard": -5 } }
+              "condition": {
+                "reputation": {
+                  "ashguard": {
+                    "gte": -20
+                  }
+                }
+              },
+              "effects": {
+                "reputation": {
+                  "ashguard": -5
+                }
+              }
             },
             {
               "text": "我想知道裂隙的事。",
               "next": "n4",
-              "condition": { "quests": { "main_01_first_rift": "completed" } }
+              "condition": {
+                "quests": {
+                  "main_01_first_rift": "completed"
+                }
+              }
             }
           ]
         },
@@ -43,7 +63,699 @@
         "n4": {
           "speaker": "守望队长 伊瑟",
           "text": "裂隙在吞噬土地。我们需要有人去看清它的根源。",
-          "effects": { "setFlags": ["knows_rift"] },
+          "effects": {
+            "setFlags": [
+              "knows_rift"
+            ]
+          },
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch03_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "霜原哨兵 梅雅",
+          "text": "雪门的风一夜比一夜冷，霜狼在营地外徘徊。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "霜原哨兵 梅雅",
+          "text": "它们不像普通野兽，眼睛里有一抹不属于这片土地的蓝光。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "霜原哨兵 梅雅",
+          "text": "我们的人已经有三个没能回来。你能去看看吗？",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "霜原哨兵 梅雅",
+          "text": "去吧，路上小心。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch04_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "守望队长 伊瑟",
+          "text": "你已经走到了裂隙核心的边缘，我们终于能看清它了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "守望队长 伊瑟",
+          "text": "它不是矿石，也不是生物，更像是一道被撕开的缝隙。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "守望队长 伊瑟",
+          "text": "现在要决定它的去向。",
+          "choices": [
+            {
+              "text": "我们封印它，用守望会的誓约压住它。",
+              "next": "n_a",
+              "effects": {
+                "setFlags": [
+                  "sealed_rift_core"
+                ]
+              }
+            },
+            {
+              "text": "我们研究它，它的秘密不该被埋葬。",
+              "next": "n_b",
+              "effects": {
+                "setFlags": [
+                  "studied_rift_core"
+                ]
+              }
+            }
+          ]
+        },
+        "n_a": {
+          "speaker": "守望队长 伊瑟",
+          "text": "伊瑟点头，锁链一圈圈绕上核心。守望会的人会记住今天。",
+          "next": "n_end"
+        },
+        "n_b": {
+          "speaker": "守望队长 伊瑟",
+          "text": "研究员们的眼中闪着光，而伊瑟沉默地转过身去。",
+          "next": "n_end"
+        },
+        "n_end": {
+          "speaker": "守望队长 伊瑟",
+          "text": "（这一章的故事，在你的选择里延续下去。）",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch05_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "研究员 莉拉",
+          "text": "我在旧遗迹里找到了这些刻满符文的碎片。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "研究员 莉拉",
+          "text": "每一块都在微微震动，就像在呼吸。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "研究员 莉拉",
+          "text": "把它们带回研究院，我们就能知道裂隙的节奏。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "研究员 莉拉",
+          "text": "去吧，路上小心。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch06_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "沙漠向导 奥拉",
+          "text": "沙丘另一边的风暴已经持续三天了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "沙漠向导 奥拉",
+          "text": "那不是普通的沙尘，里面夹杂着会咬人的细小虫群。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "沙漠向导 奥拉",
+          "text": "如果你要穿过去，请先去哨站补给护目镜。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "沙漠向导 奥拉",
+          "text": "去吧，路上小心。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch07_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "泥沼村长 哈鲁",
+          "text": "村子建在泥沼的边缘，木桥每年都要重修一次。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "泥沼村长 哈鲁",
+          "text": "最近夜里总有人听见水下传来敲击声。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "泥沼村长 哈鲁",
+          "text": "请你帮我们查清楚，那是什么。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "泥沼村长 哈鲁",
+          "text": "去吧，路上小心。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch08_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "渔人 芬",
+          "text": "三条河流本来在远处汇成一条，现在却各自流向了不同的方向。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "渔人 芬",
+          "text": "我撒的网里，捞上来的全是发光的鱼骨。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "渔人 芬",
+          "text": "如果河流的源头被污染了，整个泥沼都会死掉。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "渔人 芬",
+          "text": "去吧，路上小心。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch09_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "看门人 赫斯",
+          "text": "第九层的门只有在裂隙稳定时才会打开。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "看门人 赫斯",
+          "text": "门后的走廊里，墙壁上刻着越来越多的名字。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "看门人 赫斯",
+          "text": "有些名字，是你认识的人。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "看门人 赫斯",
+          "text": "去吧，路上小心。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch10_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "商盟代表 科文",
+          "text": "赤潮商盟愿意付出很多，只要你能替我们保守一个秘密。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "商盟代表 科文",
+          "text": "我们想在裂隙碎片的交易中占得先机，这需要一份协议。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "商盟代表 科文",
+          "text": "你，要不要签？",
+          "choices": [
+            {
+              "text": "签订协议。商盟的货物，从此也有你的一份。",
+              "next": "n_a",
+              "effects": {
+                "setFlags": [
+                  "red_tide_pact"
+                ]
+              }
+            },
+            {
+              "text": "拒绝协议。有些东西不该拿来交易。",
+              "next": "n_b",
+              "effects": {
+                "setFlags": [
+                  "red_tide_refused"
+                ]
+              }
+            }
+          ]
+        },
+        "n_a": {
+          "speaker": "商盟代表 科文",
+          "text": "科文露出满意的笑容：'合作愉快。'",
+          "next": "n_end"
+        },
+        "n_b": {
+          "speaker": "商盟代表 科文",
+          "text": "科文收起合同，微笑未减：'我们会再见面的。'",
+          "next": "n_end"
+        },
+        "n_end": {
+          "speaker": "商盟代表 科文",
+          "text": "（这一章的故事，在你的选择里延续下去。）",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch11_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "钟塔守护者 露娜",
+          "text": "冰层下埋着一口古钟，据说它能让裂隙安静下来。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "钟塔守护者 露娜",
+          "text": "但敲响它的人，需要承受寒冷的回声。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "钟塔守护者 露娜",
+          "text": "我可以带路，只是路上会很冷。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "钟塔守护者 露娜",
+          "text": "去吧，路上小心。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch12_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "熔炉工匠 格罗",
+          "text": "熔岩之心是这片荒原的心脏，也是最危险的地方。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "熔炉工匠 格罗",
+          "text": "那里的火焰不会烧毁肉体，而是会烧掉记忆。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "熔炉工匠 格罗",
+          "text": "请把这个护符带上，它能让你记住自己是谁。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "熔炉工匠 格罗",
+          "text": "去吧，路上小心。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch13_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "林中祭司 索拉",
+          "text": "苔藓王庭的树根已经长进了祭坛。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "林中祭司 索拉",
+          "text": "王庭的守卫被腐化，正在攻击所有靠近的人。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "林中祭司 索拉",
+          "text": "净化这里，我们才能重新祭拜古老的树神。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "林中祭司 索拉",
+          "text": "去吧，路上小心。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch14_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "部族长老 巴鲁",
+          "text": "荒原的部族已经分裂成了三派，每一派都想要王座。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "部族长老 巴鲁",
+          "text": "我们需要一个外人来打破僵局。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "部族长老 巴鲁",
+          "text": "击败野猪头目，证明你的力量。然后，我们再谈。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "部族长老 巴鲁",
+          "text": "去吧，路上小心。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch15_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "植物学家 艾琳",
+          "text": "腐化的根须正在沿着地脉向东蔓延。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "植物学家 艾琳",
+          "text": "它吸取了沼泽里的一切生命，连泥土都变成了灰色。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "植物学家 艾琳",
+          "text": "我们必须切断它的源头，哪怕那需要付出代价。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "植物学家 艾琳",
+          "text": "去吧，路上小心。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch16_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "部族萨满 乌拉",
+          "text": "部族需要一位新的首领，而你的名字已经在篝火边被提起。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "部族萨满 乌拉",
+          "text": "王座意味着责任，也意味着你要替所有人做决定。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "部族萨满 乌拉",
+          "text": "现在，给出你的回答。",
+          "choices": [
+            {
+              "text": "我接受王座。荒原的风，从今天起由我来守。",
+              "next": "n_a",
+              "effects": {
+                "setFlags": [
+                  "tribes_led"
+                ]
+              }
+            },
+            {
+              "text": "我推荐他人。力量不该只属于一个人。",
+              "next": "n_b",
+              "effects": {
+                "setFlags": [
+                  "tribes_declined"
+                ]
+              }
+            }
+          ]
+        },
+        "n_a": {
+          "speaker": "部族萨满 乌拉",
+          "text": "乌拉用白色的骨粉在你的额头画下图腾，篝火为之沸腾。",
+          "next": "n_end"
+        },
+        "n_b": {
+          "speaker": "部族萨满 乌拉",
+          "text": "乌拉叹息：'你的谦逊，会让这个部族更有希望。'",
+          "next": "n_end"
+        },
+        "n_end": {
+          "speaker": "部族萨满 乌拉",
+          "text": "（这一章的故事，在你的选择里延续下去。）",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch17_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "蛾群观察者 塞恩",
+          "text": "飞蛾洞穴里的光不是来自火，而是来自它们的翅膀。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "蛾群观察者 塞恩",
+          "text": "每一只蛾子都带着一缕裂隙的低语。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "蛾群观察者 塞恩",
+          "text": "如果它们飞出洞穴，整个大陆都会听见。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "蛾群观察者 塞恩",
+          "text": "去吧，路上小心。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch18_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "霜冻猎人 艾德",
+          "text": "霜狼的女王住在冰川的最深处。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "霜冻猎人 艾德",
+          "text": "她不是狼，而是某种被冻结的古老存在。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "霜冻猎人 艾德",
+          "text": "请小心，她的每一次吼叫都会让冰层裂开。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "霜冻猎人 艾德",
+          "text": "去吧，路上小心。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch19_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "地质学家 姆伦",
+          "text": "泰坦并不是活物，它是熔岩在地底凝固后形成的巨像。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "地质学家 姆伦",
+          "text": "它被裂隙唤醒，正在试图重新站起来。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "地质学家 姆伦",
+          "text": "在它完全苏醒之前，你必须阻止它。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "地质学家 姆伦",
+          "text": "去吧，路上小心。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch20_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "沼泽女祭司 维拉",
+          "text": "沼泽之母是一切腐化的源头，也是最古老的生命之一。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "沼泽女祭司 维拉",
+          "text": "它的巢穴里充满了她的孩子，那些被吞噬的人的影子。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "沼泽女祭司 维拉",
+          "text": "带着我的灯去吧，它能驱散影子。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "沼泽女祭司 维拉",
+          "text": "去吧，路上小心。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch21_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "沙海学者 哈索",
+          "text": "摄政是沙海最后的王，他用自己的生命保护着地下的古城。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "沙海学者 哈索",
+          "text": "古城里藏着关于裂隙的全部记录。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "沙海学者 哈索",
+          "text": "只有击败他，我们才能读到那些文字。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "沙海学者 哈索",
+          "text": "去吧，路上小心。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch22_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "低语之门守卫 莫拉",
+          "text": "裂隙深处的低语，已经开始模仿死去亲人的声音。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "低语之门守卫 莫拉",
+          "text": "猎犬王守在门口，它是裂隙的眼睛。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "低语之门守卫 莫拉",
+          "text": "当你站在门前，会听见一个声音在问你：你想要什么？",
+          "choices": [
+            {
+              "text": "我回应它。也许我能听懂它想说什么。",
+              "next": "n_a",
+              "effects": {
+                "setFlags": [
+                  "hidden_whisper_heard"
+                ]
+              }
+            },
+            {
+              "text": "我无视它。我的答案不需要别人替我写。",
+              "next": "n_b",
+              "effects": {
+                "setFlags": [
+                  "whisper_ignored"
+                ]
+              }
+            }
+          ]
+        },
+        "n_a": {
+          "speaker": "低语之门守卫 莫拉",
+          "text": "低语突然安静下来，然后，一个温柔的声音说：'谢谢你，终于有人回答了。'",
+          "next": "n_end"
+        },
+        "n_b": {
+          "speaker": "低语之门守卫 莫拉",
+          "text": "低语的声音渐渐远去，像一阵不甘的风。",
+          "next": "n_end"
+        },
+        "n_end": {
+          "speaker": "低语之门守卫 莫拉",
+          "text": "（这一章的故事，在你的选择里延续下去。）",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch23_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "守望队长 伊瑟",
+          "text": "核心守卫是最后一道屏障，也是守望会的誓言所在。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "守望队长 伊瑟",
+          "text": "它保护的不是核心，而是我们所有人对未来的期待。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "守望队长 伊瑟",
+          "text": "去吧，我们在外面等你。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "守望队长 伊瑟",
+          "text": "去吧，路上小心。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ch24_talk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "莉拉 与 伊瑟",
+          "text": "你回来了。裂隙已经不再是一道裂缝，它变成了我们每个人心里的一个选择。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "莉拉 与 伊瑟",
+          "text": "无论你做了什么，这片大陆都会记住你的名字。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "莉拉 与 伊瑟",
+          "text": "谢谢你，编年史的最后一页，由你来写。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "莉拉 与 伊瑟",
+          "text": "去吧，路上小心。",
           "next": null
         }
       }

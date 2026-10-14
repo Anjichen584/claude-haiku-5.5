@@ -693,6 +693,556 @@
           "rift_shard"
         ]
       }
+    },
+    {
+      "id": "side_02_frost_bounty",
+      "type": "side",
+      "title": "霜狼赏金",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "frost_wolf",
+          "text": "猎杀 4 只霜狼",
+          "count": 4
+        }
+      ],
+      "rewards": {
+        "exp": 150,
+        "gold": 120
+      }
+    },
+    {
+      "id": "side_03_snow_herbs",
+      "type": "side",
+      "title": "雪原草药",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "collect",
+          "target": "rift_shard",
+          "text": "收集 2 块裂隙碎片",
+          "count": 2
+        }
+      ],
+      "rewards": {
+        "exp": 120,
+        "gold": 80
+      }
+    },
+    {
+      "id": "side_04_ember_eggs",
+      "type": "side",
+      "title": "余烬蛋",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "ember_lizard",
+          "text": "击败 3 只余烬蜥蜴",
+          "count": 3
+        }
+      ],
+      "rewards": {
+        "exp": 130,
+        "gold": 100
+      }
+    },
+    {
+      "id": "side_05_sand_map",
+      "type": "side",
+      "title": "沙丘地图",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "reach",
+          "target": "dune_outpost",
+          "text": "抵达沙丘哨站"
+        }
+      ],
+      "rewards": {
+        "exp": 100,
+        "gold": 90
+      }
+    },
+    {
+      "id": "side_06_bog_frogs",
+      "type": "side",
+      "title": "蟾蜍的代价",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "mire_toad",
+          "text": "击败 3 只泥沼蟾蜍",
+          "count": 3
+        }
+      ],
+      "rewards": {
+        "exp": 140,
+        "gold": 110
+      }
+    },
+    {
+      "id": "side_07_hollow_wings",
+      "type": "side",
+      "title": "空洞的翅膀",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "hollow_owl",
+          "text": "击落 4 只空洞猫头鹰",
+          "count": 4
+        }
+      ],
+      "rewards": {
+        "exp": 140,
+        "gold": 110
+      }
+    },
+    {
+      "id": "side_08_mossy_bark",
+      "type": "side",
+      "title": "苔藓与树皮",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "bark_stag",
+          "text": "狩猎 2 只树皮鹿",
+          "count": 2
+        },
+        {
+          "type": "collect",
+          "target": "rift_shard",
+          "text": "收集 2 块裂隙碎片",
+          "count": 2
+        }
+      ],
+      "rewards": {
+        "exp": 180,
+        "gold": 150
+      }
+    },
+    {
+      "id": "side_09_grass_hunt",
+      "type": "side",
+      "title": "草丛猎手",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "grass_stalker",
+          "text": "清理 5 只草丛潜伏者",
+          "count": 5
+        }
+      ],
+      "rewards": {
+        "exp": 150,
+        "gold": 120
+      }
+    },
+    {
+      "id": "side_10_raider_camp",
+      "type": "side",
+      "title": "劫匪营地",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "plains_raider",
+          "text": "击退 4 名劫匪",
+          "count": 4
+        }
+      ],
+      "rewards": {
+        "exp": 170,
+        "gold": 140
+      }
+    },
+    {
+      "id": "side_11_gravel_mite",
+      "type": "side",
+      "title": "碎石螨害",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "gravel_mite",
+          "text": "清理 6 只碎石螨",
+          "count": 6
+        }
+      ],
+      "rewards": {
+        "exp": 120,
+        "gold": 100
+      }
+    },
+    {
+      "id": "side_12_void_study",
+      "type": "side",
+      "title": "虚空研究",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "void_moth",
+          "text": "收集 3 只虚空飞蛾的样本",
+          "count": 3
+        }
+      ],
+      "rewards": {
+        "exp": 160,
+        "gold": 130
+      }
+    },
+    {
+      "id": "side_13_rot_root",
+      "type": "side",
+      "title": "腐根清除",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "rot_crawler",
+          "text": "清除 5 只腐化爬虫",
+          "count": 5
+        }
+      ],
+      "rewards": {
+        "exp": 160,
+        "gold": 130
+      }
+    },
+    {
+      "id": "side_14_swamp_cure",
+      "type": "side",
+      "title": "沼泽解药",
+      "requires": [
+        "side_06_bog_frogs"
+      ],
+      "objectives": [
+        {
+          "type": "collect",
+          "target": "rift_shard",
+          "text": "收集 4 块裂隙碎片",
+          "count": 4
+        }
+      ],
+      "rewards": {
+        "exp": 140,
+        "gold": 110
+      }
+    },
+    {
+      "id": "side_15_icicle_bells",
+      "type": "side",
+      "title": "冰晶铃铛",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "icicle_slime",
+          "text": "清理 5 只冰晶软泥",
+          "count": 5
+        }
+      ],
+      "rewards": {
+        "exp": 150,
+        "gold": 120
+      }
+    },
+    {
+      "id": "side_16_dust_letters",
+      "type": "side",
+      "title": "沙海来信",
+      "requires": [
+        "side_05_sand_map"
+      ],
+      "objectives": [
+        {
+          "type": "reach",
+          "target": "regent_palace",
+          "text": "送信到摄政宫殿外"
+        }
+      ],
+      "rewards": {
+        "exp": 180,
+        "gold": 140
+      }
+    },
+    {
+      "id": "side_17_cinder_forge",
+      "type": "side",
+      "title": "熔炉的委托",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "cinder_golem",
+          "text": "摧毁 2 个煤渣傀儡",
+          "count": 2
+        }
+      ],
+      "rewards": {
+        "exp": 200,
+        "gold": 160
+      }
+    },
+    {
+      "id": "side_18_thorn_garden",
+      "type": "side",
+      "title": "荆棘花园",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "thorn_sprite",
+          "text": "驱散 5 只荆棘精灵",
+          "count": 5
+        }
+      ],
+      "rewards": {
+        "exp": 140,
+        "gold": 110
+      }
+    },
+    {
+      "id": "side_19_boar_trail",
+      "type": "side",
+      "title": "野猪的足迹",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "moss_boar",
+          "text": "猎杀 4 只苔野猪",
+          "count": 4
+        }
+      ],
+      "rewards": {
+        "exp": 150,
+        "gold": 120
+      }
+    },
+    {
+      "id": "side_20_ghost_river",
+      "type": "side",
+      "title": "幽灵河",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "swamp_wraith",
+          "text": "击散 3 只沼泽幽影",
+          "count": 3
+        }
+      ],
+      "rewards": {
+        "exp": 190,
+        "gold": 150
+      }
+    },
+    {
+      "id": "side_21_hound_pack",
+      "type": "side",
+      "title": "猎犬群",
+      "requires": [
+        "side_04_ember_eggs",
+        "side_02_frost_bounty"
+      ],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "ember_lizard",
+          "text": "击败 2 只余烬蜥蜴",
+          "count": 2
+        },
+        {
+          "type": "kill",
+          "target": "frost_wolf",
+          "text": "击败 2 只霜狼",
+          "count": 2
+        }
+      ],
+      "rewards": {
+        "exp": 220,
+        "gold": 170
+      }
+    },
+    {
+      "id": "side_22_scorpion_tail",
+      "type": "side",
+      "title": "蝎尾",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "sand_scorpion",
+          "text": "击杀 4 只沙蝎",
+          "count": 4
+        }
+      ],
+      "rewards": {
+        "exp": 170,
+        "gold": 140
+      }
+    },
+    {
+      "id": "side_23_rat_nest",
+      "type": "side",
+      "title": "鼠窝清理",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "frost_rat",
+          "text": "清除 6 只霜鼠",
+          "count": 6
+        }
+      ],
+      "rewards": {
+        "exp": 110,
+        "gold": 90
+      }
+    },
+    {
+      "id": "side_24_leech_spring",
+      "type": "side",
+      "title": "水蛭泉",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "bog_leech",
+          "text": "清除 6 只沼泽水蛭",
+          "count": 6
+        }
+      ],
+      "rewards": {
+        "exp": 130,
+        "gold": 100
+      }
+    },
+    {
+      "id": "side_25_ash_crows",
+      "type": "side",
+      "title": "灰烬乌鸦",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "ash_crow",
+          "text": "驱赶 6 只灰烬乌鸦",
+          "count": 6
+        }
+      ],
+      "rewards": {
+        "exp": 130,
+        "gold": 100
+      }
+    },
+    {
+      "id": "side_26_marsh_wraith",
+      "type": "side",
+      "title": "沼泽幽灵",
+      "requires": [
+        "side_20_ghost_river"
+      ],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "swamp_wraith",
+          "text": "击散 5 只沼泽幽影",
+          "count": 5
+        }
+      ],
+      "rewards": {
+        "exp": 230,
+        "gold": 180
+      }
+    },
+    {
+      "id": "side_27_rift_scraps",
+      "type": "side",
+      "title": "裂隙残片回收",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "collect",
+          "target": "rift_shard",
+          "text": "收集 8 块裂隙碎片",
+          "count": 8
+        }
+      ],
+      "rewards": {
+        "exp": 240,
+        "gold": 200
+      }
+    },
+    {
+      "id": "side_28_wild_hunt",
+      "type": "side",
+      "title": "荒原狩猎",
+      "requires": [
+        "side_19_boar_trail"
+      ],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "wild_boarlord",
+          "text": "击败野猪头目",
+          "count": 1
+        }
+      ],
+      "rewards": {
+        "exp": 260,
+        "gold": 220
+      }
+    },
+    {
+      "id": "side_29_grave_moss",
+      "type": "side",
+      "title": "墓苔",
+      "requires": [
+        "side_13_rot_root"
+      ],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "rot_crawler",
+          "text": "清除 3 只腐化爬虫",
+          "count": 3
+        },
+        {
+          "type": "collect",
+          "target": "rift_shard",
+          "text": "收集 3 块裂隙碎片",
+          "count": 3
+        }
+      ],
+      "rewards": {
+        "exp": 200,
+        "gold": 160
+      }
+    },
+    {
+      "id": "side_30_hermit_map",
+      "type": "side",
+      "title": "隐士的地图",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "talk",
+          "target": "ashguard_captain",
+          "text": "把隐士的地图交给守望队长"
+        }
+      ],
+      "rewards": {
+        "exp": 120,
+        "gold": 100
+      }
     }
   ]
 }
