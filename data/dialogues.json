@@ -2774,6 +2774,2215 @@
           "next": null
         }
       }
+    },
+    {
+      "id": "xuemen_gate_guard",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "雪门守卫 托勒",
+          "text": "雪门是北方最后一道门，门外的风能把人的骨头吹透。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "雪门守卫 托勒",
+          "text": "这几天夜里门外总有脚步声，走得很慢，像是在数着我们。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "雪门守卫 托勒",
+          "text": "我们不敢开门，也不敢关门，只能等天亮。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "雪门守卫 托勒",
+          "text": "如果你要出去，记得带上火把，别让它们靠近。",
+          "next": "n5"
+        },
+        "n5": {
+          "speaker": "雪门守卫 托勒",
+          "text": "门闩我已经上好了，回来时敲三下。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "xuemen_cook",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "营地厨娘 瑟琳",
+          "text": "热汤在锅里，喝一口就暖了半个身子。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "营地厨娘 瑟琳",
+          "text": "北方的食材越来越少，我只能用雪菇和干肉凑合。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "营地厨娘 瑟琳",
+          "text": "听说冰川那边有一种野果，甜得能让人忘记寒冷。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "营地厨娘 瑟琳",
+          "text": "如果你路过，帮我带一篮子回来。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "xuemen_smith",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "营地铁匠 奥格",
+          "text": "这里的铁一冷就脆，所以我总是把火烧得旺旺的。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "营地铁匠 奥格",
+          "text": "你的武器需要保养，我可以给你磨一磨。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "营地铁匠 奥格",
+          "text": "不过我更需要裂隙碎片，它们能让铁更有韧性。",
+          "choices": [
+            {
+              "text": "碎片我会帮你找来。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "smith_shard"
+                ]
+              }
+            },
+            {
+              "text": "我先自己留着用。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "smith_keep"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "营地铁匠 奥格",
+          "text": "好，我等你的好消息。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "营地铁匠 奥格",
+          "text": "那就先磨剑，别浪费时间。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "xuemen_child",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "小孩 米可",
+          "text": "大人们说霜狼会吃小孩，可我从没见过。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "小孩 米可",
+          "text": "我昨天在雪堆里找到一个蓝色的石头，它会发光。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "小孩 米可",
+          "text": "你能帮我看看它是什么吗？",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "小孩 米可",
+          "text": "要是它真的很危险，你就把它拿走吧。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ash_road_scout",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "斥候 瓦伦",
+          "text": "灰烬之路的尽头有一座废弃的哨站，没人知道是谁建的。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "斥候 瓦伦",
+          "text": "哨站的墙上刻满了名字，有些名字还在渗血。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "斥候 瓦伦",
+          "text": "我不敢进去，但我看到里面有灯光在晃。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "斥候 瓦伦",
+          "text": "如果你要去，记得回来告诉我看到了什么。",
+          "choices": [
+            {
+              "text": "我会进去看看。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "scout_enter"
+                ]
+              }
+            },
+            {
+              "text": "我不去，太危险。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "scout_avoid"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "斥候 瓦伦",
+          "text": "小心，灯光往往是陷阱。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "斥候 瓦伦",
+          "text": "明智，但你的好奇心总会把你带过去。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ash_road_healer",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "医者 玛丽亚",
+          "text": "灰烬让人的呼吸变得很浅，很多人睡着就醒不过来。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "医者 玛丽亚",
+          "text": "我用草药做了一些药膏，但效果越来越差。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "医者 玛丽亚",
+          "text": "药草需要生长在裂隙附近的土壤里，那里很危险。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "医者 玛丽亚",
+          "text": "你若是能带回几株药草，我会为你调一剂强身的药。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ash_road_merchant",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "行商 麦克",
+          "text": "灰烬之路的商人越来越少，因为路上的乌鸦专抢货物。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "行商 麦克",
+          "text": "我这里有一批好靴子，但要用疾行靴材料才能换。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "行商 麦克",
+          "text": "你若能帮我护送这批货，我就给你打折。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ash_road_child",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "女孩 艾米",
+          "text": "我爸爸是守望兵，他去了哨站就再也没回来。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "女孩 艾米",
+          "text": "我在他的日记里看到一句话：灰烬会记住每一个名字。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "女孩 艾米",
+          "text": "你能帮我找到他吗？",
+          "choices": [
+            {
+              "text": "我答应你，会找到他。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "amy_promise"
+                ]
+              }
+            },
+            {
+              "text": "我不能保证什么。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "amy_honest"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "女孩 艾米",
+          "text": "谢谢你，我会在这里等他。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "女孩 艾米",
+          "text": "我知道了，我会一直等下去。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ash_road_old_soldier",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "老兵 贝恩",
+          "text": "我年轻时守过灰烬之路，那时候路上只有风和沙。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "老兵 贝恩",
+          "text": "后来裂隙开了，路上的东西越来越多。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "老兵 贝恩",
+          "text": "我们失去了太多人，连墓碑都刻不下他们的名字。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "老兵 贝恩",
+          "text": "如果你能守住这条路，就算是对他们的交代。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "steppe_stable_master",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "马厩长 哈柯",
+          "text": "草原的马跑得快，但最近它们都不愿意靠近夜里的营地。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "马厩长 哈柯",
+          "text": "我听说草原狼群被什么东西赶进了山谷。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "马厩长 哈柯",
+          "text": "如果你愿意去看看，我把最好的马借给你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "steppe_bard",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "吟游者 费尔",
+          "text": "草原的歌是用马蹄声打拍子的，我每唱一首，都要想起一个逝去的人。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "吟游者 费尔",
+          "text": "今晚我想唱一首新歌，可我缺一个结尾。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "吟游者 费尔",
+          "text": "你能告诉我，裂隙关上之后，人们会记住什么吗？",
+          "choices": [
+            {
+              "text": "会记住那些守住它的人。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "bard_guard"
+                ]
+              }
+            },
+            {
+              "text": "会记住那些离开的人。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "bard_leave"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "吟游者 费尔",
+          "text": "这个结尾不错，我会把它唱下去。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "吟游者 费尔",
+          "text": "离开的人也值得被记住，这首歌会更悲伤。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "steppe_trader_wife",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "驿站主妇 伊琳娜",
+          "text": "驿站的水井快干了，我们只能靠雨水过活。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "驿站主妇 伊琳娜",
+          "text": "听说南边的沙丘有一口泉，但去的人都没回来。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "驿站主妇 伊琳娜",
+          "text": "如果你能找到水源，我们会感激你一辈子。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "steppe_hunter_kid",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "猎手学徒 托尼",
+          "text": "我的第一只鹿是在草原边缘猎到的，那天我哭了很久。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "猎手学徒 托尼",
+          "text": "师父说，猎人不该为杀戮流泪，但要记住每一条生命。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "猎手学徒 托尼",
+          "text": "我现在能猎到更大的猎物了，可我还是会想起那只鹿。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "bog_ferry_keeper",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "渡口老人 本森",
+          "text": "沼泽渡口的船只都是用旧木头拼的，每次过河都要祈祷。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "渡口老人 本森",
+          "text": "河对岸的雾气里有东西在叫，像是人的哭声。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "渡口老人 本森",
+          "text": "别去理会它，那是幽影在模仿我们。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "渡口老人 本森",
+          "text": "如果你要过河，记得数一数船上的人数，少一个都不行。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "bog_herbalist",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "草药师 莎拉",
+          "text": "沼泽里的草药带着微微的苦味，但药效最强。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "草药师 莎拉",
+          "text": "我需要一些泥沼蟾蜍的毒囊，它能做成退热药。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "草药师 莎拉",
+          "text": "别担心，我会用安全的方法提取毒液。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "bog_boy",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "男孩 汤姆",
+          "text": "我在泥沼里发现了一个旧铃铛，它一响，雾气就散了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "男孩 汤姆",
+          "text": "但我不敢再摇它，因为我听到铃声后，有人在水下喊我的名字。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "男孩 汤姆",
+          "text": "你能帮我把铃铛送到神龛吗？",
+          "choices": [
+            {
+              "text": "我帮你送去。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "tom_send"
+                ]
+              }
+            },
+            {
+              "text": "铃铛你自己留着。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "tom_keep"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "男孩 汤姆",
+          "text": "谢谢，神龛的祭司会感激你。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "男孩 汤姆",
+          "text": "好吧，但千万别再摇它了。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "bog_fisher",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "渔夫 罗伊",
+          "text": "泥沼的鱼很滑，抓的时候要小心，别被水蛭咬到。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "渔夫 罗伊",
+          "text": "最近我的网总是空的，好像湖底有东西把鱼都吃光了。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "渔夫 罗伊",
+          "text": "如果你能下去看看，我会给你一条最大的鱼。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "sand_merchant_girl",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "商贩 露露",
+          "text": "沙丘商站的香料都很贵，因为沙暴会毁掉大部分收成。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "商贩 露露",
+          "text": "我有一小袋黑色的种子，据说能在沙子里发芽。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "商贩 露露",
+          "text": "如果你能帮我找到一块干净的土地，这些种子就归你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "sand_cartographer",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "制图师 雅各布",
+          "text": "沙丘的地图每次沙暴后都会变，我已经重画了七次。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "制图师 雅各布",
+          "text": "最新的地图显示，有一条河在沙下流动，但位置很奇怪。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "制图师 雅各布",
+          "text": "如果你能找到它，我会把它画进地图里，让后人记住。",
+          "choices": [
+            {
+              "text": "我去找那条河。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "jacob_river"
+                ]
+              }
+            },
+            {
+              "text": "地图我不需要。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "jacob_no"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "制图师 雅各布",
+          "text": "很好，记得在沙下放标记。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "制图师 雅各布",
+          "text": "那你就靠感觉走吧，沙漠不会原谅迷路的人。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "sand_guard_captain",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "商站守卫长 艾兰",
+          "text": "商站的城墙是用沙砖砌的，每年要修三次。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "商站守卫长 艾兰",
+          "text": "最近蝎子群越来越近，我们的弓箭快用完了。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "商站守卫长 艾兰",
+          "text": "你若是能带回一些箭矢材料，我会记你一功。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "sand_oasis_monk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "绿洲僧侣 卡林",
+          "text": "绿洲的水是从地下的裂隙里流出来的，喝一口，能忘掉一段痛苦。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "绿洲僧侣 卡林",
+          "text": "但忘掉太多，人就会变成空壳。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "绿洲僧侣 卡林",
+          "text": "所以我们只允许每人喝一次。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "绿洲僧侣 卡林",
+          "text": "如果你渴了，就来喝吧，但要想清楚你想忘掉什么。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "sand_dancer",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "舞者 玛娜",
+          "text": "沙丘的舞蹈是在沙暴来临前跳的，用脚步唤醒地下的风。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "舞者 玛娜",
+          "text": "我跳了很多年，从来没有跳错过。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "舞者 玛娜",
+          "text": "可上个月，地下的风没有回应我。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "舞者 玛娜",
+          "text": "你能帮我看看，地下到底发生了什么吗？",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "grove_hermit_woman",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "林中女子 欧菲",
+          "text": "苔藓林地的树长得很慢，但它们记得每一次风暴。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "林中女子 欧菲",
+          "text": "我在树根下发现了一封信，信里写着一个我从未听过的名字。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "林中女子 欧菲",
+          "text": "你能帮我找到这个名字的主人吗？",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "grove_young_druid",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "学徒德鲁伊 利亚",
+          "text": "我正在学习和树木对话，它们说话的声音很轻。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "学徒德鲁伊 利亚",
+          "text": "最近它们总是说：\"斧头来了。\"",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "学徒德鲁伊 利亚",
+          "text": "我怀疑有人在森林深处伐木。",
+          "choices": [
+            {
+              "text": "我去看看是谁。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "lia_check"
+                ]
+              }
+            },
+            {
+              "text": "树木的话你别太当真。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "lia_doubt"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "学徒德鲁伊 利亚",
+          "text": "小心，树木的警告通常是对的。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "学徒德鲁伊 利亚",
+          "text": "也许吧，但我宁愿相信它们。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "grove_beast_healer",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "兽医 波利",
+          "text": "林子里的野兽受伤很常见，但最近它们的伤口都很奇怪。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "兽医 波利",
+          "text": "伤口周围有淡蓝色的痕迹，像是被冰冻过。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "兽医 波利",
+          "text": "如果你在林子里看到类似的伤，请告诉我。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "grove_archer",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "射手 雷娜",
+          "text": "荆棘精灵很难射中，因为它们会躲在刺丛里。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "射手 雷娜",
+          "text": "可我有一个办法：用火把烧掉它们的刺。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "射手 雷娜",
+          "text": "但是烧掉之后，它们会很愤怒。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "glacier_survivor",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "幸存者 凯恩",
+          "text": "冰川的北边有一座废弃的村庄，村民都被冻住了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "幸存者 凯恩",
+          "text": "我逃出来的时候，听到冰层里有敲击声。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "幸存者 凯恩",
+          "text": "他们好像还活着，只是被困在时间里。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "幸存者 凯恩",
+          "text": "如果你能找到他们，请替我说声对不起。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "glacier_navigator",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "领航员 帕维尔",
+          "text": "冰川上的路每天都在变，我只能靠星星辨认方向。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "领航员 帕维尔",
+          "text": "可最近星星被雾气遮住了，我们迷失了三天。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "领航员 帕维尔",
+          "text": "如果你能找到雾的来源，我们就能重新出发。",
+          "choices": [
+            {
+              "text": "我会去找雾的源头。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "pavel_fog"
+                ]
+              }
+            },
+            {
+              "text": "我带你们走其他路线。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "pavel_route"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "领航员 帕维尔",
+          "text": "感谢你，我会在营地等你。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "领航员 帕维尔",
+          "text": "那就拜托你了，我的队员都很疲惫。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "glacier_mechanic",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "机械师 露德",
+          "text": "冰川上的机械都会冻住，但我发明了一种防冻油。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "机械师 露德",
+          "text": "可我缺少一种矿石，它只在裂隙碎片附近出现。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "机械师 露德",
+          "text": "如果你能帮我找到它，我会为你改装武器。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "core_scholar",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "核心学者 西尔弗",
+          "text": "裂隙核心是一块会呼吸的石头，每次呼吸都会释放一阵光。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "核心学者 西尔弗",
+          "text": "我测量过它的节奏，它正在加速。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "核心学者 西尔弗",
+          "text": "如果它的节奏和人的心跳一致，那意味着什么，你应该能想象。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "core_guard",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "核心守卫 瑟维",
+          "text": "我守在核心的入口，任何人想进去，都要先回答我的问题。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "核心守卫 瑟维",
+          "text": "问题只有一个：你为什么要来？",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "核心守卫 瑟维",
+          "text": "答案没有对错，但我需要听到真心话。",
+          "choices": [
+            {
+              "text": "为了守住这个世界。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "core_guard_protect"
+                ]
+              }
+            },
+            {
+              "text": "为了找回失去的东西。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "core_guard_lost"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "核心守卫 瑟维",
+          "text": "那就进去吧，但别忘了你的答案。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "核心守卫 瑟维",
+          "text": "失去的东西，有时候就在核心里。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "core_child_echo",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "回声 小安",
+          "text": "我是从裂隙里出来的回声，我记得很多人的声音。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "回声 小安",
+          "text": "可我不记得自己的名字。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "回声 小安",
+          "text": "你能帮我想起来吗？",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "dawn_watcher",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "晨曦守望者 佐伊",
+          "text": "每天黎明，我都会在塔顶点燃一盏灯。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "晨曦守望者 佐伊",
+          "text": "灯光会告诉远处的人：我们还在。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "晨曦守望者 佐伊",
+          "text": "可今天早上，灯芯自己熄灭了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "晨曦守望者 佐伊",
+          "text": "你能帮我重新点燃它吗？",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "dusk_bell_ringer",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "黄昏钟手 艾伯特",
+          "text": "黄昏的钟声能驱散夜里的幽影，这是守望队的古老传统。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "黄昏钟手 艾伯特",
+          "text": "可钟楼的绳子断了，我们只能用手敲。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "黄昏钟手 艾伯特",
+          "text": "如果你能找到一条结实的绳子，我会感激你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "night_scribe",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "夜间记录员 莫妮卡",
+          "text": "夜里的每一件事，我都会写下来，因为白天的人总会忘记。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "夜间记录员 莫妮卡",
+          "text": "这几天，我的记录里多了一个不存在的人。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "夜间记录员 莫妮卡",
+          "text": "他每晚都会站在窗外，看着我写字。",
+          "choices": [
+            {
+              "text": "我去看看那个人是谁。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "scribe_check"
+                ]
+              }
+            },
+            {
+              "text": "我不想知道。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "scribe_avoid"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "夜间记录员 莫妮卡",
+          "text": "小心，窗外的人有时候会回头。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "夜间记录员 莫妮卡",
+          "text": "也好，有些故事最好别被翻开。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "rift_wanderer",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "流浪者 雷恩斯",
+          "text": "我从裂隙的另一边走过来，那里的时间是倒着流的。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "流浪者 雷恩斯",
+          "text": "我看到了自己的死亡，但我还活着。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "流浪者 雷恩斯",
+          "text": "所以我想知道，你是否也见过自己的未来。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "rift_healer",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "裂隙医者 伊莉",
+          "text": "裂隙的伤口很难愈合，因为它不是肉体的伤，而是记忆的伤。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "裂隙医者 伊莉",
+          "text": "我尝试用记忆来治疗，但每次治疗，病人都会忘记一部分自己。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "裂隙医者 伊莉",
+          "text": "你若是愿意接受治疗，我就试一试。",
+          "choices": [
+            {
+              "text": "我愿意接受治疗。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "rift_heal_accept"
+                ]
+              }
+            },
+            {
+              "text": "我宁愿带着伤痛。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "rift_heal_refuse"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "裂隙医者 伊莉",
+          "text": "好，闭上眼睛，我们开始。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "裂隙医者 伊莉",
+          "text": "伤痛也是记忆的一部分，你的选择我尊重。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "frost_bell_grandma",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "老妇 赫达",
+          "text": "霜原的夜里有铃声，那是死去的猎人在回家。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "老妇 赫达",
+          "text": "他们会站在门口，但不敢敲门。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "老妇 赫达",
+          "text": "如果你听到铃声，别回头，也别应答。",
+          "choices": [
+            {
+              "text": "我会记住你的话。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "grandma_heed"
+                ]
+              }
+            },
+            {
+              "text": "我想看看那些猎人。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "grandma_look"
+                ]
+              }
+            }
+          ]
+        },
+        "n4": {
+          "speaker": "老妇 赫达",
+          "text": "应答的人，会被带去另一个冬天。",
+          "next": null
+        },
+        "c1": {
+          "speaker": "老妇 赫达",
+          "text": "很好，冬天很长，活下来的人都懂得克制。",
+          "next": "n4"
+        },
+        "c2": {
+          "speaker": "老妇 赫达",
+          "text": "你这样的孩子，我见过很多，他们最后都不回来了。",
+          "next": "n4"
+        }
+      }
+    },
+    {
+      "id": "frost_fisher_ice",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "冰钓人 奥斯汀",
+          "text": "冰层下面的鱼很大，但钓的时候要屏住呼吸。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "冰钓人 奥斯汀",
+          "text": "最近有一条鱼一直咬钩，却从来不上来。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "冰钓人 奥斯汀",
+          "text": "它好像在看我，眼睛是蓝色的。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "frost_child_snowman",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "男孩 利奥",
+          "text": "我堆了一个雪人，它第二天早上就不见了，只留下一串脚印。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "男孩 利奥",
+          "text": "脚印是朝着北边去的，每一步都很深。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "男孩 利奥",
+          "text": "你能跟着它的脚印看看它要去哪儿吗？",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "frost_pilgrim",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "朝圣者 艾达",
+          "text": "我一路从南方走来，只为了看一眼雪门外的那座冰塔。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "朝圣者 艾达",
+          "text": "据说冰塔里封着一个声音，它会唱出过去的歌。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "朝圣者 艾达",
+          "text": "我还没听到，但我相信它在等人。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "朝圣者 艾达",
+          "text": "如果你去，替我听一听它唱的是什么。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ash_gravedigger",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "掘墓人 科恩",
+          "text": "灰烬之路上的墓地越来越大，我挖坑的速度追不上死亡。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "掘墓人 科恩",
+          "text": "有些墓里没有尸体，只有一个名字。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "掘墓人 科恩",
+          "text": "我怀疑那是裂隙吞掉的人。",
+          "choices": [
+            {
+              "text": "我帮你挖。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "gravedigger_help"
+                ]
+              }
+            },
+            {
+              "text": "墓地的事与我无关。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "gravedigger_no"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "掘墓人 科恩",
+          "text": "谢谢你，我需要一个能守夜的人。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "掘墓人 科恩",
+          "text": "那就祝你平安，但墓地会记住你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ash_bridge_guard",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "桥卫 雷米",
+          "text": "灰烬之路的桥是用烧焦的木头搭的，踩上去会吱吱作响。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "桥卫 雷米",
+          "text": "桥下有一条河，河水是黑色的，没有鱼。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "桥卫 雷米",
+          "text": "如果你要过桥，请别在中间停留。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ash_tavern_owner",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "酒馆老板 德克",
+          "text": "这里的酒是用灰烬酿的，喝了会做很长的梦。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "酒馆老板 德克",
+          "text": "有一个客人每天都来，点一杯水，坐到天亮。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "酒馆老板 德克",
+          "text": "他说他在等一个人，但从来没说过是谁。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "酒馆老板 德克",
+          "text": "如果你要留宿，床位三枚银币。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "ash_stone_carver",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "石匠 米洛",
+          "text": "我在石碑上刻字，每一个字都要用灰烬来描边。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "石匠 米洛",
+          "text": "我最近刻的一块碑，上面的字自己变了。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "石匠 米洛",
+          "text": "它现在写着你的名字，你能告诉我为什么吗？",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "steppe_wagon_mother",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "车夫之妻 伊娃",
+          "text": "草原的车队要走很久，孩子们总是问什么时候到。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "车夫之妻 伊娃",
+          "text": "我告诉他们，等到风停的时候。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "车夫之妻 伊娃",
+          "text": "可风从来不停。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "steppe_horse_thief",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "马贼 卡特",
+          "text": "别紧张，我不是来抢马的，我是来还马的。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "马贼 卡特",
+          "text": "我偷了守望队的一匹马，但它不肯跟我走，它想回家。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "马贼 卡特",
+          "text": "如果你能把它带回去，我就告诉你我的秘密。",
+          "choices": [
+            {
+              "text": "我帮你还马。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "thief_return"
+                ]
+              }
+            },
+            {
+              "text": "马的事你自己解决。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "thief_self"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "马贼 卡特",
+          "text": "好，你比我更懂马的心。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "马贼 卡特",
+          "text": "那我只能继续做我的贼了。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "steppe_archer_master",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "射箭教头 艾瑞",
+          "text": "弓箭手的第一课是学会等待，等待风停，等待心静。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "射箭教头 艾瑞",
+          "text": "可现在的弓箭手都太着急了，他们一看到敌人就射。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "射箭教头 艾瑞",
+          "text": "如果你想学，先学会坐下来，听草原的风。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "steppe_stargazer",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "观星者 莉雅",
+          "text": "草原的星空很低，伸手就能摸到。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "观星者 莉雅",
+          "text": "可最近，有一颗星总是在移动，它离地面越来越近。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "观星者 莉雅",
+          "text": "我怀疑它是裂隙的眼睛。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "bog_wife",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "渔妇 玛莎",
+          "text": "泥沼的人都知道，不能在雾里唱歌，雾会学会你的声音。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "渔妇 玛莎",
+          "text": "我的丈夫有一天在雾里唱了一首歌，然后就不见了。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "渔妇 玛莎",
+          "text": "如果你在湖边看到一个穿蓝衣的男人，别理他。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "bog_guard",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "守桥人 布伦",
+          "text": "沼泽的木桥每个月都要修一次，因为蟾蜍会啃咬木头。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "守桥人 布伦",
+          "text": "我想要一些坚固的木料，但附近的树都很脆弱。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "守桥人 布伦",
+          "text": "如果你能从苔藓林地带回一些木头，我会给你一把好斧子。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "bog_snake_charmer",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "驯蛇人 奥利",
+          "text": "沼泽蛇不咬人，它们只咬那些心里有鬼的人。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "驯蛇人 奥利",
+          "text": "我养了一条白蛇，它每天都会告诉我谁在说谎。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "驯蛇人 奥利",
+          "text": "你要不要让它看看你的心？",
+          "choices": [
+            {
+              "text": "让它看看吧。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "snake_look"
+                ]
+              }
+            },
+            {
+              "text": "我不想被看穿。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "snake_refuse"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "驯蛇人 奥利",
+          "text": "它说你没有说谎，那很好。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "驯蛇人 奥利",
+          "text": "那就让它留在笼子里，不要勉强。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "dune_water_seller",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "水商 萨拉",
+          "text": "沙丘的水比黄金还贵，每一滴都要用来救命。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "水商 萨拉",
+          "text": "我有一个水袋，是从绿洲偷来的，我一直不敢喝。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "水商 萨拉",
+          "text": "如果你能把它还给绿洲，我会把水分给你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "dune_tomb_keeper",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "墓守 阿利",
+          "text": "沙丘下面埋着古代的王，他们的棺木会在沙暴中移动。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "墓守 阿利",
+          "text": "有人在夜里挖开了一座墓，取走了王冠。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "墓守 阿利",
+          "text": "如果你能找回王冠，我会告诉你王的名字。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "dune_camel_driver",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "骆驼夫 哈米",
+          "text": "骆驼是沙漠的朋友，它们知道哪里有水。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "骆驼夫 哈米",
+          "text": "我的骆驼最近总是朝一个方向看，像是在等什么。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "骆驼夫 哈米",
+          "text": "你要是跟它走，也许能找到答案。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "dune_sun_priest",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "太阳祭司 拉美斯",
+          "text": "沙丘的太阳不会落下，它只是躲在沙子后面。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "太阳祭司 拉美斯",
+          "text": "每到黄昏，我们都会举行仪式，把光重新请回来。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "太阳祭司 拉美斯",
+          "text": "可今年的仪式没有成功，光没有回来。",
+          "choices": [
+            {
+              "text": "我愿意帮你们重新点燃光。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "sun_help"
+                ]
+              }
+            },
+            {
+              "text": "光没有了，也许是好事。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "sun_dark"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "太阳祭司 拉美斯",
+          "text": "感谢你，光明会记住你的名字。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "太阳祭司 拉美斯",
+          "text": "黑暗也有它的用处，但你要想清楚。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "grove_teacher_old",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "老师 朗姆",
+          "text": "林中的学堂只教三件事：认树、认草、认风。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "老师 朗姆",
+          "text": "可现在的孩子连树叶都分不清。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "老师 朗姆",
+          "text": "如果你愿意教他们，我就把整片林子的故事都讲给你听。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "grove_mushroom_gatherer",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "采菇人 薇拉",
+          "text": "林子里的蘑菇有的能吃，有的能致命，我一辈子只认对了两种。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "采菇人 薇拉",
+          "text": "最近有一种蘑菇，闪着淡蓝色的光，我不敢摘。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "采菇人 薇拉",
+          "text": "你能帮我看看，它是不是和裂隙有关？",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "grove_twin_brothers",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "双胞胎 雷与尔",
+          "text": "我们是双胞胎，但我们对同一棵树的看法完全不同。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "双胞胎 雷与尔",
+          "text": "雷觉得它是守护者，尔觉得它是囚徒。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "双胞胎 雷与尔",
+          "text": "你觉得呢？",
+          "choices": [
+            {
+              "text": "它是守护者。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "twins_guard"
+                ]
+              }
+            },
+            {
+              "text": "它是囚徒。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "twins_prisoner"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "双胞胎 雷与尔",
+          "text": "雷一定会很高兴，你和他一样。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "双胞胎 雷与尔",
+          "text": "尔一定会感激你，他一直很孤独。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "glacier_cook_stew",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "冰川厨师 莫娜",
+          "text": "冰川的汤必须用冰块煮，因为雪水会带走所有的味道。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "冰川厨师 莫娜",
+          "text": "我最近做的汤，喝了之后会听到别人的心跳。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "冰川厨师 莫娜",
+          "text": "你要不要尝一口，看看会听到谁的心跳？",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "glacier_ropeman",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "绳匠 卡洛斯",
+          "text": "冰川的绳子必须用牛皮编织，麻绳遇到冷就会断。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "绳匠 卡洛斯",
+          "text": "我有一卷好绳子，但需要裂隙碎片来加固。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "绳匠 卡洛斯",
+          "text": "如果你帮我找到碎片，这卷绳子就给你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "glacier_seer",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "冰川占卜者 薇薇安",
+          "text": "我用冰块占卜，冰裂的方向就是未来的方向。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "冰川占卜者 薇薇安",
+          "text": "今天的冰裂成了一个圈，圈里有你的影子。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "冰川占卜者 薇薇安",
+          "text": "我不知道那是什么意思，但我觉得你应该去看看。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "core_archive_robot",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "档案机器人 零号",
+          "text": "我记录了裂隙核心的每一次脉动，包括你刚才的心跳。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "档案机器人 零号",
+          "text": "我的数据库里有三十七个你，他们都在不同的时间里。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "档案机器人 零号",
+          "text": "请选择你要在哪一个时间里继续。",
+          "choices": [
+            {
+              "text": "我选择当下。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "robot_now"
+                ]
+              }
+            },
+            {
+              "text": "我想回到过去。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "robot_past"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "档案机器人 零号",
+          "text": "记录已更新，当下是唯一的真实。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "档案机器人 零号",
+          "text": "记录已标记，过去无法回头。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "core_mirror_guardian",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "镜之守卫 伊斯",
+          "text": "核心的墙壁是一面镜子，你走进去，看到的是另一个自己。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "镜之守卫 伊斯",
+          "text": "那个自己会问你一个问题，你的回答决定你能不能出去。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "镜之守卫 伊斯",
+          "text": "小心，镜子里的人不会说谎。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "core_last_song",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "最后的歌者 安德烈",
+          "text": "裂隙的歌是最后一首，唱完之后，世界就会安静下来。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "最后的歌者 安德烈",
+          "text": "我唱了三十年，却一直没唱完。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "最后的歌者 安德烈",
+          "text": "如果你能帮我唱完最后一句，我会把我的名字交给你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "dawn_child_watcher",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "晨曦少年 托比",
+          "text": "我每天早上都爬上塔顶，看日出，可今天太阳迟迟不出来。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "晨曦少年 托比",
+          "text": "守望队的人说，太阳是被裂隙吃掉的。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "晨曦少年 托比",
+          "text": "你能帮我找到它吗？",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "dusk_storyteller",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "黄昏说书人 罗斯",
+          "text": "黄昏的故事要讲给夜里的人听，因为夜里的人最容易相信。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "黄昏说书人 罗斯",
+          "text": "我今晚要讲一个关于裂隙的故事，它的结局我还没想好。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "黄昏说书人 罗斯",
+          "text": "你愿意来决定结局吗？",
+          "choices": [
+            {
+              "text": "结局是光明的。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "story_light"
+                ]
+              }
+            },
+            {
+              "text": "结局是黑暗的。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "story_dark"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "黄昏说书人 罗斯",
+          "text": "很好，光明的结局总能让人安心。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "黄昏说书人 罗斯",
+          "text": "黑暗的结局也有它的真实，我会记下来。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "night_guard_dog",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "守夜人 奥斯卡",
+          "text": "我养的狗比我更懂夜，它能听到我听不见的声音。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "守夜人 奥斯卡",
+          "text": "最近它总是朝着裂隙的方向叫，声音很悲伤。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "守夜人 奥斯卡",
+          "text": "你要是能听懂它在说什么，就替我问问。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "rift_pilot",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "裂隙领航者 赛拉",
+          "text": "我能带你穿过裂隙，但每次穿越，都会有一段记忆留在那里。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "裂隙领航者 赛拉",
+          "text": "我已经留下了三段，只剩下名字了。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "裂隙领航者 赛拉",
+          "text": "你要不要试试？我会陪你走到最后。",
+          "choices": [
+            {
+              "text": "我愿意穿越。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "pilot_go"
+                ]
+              }
+            },
+            {
+              "text": "我不想失去记忆。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "pilot_stay"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "裂隙领航者 赛拉",
+          "text": "好，记住你要带回的东西。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "裂隙领航者 赛拉",
+          "text": "那就留在这里，我们会找到别的路。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "rift_bard",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "裂隙诗人 艾琳",
+          "text": "我把裂隙的每一次开启都写成了诗，诗里有很多死去的人。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "裂隙诗人 艾琳",
+          "text": "可我最喜欢的，是一个活着的人写的诗。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "裂隙诗人 艾琳",
+          "text": "你愿意为我写一首吗？",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "rift_lost_soldier",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "迷路的士兵 格伦",
+          "text": "我本来属于守望队，但裂隙把我的队伍拆散了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "迷路的士兵 格伦",
+          "text": "我每天都在找回去的路，却总是绕回原地。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "迷路的士兵 格伦",
+          "text": "如果你看到我的队旗，请告诉他们我还活着。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "rift_mapmaker",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "裂隙制图师 奥德",
+          "text": "我画的地图每次都会自己改变，裂隙在改写地形。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "裂隙制图师 奥德",
+          "text": "我试图画下最后一张，但纸张总是烧起来。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "裂隙制图师 奥德",
+          "text": "如果你能找到一张不会烧的纸，我会感激你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "rift_archivist_ghost",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "档案幽灵 艾里斯",
+          "text": "我是裂隙的档案员，我的记录被撕成了碎片。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "档案幽灵 艾里斯",
+          "text": "如果你能拼好它们，就能知道我为什么会死。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "档案幽灵 艾里斯",
+          "text": "但有些答案，你宁愿永远不知道。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "rift_chapter_keeper",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "章节守卫 莱昂",
+          "text": "每一章都有它的守卫，我守的是第二十四章。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "章节守卫 莱昂",
+          "text": "第二十四章还没有写完，它的结局在你的手里。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "章节守卫 莱昂",
+          "text": "请记住，每一个选择都会留下痕迹。",
+          "next": null
+        }
+      }
     }
   ]
 }
