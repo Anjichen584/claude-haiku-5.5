@@ -5,8 +5,27 @@
       "chapter": 4,
       "question": "裂隙核心的去向",
       "options": [
-        { "id": "seal", "text": "封印它", "flag": "sealed_rift_core" },
-        { "id": "study", "text": "研究它", "flag": "studied_rift_core" }
+        {
+          "id": "seal",
+          "text": "封印它",
+          "flag": "sealed_rift_core",
+          "effects": {
+            "reputation": {
+              "ashguard": 20
+            },
+            "stability": 20
+          }
+        },
+        {
+          "id": "study",
+          "text": "研究它",
+          "flag": "studied_rift_core",
+          "effects": {
+            "reputation": {
+              "rift_institute": 20
+            }
+          }
+        }
       ]
     },
     {
@@ -14,8 +33,26 @@
       "chapter": 10,
       "question": "是否与赤潮商盟签订秘密协议",
       "options": [
-        { "id": "accept", "text": "签订协议", "flag": "red_tide_pact" },
-        { "id": "refuse", "text": "拒绝", "flag": "red_tide_refused" }
+        {
+          "id": "accept",
+          "text": "签订协议",
+          "flag": "red_tide_pact",
+          "effects": {
+            "reputation": {
+              "red_tide": 20
+            }
+          }
+        },
+        {
+          "id": "refuse",
+          "text": "拒绝",
+          "flag": "red_tide_refused",
+          "effects": {
+            "reputation": {
+              "remnant_empire": 32
+            }
+          }
+        }
       ]
     },
     {
@@ -23,8 +60,23 @@
       "chapter": 16,
       "question": "荒原部族请求你成为首领",
       "options": [
-        { "id": "lead", "text": "接受王座", "flag": "tribes_led" },
-        { "id": "decline", "text": "推荐他人", "flag": "tribes_declined" }
+        {
+          "id": "lead",
+          "text": "接受王座",
+          "flag": "tribes_led",
+          "effects": {
+            "reputation": {
+              "wild_tribes": 20
+            },
+            "stability": -10
+          }
+        },
+        {
+          "id": "decline",
+          "text": "推荐他人",
+          "flag": "tribes_declined",
+          "effects": {}
+        }
       ]
     },
     {
@@ -32,8 +84,20 @@
       "chapter": 22,
       "question": "是否回应裂隙深处的低语",
       "options": [
-        { "id": "answer", "text": "回应", "flag": "hidden_whisper_heard" },
-        { "id": "ignore", "text": "无视", "flag": "whisper_ignored" }
+        {
+          "id": "answer",
+          "text": "回应",
+          "flag": "hidden_whisper_heard",
+          "effects": {
+            "stability": -30
+          }
+        },
+        {
+          "id": "ignore",
+          "text": "无视",
+          "flag": "whisper_ignored",
+          "effects": {}
+        }
       ]
     }
   ]

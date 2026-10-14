@@ -21,7 +21,7 @@
           "rift_shard"
         ],
         "reputation": {
-          "ashguard": 8
+          "ashguard": 12
         }
       }
     },
@@ -50,7 +50,7 @@
         "exp": 500,
         "gold": 200,
         "reputation": {
-          "rift_institute": 8
+          "rift_institute": 12
         }
       }
     },
@@ -114,7 +114,7 @@
         "gold": 210,
         "items": [],
         "reputation": {
-          "red_tide": 8
+          "red_tide": 12
         }
       }
     },
@@ -146,7 +146,7 @@
           "rift_shard"
         ],
         "reputation": {
-          "wild_tribes": 8
+          "wild_tribes": 12
         }
       }
     },
@@ -177,7 +177,7 @@
         "gold": 250,
         "items": [],
         "reputation": {
-          "remnant_empire": 8
+          "remnant_empire": 12
         }
       }
     },
@@ -209,7 +209,7 @@
           "rift_shard"
         ],
         "reputation": {
-          "ashguard": 8
+          "ashguard": 12
         }
       }
     },
@@ -239,7 +239,7 @@
         "gold": 290,
         "items": [],
         "reputation": {
-          "rift_institute": 8
+          "rift_institute": 12
         }
       }
     },
@@ -272,7 +272,7 @@
           "rift_shard"
         ],
         "reputation": {
-          "red_tide": 8
+          "red_tide": 12
         }
       }
     },
@@ -302,7 +302,7 @@
         "gold": 330,
         "items": [],
         "reputation": {
-          "wild_tribes": 8
+          "wild_tribes": 12
         }
       }
     },
@@ -334,7 +334,7 @@
           "rift_shard"
         ],
         "reputation": {
-          "remnant_empire": 8
+          "remnant_empire": 12
         }
       }
     },
@@ -364,7 +364,7 @@
         "gold": 370,
         "items": [],
         "reputation": {
-          "ashguard": 8
+          "ashguard": 12
         }
       }
     },
@@ -396,7 +396,7 @@
           "rift_shard"
         ],
         "reputation": {
-          "rift_institute": 8
+          "rift_institute": 12
         }
       }
     },
@@ -427,7 +427,7 @@
         "gold": 410,
         "items": [],
         "reputation": {
-          "red_tide": 8
+          "red_tide": 12
         }
       }
     },
@@ -459,7 +459,7 @@
           "rift_shard"
         ],
         "reputation": {
-          "wild_tribes": 8
+          "wild_tribes": 12
         }
       }
     },
@@ -490,7 +490,7 @@
         "gold": 450,
         "items": [],
         "reputation": {
-          "remnant_empire": 8
+          "remnant_empire": 12
         }
       }
     },
@@ -521,7 +521,7 @@
           "rift_shard"
         ],
         "reputation": {
-          "ashguard": 8
+          "ashguard": 12
         }
       }
     },
@@ -551,7 +551,7 @@
         "gold": 490,
         "items": [],
         "reputation": {
-          "rift_institute": 8
+          "rift_institute": 12
         }
       }
     },
@@ -582,7 +582,7 @@
           "rift_shard"
         ],
         "reputation": {
-          "red_tide": 8
+          "red_tide": 12
         }
       }
     },
@@ -611,7 +611,7 @@
         "gold": 530,
         "items": [],
         "reputation": {
-          "wild_tribes": 8
+          "wild_tribes": 12
         }
       }
     },
@@ -642,7 +642,7 @@
           "rift_shard"
         ],
         "reputation": {
-          "remnant_empire": 8
+          "remnant_empire": 12
         }
       }
     },
@@ -671,7 +671,7 @@
         "gold": 570,
         "items": [],
         "reputation": {
-          "ashguard": 8
+          "ashguard": 12
         }
       }
     },
@@ -702,7 +702,7 @@
           "rift_shard"
         ],
         "reputation": {
-          "rift_institute": 8
+          "rift_institute": 12
         }
       }
     },
@@ -731,7 +731,7 @@
         "gold": 610,
         "items": [],
         "reputation": {
-          "red_tide": 8
+          "red_tide": 12
         }
       }
     },
@@ -762,7 +762,7 @@
           "rift_shard"
         ],
         "reputation": {
-          "wild_tribes": 8
+          "wild_tribes": 12
         }
       }
     },

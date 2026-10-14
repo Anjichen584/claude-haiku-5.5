@@ -23,6 +23,8 @@ import { newSession, type GameSession } from '../state/session';
 import type { AffixDef, EnemyDef, FactionDef, ItemDef, QuestDef } from '../data/schema';
 import { reputationLines } from '../factions/reputation';
 import { pendingKeyChoice, resolveKeyChoice, type KeyChoiceDef } from '../narrative/keyChoices';
+import { resolveEnding } from '../endings/EndingResolver';
+import type { EndingDef } from '../data/schema';
 import type { ItemSetDef } from '../items/sets';
 import { grantQuestRewards } from '../state/rewards';
 import type { QuestCompletion } from '../narrative/QuestManager';
@@ -112,6 +114,8 @@ export class OverworldScene extends Phaser.Scene {
   private itemDefs: readonly ItemDef[] = [];
   private factionDefs: readonly FactionDef[] = [];
   private keyChoiceDefs: readonly KeyChoiceDef[] = [];
+  private endingDefs: readonly EndingDef[] = [];
+  private endingPanel!: Phaser.GameObjects.Text;
   private questList: readonly QuestDef[] = [];
   private pendingChoice: KeyChoiceDef | undefined;
   private choicePrompt!: Phaser.GameObjects.Text;
@@ -144,6 +148,7 @@ export class OverworldScene extends Phaser.Scene {
     this.itemDefs = data.items;
     this.factionDefs = data.factions;
     this.keyChoiceDefs = data.keyChoices;
+    this.endingDefs = data.endings;
     this.questList = data.quests;
     this.affixDefs = data.affixes;
     this.itemSetDefs = data.itemSets;
@@ -192,6 +197,10 @@ export class OverworldScene extends Phaser.Scene {
       fontFamily: 'sans-serif', fontSize: '15px', color: '#fff3c4', align: 'center',
       backgroundColor: '#2a1a4acc', padding: { x: 12, y: 8 },
     }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(260).setVisible(false);
+    this.endingPanel = this.add.text(display.baseWidth / 2, display.baseHeight / 2, '', {
+      fontFamily: 'sans-serif', fontSize: '18px', color: '#fff3c4', align: 'center',
+      backgroundColor: '#0b0a1aee', padding: { x: 24, y: 20 }, wordWrap: { width: display.baseWidth - 200 },
+    }).setOrigin(0.5).setScrollFactor(0).setDepth(400).setVisible(false);
     this.refreshKeyChoice();
     this.repPanel = this.add.text(16, 420, '', {
       fontFamily: 'sans-serif', fontSize: '14px', color: '#f4f0ff', lineSpacing: 4,
@@ -264,6 +273,11 @@ export class OverworldScene extends Phaser.Scene {
     if (Phaser.Input.Keyboard.JustDown(this.keyQ)) this.toggleQuestPanel();
     if (Phaser.Input.Keyboard.JustDown(this.keyR)) this.toggleRepPanel();
     if (Phaser.Input.Keyboard.JustDown(this.keyK)) this.saveGame();
+    // 结局面板打开时，E 只用于关闭它（先于对话处理消费这次按键）
+    if (this.endingPanel.visible && Phaser.Input.Keyboard.JustDown(this.keyE)) {
+      this.endingPanel.setVisible(false);
+      return;
+    }
     if (Phaser.Input.Keyboard.JustDown(this.keyI)) this.toggleInventoryPanel();
     if (Phaser.Input.Keyboard.JustDown(this.keyC)) this.toggleEquipPanel();
     if (Phaser.Input.Keyboard.JustDown(this.keyE)) this.tryStartTalk();
@@ -316,6 +330,15 @@ export class OverworldScene extends Phaser.Scene {
     this.questPanelOpen = !this.questPanelOpen;
     this.questPanel.setVisible(this.questPanelOpen);
     if (this.questPanelOpen) this.refreshQuestPanel();
+  }
+
+  /** 主线第 24 章完成时，根据当前标记判定结局并显示（每次完成时判定一次）。 */
+  private showEndingIfReached(done: QuestCompletion[]): void {
+    if (!done.some((c) => c.questId === 'main_24')) return;
+    this.world.setFlag('ending_reached');
+    const ending = resolveEnding(this.endingDefs, this.world);
+    if (!ending) return;
+    this.endingPanel.setText(`【结局：${ending.name}】\n\n${ending.text}\n\n主线已完成，你可以继续探索这片大陆。（按 E 关闭）`).setVisible(true);
   }
 
   /** 重新计算待选抉择并更新提示（任务完成、选择后、进入地表时调用）。 */
@@ -592,6 +615,7 @@ export class OverworldScene extends Phaser.Scene {
       (id) => this.itemNames.get(id) ?? id,
     );
     this.refreshKeyChoice();
+    this.showEndingIfReached(done);
     return lines;
   }
 

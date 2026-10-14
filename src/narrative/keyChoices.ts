@@ -12,6 +12,8 @@ export interface KeyChoiceOption {
   id: string;
   text: string;
   flag: string;
+  /** 选择后的数值效果：阵营声望变化、稳定度变化 */
+  effects?: { reputation?: Record<string, number>; stability?: number };
 }
 
 export interface KeyChoiceDef {
@@ -56,5 +58,9 @@ export function resolveKeyChoice(choice: KeyChoiceDef, optionId: string, world: 
   if (!option) throw new RangeError(`关键抉择 ${choice.id} 没有选项 ${optionId}`);
   if (isResolved(choice, world)) throw new Error(`关键抉择 ${choice.id} 已经选择过了`);
   world.setFlag(option.flag);
+  for (const [faction, delta] of Object.entries(option.effects?.reputation ?? {})) {
+    world.addReputation(faction, delta);
+  }
+  if (option.effects?.stability) world.addStability(option.effects.stability);
   return option;
 }
