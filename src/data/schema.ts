@@ -128,6 +128,13 @@ export interface AffixDataFile { affixes: AffixDef[] }
 /** 地点（任务 reach 目标） */
 export interface LocationDef { id: string; name: string; region: string }
 /** 对话 NPC（任务 talk 目标） */
-export interface NpcDef { id: string; name: string }
+export interface NpcDef {
+  id: string;
+  name: string;
+  /** 所在地点 id（必须在 locations.json 中） */
+  location: string;
+  /** 与该 NPC 对话时使用的对话 id（必须在 dialogues.json 中） */
+  dialogueId: string;
+}
 export interface LocationDataFile { locations: LocationDef[] }
 export interface NpcDataFile { npcs: NpcDef[] }

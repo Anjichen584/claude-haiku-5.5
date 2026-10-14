@@ -2,7 +2,9 @@
   "npcs": [
     {
       "id": "ashguard_captain",
-      "name": "守望队长"
+      "name": "守望队长",
+      "location": "ash_road_camp",
+      "dialogueId": "ashguard_captain_intro"
     }
   ]
 }

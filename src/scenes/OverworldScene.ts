@@ -8,6 +8,7 @@ import type { BiomeDef } from '../data/schema';
 import { WorldState } from '../state/WorldState';
 import { QuestManager } from '../narrative/QuestManager';
 import { LocationRegistry, arriveAt } from '../world/locations';
+import { NpcRegistry, startTalk, type TalkSession } from '../world/npcs';
 import { placeLocations, type PlacedLocation } from '../world/placement';
 
 /**
@@ -27,6 +28,8 @@ const UNLOAD_RADIUS = 3;
 /** 玩家与地点中心的距离（瓦片）小于该值即视为抵达 */
 const ARRIVE_RADIUS = 1.5;
 const TOAST_MS = 2600;
+/** 玩家与 NPC 的距离小于该值时可以按 E 对话 */
+const TALK_RADIUS = 2.5;
 const RIVER_RGB = 0x3a6ea5;
 const ROAD_RGB = 0x8a7a5c;
 
@@ -69,6 +72,13 @@ export class OverworldScene extends Phaser.Scene {
   private visited = new Set<string>();
   private toast!: Phaser.GameObjects.Text;
   private toastUntil = 0;
+  private npcRegistry!: NpcRegistry;
+  private npcDialogues = new Map<string, import('../data/schema').DialogueDef>();
+  private talk: TalkSession | null = null;
+  private dialogueBox!: Phaser.GameObjects.Rectangle;
+  private dialogueText!: Phaser.GameObjects.Text;
+  private keyE!: Phaser.Input.Keyboard.Key;
+  private keySpace!: Phaser.Input.Keyboard.Key;
 
   constructor() {
     super('OverworldScene');
@@ -86,6 +96,21 @@ export class OverworldScene extends Phaser.Scene {
       backgroundColor: '#00000088', padding: { x: 10, y: 6 },
     }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(200).setVisible(false);
     this.drawLocationMarkers();
+
+    this.npcRegistry = new NpcRegistry(data.npcs);
+    for (const d of data.dialogues) this.npcDialogues.set(d.id, d);
+    this.drawNpcMarkers();
+
+    this.dialogueBox = this.add.rectangle(display.baseWidth / 2, display.baseHeight - 90, display.baseWidth - 60, 150, 0x0b0a1a, 0.9)
+      .setScrollFactor(0).setDepth(300).setVisible(false);
+    this.dialogueText = this.add.text(40, display.baseHeight - 160, '', {
+      fontFamily: 'sans-serif', fontSize: '16px', color: '#f4f0ff', wordWrap: { width: display.baseWidth - 100 },
+    }).setScrollFactor(0).setDepth(301).setVisible(false);
+    const keyboard = this.input.keyboard;
+    if (!keyboard) throw new Error('Keyboard input is not available');
+    this.keyE = keyboard.addKey('E');
+    this.keySpace = keyboard.addKey('SPACE');
+    keyboard.on('keydown', this.onDigitKey, this);
     const kb = this.input.keyboard;
     if (!kb) throw new Error('Keyboard input is not available');
     this.keys = kb.addKeys({ W: 'W', A: 'A', S: 'S', D: 'D', T: 'T' }) as typeof this.keys;
@@ -118,12 +143,19 @@ export class OverworldScene extends Phaser.Scene {
   }
 
   update(_time: number, deltaMs: number): void {
-    if (Phaser.Input.Keyboard.JustDown(this.keys.T)) {
+    if (Phaser.Input.Keyboard.JustDown(this.keys.T) && !this.talk) {
       this.scene.start('TestRoomScene');
       return;
     }
     this.elapsedMs += deltaMs;
     const dt = deltaMs / 1000;
+
+    if (this.talk) {
+      if (Phaser.Input.Keyboard.JustDown(this.keySpace)) this.advanceTalk();
+      this.updateEnvironment();
+      return;
+    }
+    if (Phaser.Input.Keyboard.JustDown(this.keyE)) this.tryStartTalk();
 
     let mx = 0;
     let my = 0;
@@ -173,6 +205,93 @@ export class OverworldScene extends Phaser.Scene {
       }
       this.showToast(lines.join('\n'));
     }
+  }
+
+  private drawNpcMarkers(): void {
+    for (const npc of this.npcRegistry.list()) {
+      const place = this.places.find((p) => p.id === npc.location);
+      if (!place) continue;
+      const px = place.x * TILE_PX + TILE_PX * 2;
+      const py = place.y * TILE_PX;
+      this.add.rectangle(px, py, TILE_PX * 1.6, TILE_PX * 1.6, 0x7fd1ff).setDepth(7);
+      this.add.text(px, py - TILE_PX * 2, npc.name, {
+        fontFamily: 'sans-serif', fontSize: '12px', color: '#d8f2ff',
+        backgroundColor: '#00000088', padding: { x: 4, y: 2 },
+      }).setOrigin(0.5, 1).setDepth(7);
+    }
+  }
+
+  private nearestNpcId(): string | null {
+    let best: { id: string; d: number } | null = null;
+    for (const place of this.places) {
+      for (const npc of this.npcRegistry.atLocation(place.id)) {
+        const d = Math.hypot(this.tileX - (place.x + 2), this.tileY - place.y);
+        if (d <= TALK_RADIUS && (!best || d < best.d)) best = { id: npc.id, d };
+      }
+    }
+    return best?.id ?? null;
+  }
+
+  private tryStartTalk(): void {
+    const npcId = this.nearestNpcId();
+    if (!npcId) return;
+    const npc = this.npcRegistry.get(npcId)!;
+    const dialogue = this.npcDialogues.get(npc.dialogueId);
+    if (!dialogue) return;
+    this.talk = startTalk(this.npcRegistry, npcId, dialogue, this.world, this.quests);
+    this.renderTalk();
+  }
+
+  /** 无选项节点按空格推进；有选项时需按数字键。 */
+  private advanceTalk(): void {
+    if (!this.talk) return;
+    const runner = this.talk.runner;
+    const node = runner.current();
+    if (node?.choices && node.choices.length > 0) {
+      // 所有选项都因条件被隐藏时，允许退出，且不计入任务进度
+      if (runner.choices().length === 0) this.closeTalk('对话已中断');
+      return;
+    }
+    runner.advance();
+    this.afterTalkStep();
+  }
+
+  private onDigitKey(e: KeyboardEvent): void {
+    if (!this.talk || !/^[1-9]$/.test(e.key)) return;
+    const visible = this.talk.runner.choices();
+    const pick = visible[Number(e.key) - 1];
+    if (!pick) return;
+    this.talk.runner.choose(pick.index);
+    this.afterTalkStep();
+  }
+
+  private afterTalkStep(): void {
+    if (!this.talk) return;
+    if (this.talk.runner.finished) {
+      const done = this.talk.finish();
+      const lines: string[] = [];
+      for (const c of done) lines.push(`任务完成：${this.quests.def(c.questId)?.title ?? c.questId}`);
+      this.closeTalk(lines.join('\n'));
+      return;
+    }
+    this.renderTalk();
+  }
+
+  private closeTalk(message: string): void {
+    this.talk = null;
+    this.dialogueBox.setVisible(false);
+    this.dialogueText.setVisible(false);
+    if (message) this.showToast(message);
+  }
+
+  private renderTalk(): void {
+    if (!this.talk) return;
+    const node = this.talk.runner.current();
+    if (!node) return;
+    const opts = this.talk.runner.choices();
+    const optText = opts.length > 0 ? '\n' + opts.map((o, i) => `[${i + 1}] ${o.text}`).join('\n') : '\n[空格] 继续';
+    this.dialogueText.setText(`${node.speaker}\n${node.text}${optText}`).setVisible(true);
+    this.dialogueBox.setVisible(true);
   }
 
   private showToast(text: string): void {

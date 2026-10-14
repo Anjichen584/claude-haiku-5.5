@@ -84,6 +84,11 @@ checkUniqueIds('endings', endings);
 const factionIds = checkUniqueIds('factions', factions);
 const locationIds = checkUniqueIds('locations', locations);
 const npcIds = checkUniqueIds('npcs', npcs);
+const dialogueIds = new Set<string>(dialogues.map((d: any) => d.id));
+for (const npc of npcs) {
+  if (!locationIds.has(npc.location)) fail(`npcs.${npc.id}: 所在地点 "${npc.location}" 不存在`);
+  if (!dialogueIds.has(npc.dialogueId)) fail(`npcs.${npc.id}: 对话 "${npc.dialogueId}" 不存在`);
+}
 checkUniqueIds('affixes', affixes);
 if (affixes.length < 60) fail(`affixes: 词条至少需要 60 种，目前 ${affixes.length} 种`);
 
