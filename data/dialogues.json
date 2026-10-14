@@ -2042,6 +2042,738 @@
           "next": null
         }
       }
+    },
+    {
+      "id": "side_91_rat_hunter",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "猎人 科尔",
+          "text": "霜鼠的巢穴藏在冰层下面，洞口小得只能容一只老鼠通过。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "猎人 科尔",
+          "text": "它们偷食物，也偷火种，冬天一到，营地的火总会莫名其妙地熄灭。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "猎人 科尔",
+          "text": "要是你能把它们引出来，我会把火种的秘密告诉你。",
+          "choices": [
+            {
+              "text": "我会把它们引出来。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "rat_lure"
+                ]
+              }
+            },
+            {
+              "text": "火种的秘密我更感兴趣。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "rat_secret"
+                ]
+              }
+            }
+          ]
+        },
+        "n4": {
+          "speaker": "猎人 科尔",
+          "text": "小心脚下，冰面一踩就碎。",
+          "next": null
+        },
+        "c1": {
+          "speaker": "猎人 科尔",
+          "text": "很好，别让它们再碰我们的火。",
+          "next": "n4"
+        },
+        "c2": {
+          "speaker": "猎人 科尔",
+          "text": "秘密只会留给有耐心的人。",
+          "next": "n4"
+        }
+      }
+    },
+    {
+      "id": "side_93_lizard_tanner",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "皮匠 玛琳",
+          "text": "余烬蜥蜴的鳞片耐高温，是做护甲的好材料。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "皮匠 玛琳",
+          "text": "但它们的鳞只有在活着的时候剥下才有光泽。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "皮匠 玛琳",
+          "text": "所以我要的不是死蜥蜴，而是你亲手挑选的鳞片。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "皮匠 玛琳",
+          "text": "挑好了就来找我，手艺我包你满意。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_95_crow_watcher",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "哨兵 雷蒙",
+          "text": "灰烬乌鸦在哨站的烟囱上做窝，它们会学人声。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "哨兵 雷蒙",
+          "text": "昨晚有只乌鸦在叫我的名字，声音和我死去的妹妹一模一样。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "哨兵 雷蒙",
+          "text": "我不知道那是巧合还是别的什么，但它们确实在模仿我们。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "哨兵 雷蒙",
+          "text": "帮我把它们赶远一点，我睡不着觉了。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_97_dune_guide",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "向导 阿米尔",
+          "text": "沙丘蝎群在夜里最活跃，白天它们会钻进沙子里睡觉。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "向导 阿米尔",
+          "text": "我可以带你走一条没有蝎子的路，但代价是你要先帮我清掉它们的巢穴。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "向导 阿米尔",
+          "text": "路上你会看到很多骸骨，那是之前冒险者的。",
+          "choices": [
+            {
+              "text": "我愿意帮你清理巢穴。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "dune_clear"
+                ]
+              }
+            },
+            {
+              "text": "我自己找路。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "dune_alone"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "向导 阿米尔",
+          "text": "好，明天一早出发。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "向导 阿米尔",
+          "text": "沙漠里独行的人，很少能走出来。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_99_quartermaster",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "军需官 海伦",
+          "text": "掠夺者的补给车被我们截下来了，但箱子里有一半是空的。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "军需官 海伦",
+          "text": "剩下的东西我怀疑被人提前拿走了，而且就在营地里。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "军需官 海伦",
+          "text": "你若能找到那个人，我会给你一把好剑作为报酬。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "军需官 海伦",
+          "text": "别声张，营地里的人已经开始互相猜疑。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_101_stag_keeper",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "守林人 阿尔弗",
+          "text": "树皮鹿的角每年脱落一次，它们会把角埋在林子深处。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "守林人 阿尔弗",
+          "text": "有人在挖这些角，挖得很深，连树根都被掀翻了。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "守林人 阿尔弗",
+          "text": "如果你能找到他们，把鹿角还给森林，那就是最好的答谢。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_104_ridge_tracker",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "追踪者 海德",
+          "text": "潜猎者不是野兽，它们会在草丛里留下记号。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "追踪者 海德",
+          "text": "我发现它们的记号指向山脊的另一边，那里我从没去过。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "追踪者 海德",
+          "text": "去看看吧，但不要单独行动。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "追踪者 海德",
+          "text": "如果你能找到它们的头领，就把记号带回来给我。",
+          "choices": [
+            {
+              "text": "我会找到头领。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "ridge_leader"
+                ]
+              }
+            },
+            {
+              "text": "记号我自己看就行。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "ridge_self"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "追踪者 海德",
+          "text": "很好，我在山脚等你的消息。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "追踪者 海德",
+          "text": "那你就自己看吧，别迷路。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_106_leech_doctor",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "医师 露娜",
+          "text": "沼泽水蛭能吸出人体内的淤血，也能吸干一个人的生命。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "医师 露娜",
+          "text": "我需要一些活的水蛭做治疗，但它们的数量越来越少。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "医师 露娜",
+          "text": "清理完之后，别把它们全杀了，留几只给我。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_107_lantern_monk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "僧人 康",
+          "text": "泥沼神龛里的灯笼是用幽影的眼泪点燃的。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "僧人 康",
+          "text": "幽影离开灯笼就会迷失，所以它们会一直在神龛附近游荡。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "僧人 康",
+          "text": "如果你能把灯笼挂回去，它们就能安息。",
+          "choices": [
+            {
+              "text": "我会帮它们安息。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "lantern_rest"
+                ]
+              }
+            },
+            {
+              "text": "它们的眼泪我想要。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "lantern_tears"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "僧人 康",
+          "text": "愿你的步伐也被灯火照亮。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "僧人 康",
+          "text": "眼泪可以拿走，但别让灯火熄灭。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_108_pit_warden",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "守坑人 杜加",
+          "text": "腐化坑里的东西已经不是爬行者了，它们是被吞噬的旧尸。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "守坑人 杜加",
+          "text": "我们用石头封住了坑口，但每到雨夜，石头就会被顶开。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "守坑人 杜加",
+          "text": "你去封好坑口，我会把剩下的火药交给你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_110_moth_lamp_keeper",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "灯匠 奥莉维亚",
+          "text": "虚空飞蛾的翅膀可以做成灯罩，光线会变成柔和的紫色。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "灯匠 奥莉维亚",
+          "text": "我做了一盏，挂在窗口，夜里的噩梦都少了。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "灯匠 奥莉维亚",
+          "text": "但我需要更多的翅膀，还有一把好刀来切割。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "灯匠 奥莉维亚",
+          "text": "裂隙刃正好合适，你若带来，我就送你一盏。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_112_archivist",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "档案员 西奥多",
+          "text": "盘点的时候我发现，有一本关于裂隙的书不见了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "档案员 西奥多",
+          "text": "书的封面有一个奇怪的符号，和你手上那道印记很像。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "档案员 西奥多",
+          "text": "别担心，我只是觉得你应该知道这件事。",
+          "choices": [
+            {
+              "text": "我想知道这个符号的意思。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "archive_symbol"
+                ]
+              }
+            },
+            {
+              "text": "书的事与我无关。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "archive_unrelated"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "档案员 西奥多",
+          "text": "我会把我查到的告诉你。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "档案员 西奥多",
+          "text": "也许吧，但有些事情总会自己找上门。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_113_helm_smith_two",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "铁匠 格朗",
+          "text": "灰烬头盔的样式是我祖父设计的，但没人能复原。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "铁匠 格朗",
+          "text": "我缺三个关键的铆钉，那是用余烬魔像的核心熔出来的。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "铁匠 格朗",
+          "text": "如果你能带回来，我会为你做一顶专属的头盔。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_115_glacier_sentinel",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "哨兵 艾尔莎",
+          "text": "冰川守望台上的风很冷，但守望的意义比风更冷。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "哨兵 艾尔莎",
+          "text": "霜狼在冰川边缘越聚越多，它们像是在等什么。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "哨兵 艾尔莎",
+          "text": "你上去看看，告诉我它们到底在等谁。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_116_keyholder",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "看门人 雷克",
+          "text": "冰封守卫的钥匙，是一把用冰雕成的钥匙。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "看门人 雷克",
+          "text": "它能打开北方的一扇门，但门后是什么，没人知道。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "看门人 雷克",
+          "text": "如果你拿到了钥匙，要么打开门，要么把它交给我。",
+          "choices": [
+            {
+              "text": "我会打开那扇门。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "key_open"
+                ]
+              }
+            },
+            {
+              "text": "我把钥匙交给你。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "key_give"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "看门人 雷克",
+          "text": "那就祝你好运，门后的东西比你想象的更古老。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "看门人 雷克",
+          "text": "明智的选择，有些门不该打开。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_117_librarian_lyra",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "图书管理员 莉拉",
+          "text": "林中图书馆的书都是活的，它们会自己翻页。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "图书管理员 莉拉",
+          "text": "最近有一本书开始发出低语，声音和荆棘精灵的歌很像。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "图书管理员 莉拉",
+          "text": "你若能找到那本书，我就把整座图书馆的钥匙交给你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_119_pass_guard",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "隘口守卫 卡西",
+          "text": "沙丘隘口是通往南方的唯一道路，但这里的风暴从不停歇。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "隘口守卫 卡西",
+          "text": "蝎子和鬣狗会在风暴中迷路，然后在隘口聚成一群。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "隘口守卫 卡西",
+          "text": "你要是能清理掉它们，我就给你一张南方的通行证。",
+          "choices": [
+            {
+              "text": "我会清理隘口。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "pass_clear"
+                ]
+              }
+            },
+            {
+              "text": "我只想要通行证。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "pass_pass"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "隘口守卫 卡西",
+          "text": "好，风暴停的时候，我会在这里等你。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "隘口守卫 卡西",
+          "text": "通行证可以给你，但不能保证你能活着到南方。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_120_farewell",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "守望队长 艾德里克",
+          "text": "最后的守望，不是一个人的事，而是所有人的事。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "守望队长 艾德里克",
+          "text": "你帮我们守住了很多地方，现在该你决定下一步要去哪里。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "守望队长 艾德里克",
+          "text": "无论你选择哪条路，守望队的旗帜都会为你飘扬。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "hidden_14_memorial_keeper",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "纪念碑守护者 伊娃",
+          "text": "余烬纪念碑上刻着所有死在灰烬里的人的名字。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "纪念碑守护者 伊娃",
+          "text": "但在碑的背面，有一个名字被磨掉了，只剩下一道火痕。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "纪念碑守护者 伊娃",
+          "text": "那是你的名字，我相信你会找到原因。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "hidden_17_star_astronomer",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "天文学者 卡尔",
+          "text": "沙丘之星每隔七十年才会出现一次，它的光指向裂隙的核心。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "天文学者 卡尔",
+          "text": "但今晚的星光有些异样，它在向你闪烁。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "天文学者 卡尔",
+          "text": "如果你愿意跟随它，也许能找到答案。",
+          "choices": [
+            {
+              "text": "我会跟随星光。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "star_follow"
+                ]
+              }
+            },
+            {
+              "text": "星光与我无关。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "star_ignore"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "天文学者 卡尔",
+          "text": "那就让星光指引你，但别忘了回来。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "天文学者 卡尔",
+          "text": "也许是我看错了，但星星从不说谎。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "hidden_20_core_voice",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "核心之声",
+          "text": "你终于来了，等待你的时间比我想象的更长。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "核心之声",
+          "text": "我曾是守护裂隙的人，但守护的代价是我失去了自己的名字。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "核心之声",
+          "text": "如果你愿意接过这份守护，就要承担它所有的重量。",
+          "choices": [
+            {
+              "text": "我愿意承担。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "core_accept"
+                ]
+              }
+            },
+            {
+              "text": "我不想被束缚。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "core_refuse"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "核心之声",
+          "text": "很好，你的旅程从这里真正开始。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "核心之声",
+          "text": "那么，你必须找到另一条路。",
+          "next": null
+        }
+      }
     }
   ]
 }
