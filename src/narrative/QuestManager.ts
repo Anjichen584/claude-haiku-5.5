@@ -66,18 +66,28 @@ export class QuestManager {
   }
 
   /**
-   * 接取所有 available 的任务，返回接取的 id。
-   * 原型阶段还没有任务发布 NPC，所以可接取的任务会自动进入进行中。
+   * 接取满足过滤条件的 available 任务，返回接取的 id。
+   * 支线任务由 NPC 发布，请使用 acceptFromNpc；其余任务可用本方法自动接取。
    */
-  acceptAvailable(): string[] {
+  acceptAvailable(filter: (def: QuestDef) => boolean = () => true): string[] {
     const accepted: string[] = [];
-    for (const id of this.defs.keys()) {
-      if (this.world.questStatus(id) === 'available') {
-        this.accept(id);
-        accepted.push(id);
+    for (const def of this.defs.values()) {
+      if (this.world.questStatus(def.id) === 'available' && filter(def)) {
+        this.accept(def.id);
+        accepted.push(def.id);
       }
     }
     return accepted;
+  }
+
+  /**
+   * NPC 发布任务：接取所有 available、且以该 NPC 为交付对象（talk 目标）的任务。
+   * 返回接取的任务 id，调用方据此提示玩家。
+   */
+  acceptFromNpc(npcId: string): string[] {
+    return this.acceptAvailable((def) =>
+      def.objectives.some((o) => o.type === 'talk' && o.target === npcId),
+    );
   }
 
   accept(id: string): void {
@@ -107,8 +117,13 @@ export class QuestManager {
 
       const progress = [...rec.progress];
       let changed = false;
+      // 交付（talk）只能在其它目标全部完成后计入，避免一开始就对话把任务提前交付
+      const othersDone = def.objectives.every(
+        (o, j) => o.type === 'talk' || progress[j] >= (o.count ?? 1),
+      );
       def.objectives.forEach((obj, i) => {
         if (obj.type !== event.type || obj.target !== event.target) return;
+        if (obj.type === 'talk' && !othersDone) return;
         const need = obj.count ?? 1;
         const next = Math.min(need, progress[i] + (event.amount ?? 1));
         if (next !== progress[i]) {

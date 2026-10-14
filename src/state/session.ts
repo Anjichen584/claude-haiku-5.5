@@ -48,7 +48,7 @@ export class SaveError extends Error {}
 export function newSession(quests: readonly QuestDef[]): GameSession {
   const world = new WorldState();
   const manager = new QuestManager(quests, world);
-  manager.acceptAvailable();
+  manager.acceptAvailable((d) => d.type !== 'side');
   return {
     world,
     quests: manager,

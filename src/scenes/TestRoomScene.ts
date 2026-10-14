@@ -308,7 +308,7 @@ export class TestRoomScene extends Phaser.Scene {
       if (this.encounter && this.session) {
         // 遭遇战中的击杀计入 kill 任务
         this.completions.push(...this.session.quests.report({ type: 'kill', target: enemy.def.id, amount: 1 }));
-        this.session.quests.acceptAvailable();
+        this.session.quests.acceptAvailable((d) => d.type !== 'side');
       }
     }
   }

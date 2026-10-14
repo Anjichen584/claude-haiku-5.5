@@ -311,7 +311,7 @@ export class OverworldScene extends Phaser.Scene {
       if (d > ARRIVE_RADIUS) continue;
       this.session.visited.add(p.id);
       const done = arriveAt(this.locationRegistry, this.quests, p.id);
-      this.quests.acceptAvailable();
+      this.quests.acceptAvailable((d) => d.type !== 'side');
       const lines = [`抵达：${p.name}`];
       for (const c of done) {
         const title = this.quests.def(c.questId)?.title ?? c.questId;
@@ -340,7 +340,9 @@ export class OverworldScene extends Phaser.Scene {
       const px = tile.x * TILE_PX;
       const py = tile.y * TILE_PX;
       this.add.rectangle(px, py, TILE_PX * 1.6, TILE_PX * 1.6, 0x7fd1ff).setDepth(7);
-      this.add.text(px, py - TILE_PX * 2, npc.name, {
+      // 同一地点的 NPC 名字交替抬高，避免标签重叠
+      const index = this.npcRegistry.atLocation(npc.location).findIndex((n) => n.id === npc.id);
+      this.add.text(px, py - TILE_PX * 2 - (index % 2) * 14, npc.name, {
         fontFamily: 'sans-serif', fontSize: '12px', color: '#d8f2ff',
         backgroundColor: '#00000088', padding: { x: 4, y: 2 },
       }).setOrigin(0.5, 1).setDepth(7);
@@ -362,6 +364,13 @@ export class OverworldScene extends Phaser.Scene {
     const npcId = this.nearestNpcId();
     if (!npcId) return;
     const npc = this.npcRegistry.get(npcId)!;
+    // 先接取该 NPC 发布的任务（不进入对话）；再次按 E 才开始对话
+    const offered = this.quests.acceptFromNpc(npcId);
+    if (offered.length > 0) {
+      const titles = offered.map((id) => this.quests.def(id)?.title ?? id).join('、');
+      this.showToast(`${npc.name} 发布了任务：${titles}\n完成目标后再来交付（再次按 E 对话）`);
+      return;
+    }
     const dialogue = this.npcDialogues.get(npc.dialogueId);
     if (!dialogue) return;
     this.talk = startTalk(this.npcRegistry, npcId, dialogue, this.world, this.quests);
@@ -395,7 +404,7 @@ export class OverworldScene extends Phaser.Scene {
     if (!this.talk) return;
     if (this.talk.runner.finished) {
       const done = this.talk.finish();
-      this.quests.acceptAvailable();
+      this.quests.acceptAvailable((d) => d.type !== 'side');
       const lines: string[] = [];
       for (const c of done) lines.push(`任务完成：${this.quests.def(c.questId)?.title ?? c.questId}`);
       this.closeTalk(lines.join('\n'));
