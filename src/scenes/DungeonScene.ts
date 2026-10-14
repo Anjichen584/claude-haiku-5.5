@@ -14,6 +14,8 @@ import {
 import type { RoomKind } from '../dungeon/layout';
 import { applyGains, describeGains, grantQuestRewards, levelForExp, type Gains } from '../state/rewards';
 import { getSession, persistSession, setRun, getRun } from '../state/sessionStore';
+import { buyItem, currentPriceMultiplier, shopLines, shopStock } from '../state/shop';
+import type { FactionDef, ItemDef } from '../data/schema';
 import { PLAYER_MAX_HP, type GameSession } from '../state/session';
 
 /**
@@ -42,6 +44,12 @@ export class DungeonScene extends Phaser.Scene {
   private session!: GameSession;
   private enemies: readonly EnemyDef[] = [];
   private itemNames = new Map<string, string>();
+  private itemDefs: readonly ItemDef[] = [];
+  private factionDefs: readonly FactionDef[] = [];
+  /** 商店状态：是否打开、当前库存与价格倍率 */
+  private shopOpen = false;
+  private shopItems: ItemDef[] = [];
+  private shopMultiplier = 1;
   private graphics!: Phaser.GameObjects.Graphics;
   private dynamic: Phaser.GameObjects.GameObject[] = [];
   private hud!: Phaser.GameObjects.Text;
@@ -63,6 +71,8 @@ export class DungeonScene extends Phaser.Scene {
     const data = loadGameData();
     this.enemies = data.enemies;
     this.itemNames = new Map(data.items.map((i) => [i.id, i.name]));
+    this.itemDefs = data.items;
+    this.factionDefs = data.factions;
     this.dynamic = [];
 
     // 从战斗返回时沿用当前探索；否则开始新的探索
@@ -103,13 +113,25 @@ export class DungeonScene extends Phaser.Scene {
       this.leave();
       return;
     }
-    if (Phaser.Input.Keyboard.JustDown(this.keyE)) this.interact();
+    if (Phaser.Input.Keyboard.JustDown(this.keyE)) {
+      if (this.shopOpen) this.closeShop();
+      else this.interact();
+    }
   }
 
   // ---------- 移动 ----------
 
   private onDigit(e: KeyboardEvent): void {
     if (!/^[1-9]$/.test(e.key)) return;
+    // 商店打开时，数字键用于购买，不移动
+    if (this.shopOpen) {
+      const item = this.shopItems[Number(e.key) - 1];
+      if (!item) return;
+      const result = buyItem(this.session, item, this.shopMultiplier);
+      persistSession(this.session);
+      this.showShop(result.message);
+      return;
+    }
     const next = neighbors(this.run, this.run.current)[Number(e.key) - 1];
     if (!next) return;
     moveTo(this.run, next.id);
@@ -157,7 +179,7 @@ export class DungeonScene extends Phaser.Scene {
         break;
       }
       case 'shop':
-        this.say('商店尚未开放');
+        this.openShop();
         break;
       case 'entrance':
         this.say('这里是入口，没有可以互动的内容');
@@ -165,6 +187,25 @@ export class DungeonScene extends Phaser.Scene {
     }
     persistSession(this.session);
     this.render();
+  }
+
+  // ---------- 商店 ----------
+
+  private openShop(): void {
+    this.shopItems = shopStock(this.itemDefs);
+    this.shopMultiplier = currentPriceMultiplier(this.session.world, this.factionDefs);
+    this.shopOpen = true;
+    this.showShop('欢迎光临。');
+  }
+
+  private showShop(note: string): void {
+    const gold = this.session.player.gold;
+    this.say([`商店（数字键购买 · E 离开）  金币 ${gold}`, note, ...shopLines(this.shopItems, this.shopMultiplier)].join('\n'));
+  }
+
+  private closeShop(): void {
+    this.shopOpen = false;
+    this.say('离开了商店。');
   }
 
   private grant(gains: Gains, roomId: number, label: string): void {
