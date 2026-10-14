@@ -47,9 +47,11 @@ export class SaveError extends Error {}
 /** 新开一局：默认出生在原点，满血，世界状态来自任务定义的初始值。 */
 export function newSession(quests: readonly QuestDef[]): GameSession {
   const world = new WorldState();
+  const manager = new QuestManager(quests, world);
+  manager.acceptAvailable();
   return {
     world,
-    quests: new QuestManager(quests, world),
+    quests: manager,
     player: { tileX: 0, tileY: 0, hp: PLAYER_MAX_HP },
     // 从黎明前开始（与地表场景的初始时间一致）
     elapsedMs: DAY_LENGTH_MS * 0.3,

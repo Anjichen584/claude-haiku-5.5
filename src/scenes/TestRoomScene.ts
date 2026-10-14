@@ -11,7 +11,7 @@ import {
 import { loadGameData } from '../data/loader';
 import type { EnemyDef } from '../data/schema';
 import type { QuestCompletion } from '../narrative/QuestManager';
-import { getSession } from '../state/sessionStore';
+import { getSession, persistSession } from '../state/sessionStore';
 import { PLAYER_MAX_HP, type GameSession } from '../state/session';
 import type { EncounterRequest } from '../world/encounters';
 
@@ -161,6 +161,7 @@ export class TestRoomScene extends Phaser.Scene {
         ? Math.max(1, this.playerActor.hp)
         : Math.max(1, Math.ceil(PLAYER_MAX_HP * 0.3));
     }
+    if (this.session) persistSession(this.session);
     this.scene.start('OverworldScene', { retreated: !this.won });
   }
   private won = false;
@@ -175,7 +176,7 @@ export class TestRoomScene extends Phaser.Scene {
     this.add.rectangle(display.baseWidth / 2, display.baseHeight / 2, display.baseWidth, display.baseHeight, 0x14141c);
     this.add.text(16, 12, this.encounter ? '遭遇战' : '测试房间', { fontFamily: 'sans-serif', fontSize: '18px', color: '#9aa0b4' });
     this.add.text(16, display.baseHeight - 28,
-      'WASD 移动 · Shift 冲刺 · Space 闪避 · J 攻击 · R 重置',
+      this.encounter ? 'WASD 移动 · Shift 冲刺 · Space 闪避 · J 攻击' : 'WASD 移动 · Shift 冲刺 · Space 闪避 · J 攻击 · R 重置',
       { fontFamily: 'sans-serif', fontSize: '14px', color: '#6b7089' });
     this.hud = this.add.text(16, display.baseHeight - 110, '', {
       fontFamily: 'monospace', fontSize: '14px', color: '#e6d9ff', lineSpacing: 4,
@@ -307,6 +308,7 @@ export class TestRoomScene extends Phaser.Scene {
       if (this.encounter && this.session) {
         // 遭遇战中的击杀计入 kill 任务
         this.completions.push(...this.session.quests.report({ type: 'kill', target: enemy.def.id, amount: 1 }));
+        this.session.quests.acceptAvailable();
       }
     }
   }

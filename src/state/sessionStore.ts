@@ -2,7 +2,7 @@
  * 当前会话与浏览器存档（localStorage）。
  * 场景之间通过这里共享同一个会话对象；存档读写失败时返回 null，不抛出异常。
  */
-import type { GameSession } from './session';
+import { serializeSave, toSaveFile, type GameSession } from './session';
 
 const SAVE_KEY = 'rift-chronicles-save-v1';
 
@@ -40,4 +40,9 @@ export function writeSaveRaw(raw: string): boolean {
   } catch {
     return false;
   }
+}
+
+/** 把会话写入浏览器存档。返回是否写入成功。 */
+export function persistSession(session: GameSession): boolean {
+  return writeSaveRaw(serializeSave(toSaveFile(session)));
 }

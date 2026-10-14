@@ -65,6 +65,21 @@ export class QuestManager {
     return unlocked;
   }
 
+  /**
+   * 接取所有 available 的任务，返回接取的 id。
+   * 原型阶段还没有任务发布 NPC，所以可接取的任务会自动进入进行中。
+   */
+  acceptAvailable(): string[] {
+    const accepted: string[] = [];
+    for (const id of this.defs.keys()) {
+      if (this.world.questStatus(id) === 'available') {
+        this.accept(id);
+        accepted.push(id);
+      }
+    }
+    return accepted;
+  }
+
   accept(id: string): void {
     const def = this.requireDef(id);
     const rec = this.world.getQuest(id)!;

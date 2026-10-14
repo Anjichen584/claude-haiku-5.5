@@ -15,10 +15,10 @@ import {
 const quests = (questsJson as unknown as { quests: QuestDef[] }).quests;
 
 describe('新会话', () => {
-  it('出生在原点、满血，只有没有前置的任务可接取', () => {
+  it('出生在原点、满血，可接取的任务开局即自动接取，有前置的保持锁定', () => {
     const s = newSession(quests);
     expect(s.player).toEqual({ tileX: 0, tileY: 0, hp: PLAYER_MAX_HP });
-    expect(s.world.questStatus('main_01_first_rift')).toBe('available');
+    expect(s.world.questStatus('main_01_first_rift')).toBe('active');
     expect(s.world.questStatus('main_02_ash_road')).toBe('locked');
   });
 });
@@ -26,7 +26,6 @@ describe('新会话', () => {
 describe('存档往返', () => {
   it('保存后再读取，世界、位置、访问与击败记录完全一致', () => {
     const s = newSession(quests);
-    s.quests.accept('main_01_first_rift');
     s.quests.report({ type: 'kill', target: 'ash_wolf', amount: 2 });
     s.world.setFlag('met_guide');
     s.world.addReputation('ashguard', 15);

@@ -12,8 +12,8 @@ import { NpcRegistry, startTalk, type TalkSession } from '../world/npcs';
 import { placeLocations, type PlacedLocation } from '../world/placement';
 import { surfaceSpawnsForChunk, type EncounterRequest, type SurfaceSpawn } from '../world/encounters';
 import { activeQuestLog, formatQuestLog } from '../narrative/questLog';
-import { getSession, setSession, writeSaveRaw } from '../state/sessionStore';
-import { newSession, serializeSave, toSaveFile, type GameSession } from '../state/session';
+import { getSession, persistSession, setSession } from '../state/sessionStore';
+import { newSession, type GameSession } from '../state/session';
 import type { EnemyDef, QuestDef } from '../data/schema';
 
 /**
@@ -240,7 +240,7 @@ export class OverworldScene extends Phaser.Scene {
   /** 写入浏览器存档；成功与否都给出提示。 */
   private saveGame(): boolean {
     this.syncToSession();
-    const ok = writeSaveRaw(serializeSave(toSaveFile(this.session)));
+    const ok = persistSession(this.session);
     this.showToast(ok ? '已存档' : '存档失败：浏览器拒绝写入（可能存储空间已满）');
     return ok;
   }
@@ -311,6 +311,7 @@ export class OverworldScene extends Phaser.Scene {
       if (d > ARRIVE_RADIUS) continue;
       this.session.visited.add(p.id);
       const done = arriveAt(this.locationRegistry, this.quests, p.id);
+      this.quests.acceptAvailable();
       const lines = [`抵达：${p.name}`];
       for (const c of done) {
         const title = this.quests.def(c.questId)?.title ?? c.questId;
@@ -319,7 +320,7 @@ export class OverworldScene extends Phaser.Scene {
       this.showToast(lines.join('\n'));
       // 抵达新地点时自动存档（写入失败不打断游戏）
       this.syncToSession();
-      writeSaveRaw(serializeSave(toSaveFile(this.session)));
+      persistSession(this.session);
     }
   }
 
@@ -394,6 +395,7 @@ export class OverworldScene extends Phaser.Scene {
     if (!this.talk) return;
     if (this.talk.runner.finished) {
       const done = this.talk.finish();
+      this.quests.acceptAvailable();
       const lines: string[] = [];
       for (const c of done) lines.push(`任务完成：${this.quests.def(c.questId)?.title ?? c.questId}`);
       this.closeTalk(lines.join('\n'));
