@@ -26,12 +26,12 @@ export class BootScene extends Phaser.Scene {
       .text(
         display.baseWidth / 2,
         display.baseHeight / 2 + 30,
-        `阶段 3 · 数据已加载：物品 ${data.items.length}，技能 ${data.skills.length}，敌人 ${data.enemies.length}`,
+        `数据已加载：物品 ${data.items.length}，技能 ${data.skills.length}，敌人 ${data.enemies.length}`,
         { fontFamily: 'sans-serif', fontSize: '20px', color: '#9aa0b4' },
       )
       .setOrigin(0.5);
 
-    // 短暂展示启动信息后进入地表
-    this.time.delayedCall(1200, () => this.scene.start('OverworldScene'));
+    // 短暂展示启动信息后进入标题菜单
+    this.time.delayedCall(800, () => this.scene.start('TitleScene'));
   }
 }

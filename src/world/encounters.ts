@@ -69,3 +69,10 @@ export function surfaceSpawnsForChunk(
   }
   return spawns;
 }
+
+/** 从地表进入战斗场景时传递的参数 */
+export interface EncounterRequest {
+  enemyIds: string[];
+  /** 对应 SurfaceSpawn.key；胜利后写入会话的 defeated 集合 */
+  spawnKey: string;
+}

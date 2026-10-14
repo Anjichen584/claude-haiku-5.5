@@ -8,6 +8,7 @@
  * 本文件不依赖 Phaser，便于单元测试。存档的读写见 save.ts。
  */
 import type { QuestDef } from '../data/schema';
+import { DAY_LENGTH_MS } from '../world/time';
 import { QuestManager } from '../narrative/QuestManager';
 import { WorldState, type WorldSnapshot } from './WorldState';
 
@@ -50,7 +51,8 @@ export function newSession(quests: readonly QuestDef[]): GameSession {
     world,
     quests: new QuestManager(quests, world),
     player: { tileX: 0, tileY: 0, hp: PLAYER_MAX_HP },
-    elapsedMs: 0,
+    // 从黎明前开始（与地表场景的初始时间一致）
+    elapsedMs: DAY_LENGTH_MS * 0.3,
     visited: new Set(),
     defeated: new Set(),
   };
