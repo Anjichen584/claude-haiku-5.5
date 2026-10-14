@@ -22,7 +22,7 @@ describe('支线任务需要回到 NPC 交付', () => {
     manager.report({ type: 'collect', target: 'rift_shard', amount: 2 });
     expect(manager.progressOf('side_31_frost_pelts')!.status).toBe('active');
 
-    const dialogue = dialogues.find((d) => d.id === 'side_31_frost_pelt_trader')!;
+    const dialogue = dialogues.find((d) => d.id === 'side_31_frost_pelt_trader_delivery')!;
     const session = startTalk(registry, 'npc_side_31_frost_pelt_trader', dialogue, world, manager);
     let guard = 0;
     while (!session.runner.finished && guard++ < 200) {

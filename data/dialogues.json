@@ -15820,6 +15820,526 @@
           "next": null
         }
       }
+    },
+    {
+      "id": "side_55_matriarch_nest_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "渔夫 杰克",
+          "text": "泥沼母亲倒下了，湖面终于平静了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "渔夫 杰克",
+          "text": "四只沼泽水蛭我也数过了，它们是被母亲驱使的。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "渔夫 杰克",
+          "text": "小船还给我了？你比我想的还守信。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "渔夫 杰克",
+          "text": "湖心沉岛下面，我以前从没敢看。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_57_hound_keeper_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "驯兽师 梅",
+          "text": "裂隙猎犬的项圈我认得，是有人用碎片做的。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "驯兽师 梅",
+          "text": "四块裂隙碎片，足够我查清楚是谁在背后驯养它们。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "驯兽师 梅",
+          "text": "它们的眼睛已经变回了普通的狗眼，这就够了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "驯兽师 梅",
+          "text": "你替它们解开了一半的锁，剩下的，交给我。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_60_archive_keeper_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "档案员 柯南",
+          "text": "你找回了两块碎片，撕掉的那几页我已经能看见一点字迹了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "档案员 柯南",
+          "text": "第一次裂隙开启的日期，被撕掉的那页写着一个名字。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "档案员 柯南",
+          "text": "地图我给你留着，下次去档案馆时用得上。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "档案员 柯南",
+          "text": "这份报酬只是开始。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_61_helm_smith_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "铁匠 贝拉",
+          "text": "三只余烬猎犬，还有一顶灰烬头盔，皮子是活着剥下来的吧？",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "铁匠 贝拉",
+          "text": "护额的皮很完整，我马上就能开工。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "铁匠 贝拉",
+          "text": "订单堆在门口，今天总算能消掉一个。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "铁匠 贝拉",
+          "text": "下次再来，我给你做一顶专属的。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_63_blade_maker_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "剑匠 卡恩",
+          "text": "裂隙刃的材料，还有余烬魔像的核心——它没有轻易交出来吧？",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "剑匠 卡恩",
+          "text": "火候正好，这块核心的热量能把剑身烧透。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "剑匠 卡恩",
+          "text": "剑我会在三天内锻好，留在炉边等你。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "剑匠 卡恩",
+          "text": "我只是想看到它完成，这就够了。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_65_caravan_guide_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "商队向导 艾伦",
+          "text": "四只沙漠蝎，三只鬣狗，沙暴横渡的路终于又干净了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "商队向导 艾伦",
+          "text": "商队明天就能出发，我欠你一份人情。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "商队向导 艾伦",
+          "text": "这条路我只带过一次人，这次你也算一份。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "商队向导 艾伦",
+          "text": "风向变了，记得下次先看看天色。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_66_lantern_keeper_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "灯塔守 莫拉",
+          "text": "四个幽影被驱散，湖边的雾终于薄了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "灯塔守 莫拉",
+          "text": "两块碎片我会放进灯笼里，它们会亮得更久。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "灯塔守 莫拉",
+          "text": "七盏灯笼，今天我点亮了第一盏。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "灯塔守 莫拉",
+          "text": "湖边的雾会记住你的脚步，也会替你照路。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_69_bridge_builder_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "木匠 本",
+          "text": "四只树皮鹿，桥也修好了？我刚过去看了一眼，结实得很。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "木匠 本",
+          "text": "老木头和鹿角固定桩都用上了，很稳。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "木匠 本",
+          "text": "林子里的商人明天就能过桥了，这是你的功劳。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "木匠 本",
+          "text": "下次再有断桥，记得先来找我。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_70_ferryman_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "摆渡人 卡伦",
+          "text": "五只泥沼蟾蜍，还有一件学者长袍材料——河口终于能过船了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "摆渡人 卡伦",
+          "text": "船上的人数，我一个都没少数。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "摆渡人 卡伦",
+          "text": "过河之后，记得别回头看。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "摆渡人 卡伦",
+          "text": "这次渡河，我只收你一句谢谢。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_71_lantern_keeper_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "守灯人 西蒙",
+          "text": "四只余烬蜥蜴，两块裂隙碎片——灯笼又能亮一夜了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "守灯人 西蒙",
+          "text": "灯油已经用上碎片熬好了，明天一早就能点燃。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "守灯人 西蒙",
+          "text": "灯亮了，路就不会走错。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "守灯人 西蒙",
+          "text": "余烬蜥蜴喜欢在灯下打转，下次你知道该在哪里找它们。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_72_candle_monk_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "僧人 艾纳",
+          "text": "五只霜原鼠被清除，神龛里终于没有啃咬的声音了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "僧人 艾纳",
+          "text": "蜡烛已经点燃，烛光照在神像上，像是有人在微笑。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "僧人 艾纳",
+          "text": "愿神明保佑你的每一步。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "僧人 艾纳",
+          "text": "神龛的规矩我记着，下次再来为你念一段祈祷。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_74_patrol_captain_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "巡逻队长 雷恩",
+          "text": "五只乌鸦，四只余烬猎犬——灰烬之路今晚会安静些。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "巡逻队长 雷恩",
+          "text": "巡逻队的人都能回营地睡一觉了。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "巡逻队长 雷恩",
+          "text": "这条路以后，我会安排人接手。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "巡逻队长 雷恩",
+          "text": "你的名字我会写进今晚的巡逻记录里。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_75_well_digger_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "挖井人 欧文",
+          "text": "三只沙漠蝎，你已经到了砂岩水井。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "挖井人 欧文",
+          "text": "水脉在下面流动了，我听得见。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "挖井人 欧文",
+          "text": "井口的水很快会清起来。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "挖井人 欧文",
+          "text": "水井是沙漠的命，谢谢你没让它断在我手里。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_76_grove_singer_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "歌者 露西",
+          "text": "六个荆棘精灵安静了，两只树皮鹿也没再受惊。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "歌者 露西",
+          "text": "林子里的歌又回来了，虽然比以前低了些。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "歌者 露西",
+          "text": "完整的歌我把完整的歌教给你，就在这首的结尾。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "歌者 露西",
+          "text": "你听，树叶在跟着唱。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_79_scout_leader_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "斥候长 玛拉",
+          "text": "五只草原潜猎者，四只鬣狗——它们之间的牵连，你查清楚了吗？",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "斥候长 玛拉",
+          "text": "斥候的令牌我先放在你这里，等我查完再还给我。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "斥候长 玛拉",
+          "text": "平原上的风今天没有刮起沙尘。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "斥候长 玛拉",
+          "text": "谢谢你，斥候营地又能安心了。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_90_bridge_guard_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "桥卫 托马斯",
+          "text": "五只霜狼，冻桥终于又通了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "桥卫 托马斯",
+          "text": "北方的通行证，我替你写好了。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "桥卫 托马斯",
+          "text": "商队明天就能过桥，桥下的狼群散了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "桥卫 托马斯",
+          "text": "记住，桥上不要停留太久。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_31_frost_pelt_trader_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "毛皮商 奥莉",
+          "text": "四只霜狼，还有两块裂隙碎片……你是真的去了雪原。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "毛皮商 奥莉",
+          "text": "皮毛有几处划伤，但大部分都能用，我给你按完整皮的价钱算。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "毛皮商 奥莉",
+          "text": "碎片我替你收下，它们在我的炉子里会发出蓝光。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "毛皮商 奥莉",
+          "text": "下次霜狼再下山，你知道该去找谁了。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_51_magma_crab_smith_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "铁匠 巴顿",
+          "text": "熔岩蟹的甲壳……还带着火山口的热气。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "铁匠 巴顿",
+          "text": "灰烬板甲材料也齐了，这次没让甲壳碎掉，不错。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "铁匠 巴顿",
+          "text": "护手我今晚就打，明天来取。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "铁匠 巴顿",
+          "text": "记住，别站在喷气口前面。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_52_witch_hermit_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "林间隐士 罗兰",
+          "text": "女巫倒下了，三个荆棘精灵也安静下来。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "林间隐士 罗兰",
+          "text": "它们终于不用再替她记住那段不该记住的事。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "林间隐士 罗兰",
+          "text": "这份平静是你换来的，我会记住。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "林间隐士 罗兰",
+          "text": "去林子深处看看吧，那里还有一些旧路标。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_54_titan_dust_scholar_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "学者 伊莎",
+          "text": "沙尘巨人的骨头，还有一把完整的铁剑——你做得很好。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "学者 伊莎",
+          "text": "铁剑的刻文我会对照骨上的符文，也许能拼出它的结构。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "学者 伊莎",
+          "text": "笔记没有被沙暴吹走吧？那是我三年的心血。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "学者 伊莎",
+          "text": "有了这些，我就能画出这片沙漠以前的样子了。",
+          "next": null
+        }
+      }
     }
   ]
 }
