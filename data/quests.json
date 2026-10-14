@@ -705,6 +705,11 @@
           "target": "frost_wolf",
           "text": "猎杀 4 只霜狼",
           "count": 4
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_02_frost_bounty",
+          "text": "向赏金官 哈尔德交付任务成果"
         }
       ],
       "rewards": {
@@ -723,6 +728,11 @@
           "target": "rift_shard",
           "text": "收集 2 块裂隙碎片",
           "count": 2
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_03_snow_herbs",
+          "text": "向草药商 薇拉交付任务成果"
         }
       ],
       "rewards": {
@@ -741,6 +751,11 @@
           "target": "ember_lizard",
           "text": "击败 3 只余烬蜥蜴",
           "count": 3
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_04_ember_eggs",
+          "text": "向蛋贩 格伦交付任务成果"
         }
       ],
       "rewards": {
@@ -758,6 +773,11 @@
           "type": "reach",
           "target": "dune_outpost",
           "text": "抵达沙丘哨站"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_05_sand_map",
+          "text": "向地图商 阿里交付任务成果"
         }
       ],
       "rewards": {
@@ -776,6 +796,11 @@
           "target": "mire_toad",
           "text": "击败 3 只泥沼蟾蜍",
           "count": 3
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_06_bog_frogs",
+          "text": "向猎蛙人 莫里交付任务成果"
         }
       ],
       "rewards": {
@@ -794,6 +819,11 @@
           "target": "hollow_owl",
           "text": "击落 4 只空洞猫头鹰",
           "count": 4
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_07_hollow_wings",
+          "text": "向羽毛匠 露辛达交付任务成果"
         }
       ],
       "rewards": {
@@ -818,6 +848,11 @@
           "target": "rift_shard",
           "text": "收集 2 块裂隙碎片",
           "count": 2
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_08_mossy_bark",
+          "text": "向木匠 艾伦交付任务成果"
         }
       ],
       "rewards": {
@@ -836,6 +871,11 @@
           "target": "grass_stalker",
           "text": "清理 5 只草丛潜伏者",
           "count": 5
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_09_grass_hunt",
+          "text": "向猎手头目 托克交付任务成果"
         }
       ],
       "rewards": {
@@ -854,6 +894,11 @@
           "target": "plains_raider",
           "text": "击退 4 名劫匪",
           "count": 4
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_10_raider_camp",
+          "text": "向驿站长 萨拉交付任务成果"
         }
       ],
       "rewards": {
@@ -872,6 +917,11 @@
           "target": "gravel_mite",
           "text": "清理 6 只碎石螨",
           "count": 6
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_11_gravel_mite",
+          "text": "向矿工 格雷交付任务成果"
         }
       ],
       "rewards": {
@@ -890,6 +940,11 @@
           "target": "void_moth",
           "text": "收集 3 只虚空飞蛾的样本",
           "count": 3
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_12_void_study",
+          "text": "向研究员 维克托交付任务成果"
         }
       ],
       "rewards": {
@@ -908,6 +963,11 @@
           "target": "rot_crawler",
           "text": "清除 5 只腐化爬虫",
           "count": 5
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_13_rot_root",
+          "text": "向园丁 奥利交付任务成果"
         }
       ],
       "rewards": {
@@ -928,6 +988,11 @@
           "target": "rift_shard",
           "text": "收集 4 块裂隙碎片",
           "count": 4
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_14_swamp_cure",
+          "text": "向草药师 玛尔塔交付任务成果"
         }
       ],
       "rewards": {
@@ -946,6 +1011,11 @@
           "target": "icicle_slime",
           "text": "清理 5 只冰晶软泥",
           "count": 5
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_15_icicle_bells",
+          "text": "向铃匠 伊娃交付任务成果"
         }
       ],
       "rewards": {
@@ -965,6 +1035,11 @@
           "type": "reach",
           "target": "regent_palace",
           "text": "送信到摄政宫殿外"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_16_dust_letters",
+          "text": "向信使 哈米德交付任务成果"
         }
       ],
       "rewards": {
@@ -983,6 +1058,11 @@
           "target": "cinder_golem",
           "text": "摧毁 2 个煤渣傀儡",
           "count": 2
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_17_cinder_forge",
+          "text": "向熔炉工 格朗交付任务成果"
         }
       ],
       "rewards": {
@@ -1001,6 +1081,11 @@
           "target": "thorn_sprite",
           "text": "驱散 5 只荆棘精灵",
           "count": 5
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_18_thorn_garden",
+          "text": "向园丁 艾瑞交付任务成果"
         }
       ],
       "rewards": {
@@ -1019,6 +1104,11 @@
           "target": "moss_boar",
           "text": "猎杀 4 只苔野猪",
           "count": 4
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_19_boar_trail",
+          "text": "向猎人 瑞斯交付任务成果"
         }
       ],
       "rewards": {
@@ -1037,6 +1127,11 @@
           "target": "swamp_wraith",
           "text": "击散 3 只沼泽幽影",
           "count": 3
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_20_ghost_river",
+          "text": "向河边老人 贝尔交付任务成果"
         }
       ],
       "rewards": {
@@ -1064,6 +1159,11 @@
           "target": "frost_wolf",
           "text": "击败 2 只霜狼",
           "count": 2
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_21_hound_pack",
+          "text": "向驯犬师 格里交付任务成果"
         }
       ],
       "rewards": {
@@ -1082,6 +1182,11 @@
           "target": "sand_scorpion",
           "text": "击杀 4 只沙蝎",
           "count": 4
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_22_scorpion_tail",
+          "text": "向收购商 哈林交付任务成果"
         }
       ],
       "rewards": {
@@ -1100,6 +1205,11 @@
           "target": "frost_rat",
           "text": "清除 6 只霜鼠",
           "count": 6
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_23_rat_nest",
+          "text": "向仓库管家 托比交付任务成果"
         }
       ],
       "rewards": {
@@ -1118,6 +1228,11 @@
           "target": "bog_leech",
           "text": "清除 6 只沼泽水蛭",
           "count": 6
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_24_leech_spring",
+          "text": "向泉水守 丽莎交付任务成果"
         }
       ],
       "rewards": {
@@ -1136,6 +1251,11 @@
           "target": "ash_crow",
           "text": "驱赶 6 只灰烬乌鸦",
           "count": 6
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_25_ash_crows",
+          "text": "向驱鸦人 西蒙交付任务成果"
         }
       ],
       "rewards": {
@@ -1156,6 +1276,11 @@
           "target": "swamp_wraith",
           "text": "击散 5 只沼泽幽影",
           "count": 5
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_26_marsh_wraith",
+          "text": "向守夜人 乔治交付任务成果"
         }
       ],
       "rewards": {
@@ -1174,6 +1299,11 @@
           "target": "rift_shard",
           "text": "收集 8 块裂隙碎片",
           "count": 8
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_27_rift_scraps",
+          "text": "向收购人 伊莲娜交付任务成果"
         }
       ],
       "rewards": {
@@ -1194,6 +1324,11 @@
           "target": "wild_boarlord",
           "text": "击败野猪头目",
           "count": 1
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_28_wild_hunt",
+          "text": "向猎头 布鲁诺交付任务成果"
         }
       ],
       "rewards": {
@@ -1220,6 +1355,11 @@
           "target": "rift_shard",
           "text": "收集 3 块裂隙碎片",
           "count": 3
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_29_grave_moss",
+          "text": "向墓守 亚当交付任务成果"
         }
       ],
       "rewards": {
@@ -1284,6 +1424,11 @@
           "target": "elite_ice_warden",
           "count": 1,
           "text": "击败冰封守卫"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_32_ice_warden_watch",
+          "text": "向巡守员 赫尔曼交付任务成果"
         }
       ],
       "rewards": {
@@ -1302,6 +1447,11 @@
           "target": "snow_hare",
           "count": 6,
           "text": "猎取 6 只雪兔"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_33_snow_hare_stew",
+          "text": "向厨师 玛丽交付任务成果"
         }
       ],
       "rewards": {
@@ -1325,6 +1475,11 @@
           "type": "reach",
           "target": "ember_hollow",
           "text": "找到余烬猎犬的巢穴"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_34_ember_tracks",
+          "text": "向猎人 托马斯交付任务成果"
         }
       ],
       "rewards": {
@@ -1349,6 +1504,11 @@
           "target": "scholar_robe",
           "count": 1,
           "text": "收集 1 件学者长袍材料"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_35_crow_feathers",
+          "text": "向羽毛商 米拉交付任务成果"
         }
       ],
       "rewards": {
@@ -1373,6 +1533,11 @@
           "target": "ash_plate",
           "count": 1,
           "text": "收集 1 件灰烬板甲材料"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_36_lizard_scale",
+          "text": "向皮匠 莉娜交付任务成果"
         }
       ],
       "rewards": {
@@ -1391,6 +1556,11 @@
           "target": "sand_scorpion",
           "count": 5,
           "text": "猎杀 5 只沙漠蝎"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_37_scorpion_venom",
+          "text": "向毒药商 哈桑交付任务成果"
         }
       ],
       "rewards": {
@@ -1415,6 +1585,11 @@
           "target": "rift_shard",
           "count": 3,
           "text": "收集 3 块裂隙碎片"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_38_cinder_core",
+          "text": "向熔炉匠 奥格交付任务成果"
         }
       ],
       "rewards": {
@@ -1433,6 +1608,11 @@
           "target": "moss_boar",
           "count": 4,
           "text": "猎杀 4 头苔原野猪"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_39_moss_boar_hunt",
+          "text": "向猎户 伯特交付任务成果"
         }
       ],
       "rewards": {
@@ -1456,6 +1636,11 @@
           "type": "reach",
           "target": "thorn_grove",
           "text": "深入荆棘林"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_40_thorn_seed",
+          "text": "向园艺师 米娅交付任务成果"
         }
       ],
       "rewards": {
@@ -1480,6 +1665,11 @@
           "target": "elite_ancient_stag",
           "count": 1,
           "text": "击败古鹿长老"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_41_stag_antler",
+          "text": "向鹿角匠 奥尔交付任务成果"
         }
       ],
       "rewards": {
@@ -1521,6 +1711,11 @@
           "target": "grass_stalker",
           "count": 6,
           "text": "猎杀 6 只草原潜猎者"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_43_stalker_trail",
+          "text": "向猎户 卢卡交付任务成果"
         }
       ],
       "rewards": {
@@ -1545,6 +1740,11 @@
           "target": "iron_sword",
           "count": 1,
           "text": "收集 1 把铁剑"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_44_hyena_pack",
+          "text": "向驿站管理员 扎克交付任务成果"
         }
       ],
       "rewards": {
@@ -1569,6 +1769,11 @@
           "target": "wild_boarlord",
           "count": 1,
           "text": "击败野猪领主"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_45_raider_camp",
+          "text": "向掠夺者 瓦尔交付任务成果"
         }
       ],
       "rewards": {
@@ -1593,6 +1798,11 @@
           "target": "stride_boots",
           "count": 1,
           "text": "收集 1 双疾行靴材料"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_46_bog_leech",
+          "text": "向渔夫 洛克交付任务成果"
         }
       ],
       "rewards": {
@@ -1611,6 +1821,11 @@
           "target": "mire_toad",
           "count": 4,
           "text": "猎杀 4 只泥沼蟾蜍"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_47_toad_bounty",
+          "text": "向赏金官 格雷交付任务成果"
         }
       ],
       "rewards": {
@@ -1634,6 +1849,11 @@
           "type": "reach",
           "target": "mire_shrine",
           "text": "前往泥沼神龛"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_48_wraith_warning",
+          "text": "向神龛祭司 莉娜交付任务成果"
         }
       ],
       "rewards": {
@@ -1652,6 +1872,11 @@
           "target": "rot_crawler",
           "count": 7,
           "text": "清理 7 只腐化爬行者"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_49_rot_cleanup",
+          "text": "向清洁工 布兰交付任务成果"
         }
       ],
       "rewards": {
@@ -1676,6 +1901,11 @@
           "target": "rift_blade",
           "count": 1,
           "text": "收集 1 件裂隙刃材料"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_50_rift_moths",
+          "text": "向收藏家 赛琳交付任务成果"
         }
       ],
       "rewards": {
@@ -1855,6 +2085,11 @@
           "target": "plains_raider",
           "count": 3,
           "text": "击败 3 名平原掠夺者"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_53_war_chief_banner",
+          "text": "向旗手 卡洛琳交付任务成果"
         }
       ],
       "rewards": {
@@ -1936,6 +2171,11 @@
           "type": "reach",
           "target": "mire_shrine",
           "text": "回到泥沼神龛"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_56_shaman_mask",
+          "text": "向面具匠 诺雅交付任务成果"
         }
       ],
       "rewards": {
@@ -1989,6 +2229,11 @@
           "target": "rot_crawler",
           "count": 5,
           "text": "清理 5 只腐化爬行者"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_58_colossus_rot",
+          "text": "向清道夫 比尔交付任务成果"
         }
       ],
       "rewards": {
@@ -2013,6 +2258,11 @@
           "target": "frost_wolf",
           "count": 3,
           "text": "猎杀 3 只霜狼"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_59_alpha_fang",
+          "text": "向驯兽师 鲁道夫交付任务成果"
         }
       ],
       "rewards": {
@@ -2094,6 +2344,11 @@
           "target": "stride_boots",
           "count": 1,
           "text": "收集 1 双疾行靴材料"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_62_stride_race",
+          "text": "向赛跑员 托尼交付任务成果"
         }
       ],
       "rewards": {
@@ -2146,6 +2401,11 @@
           "type": "reach",
           "target": "frost_camp",
           "text": "抵达霜原营地"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_64_snowbound_camp",
+          "text": "向营地守卫 阿兰交付任务成果"
         }
       ],
       "rewards": {
@@ -2228,6 +2488,11 @@
           "target": "ash_crow",
           "count": 4,
           "text": "击落 4 只灰烬乌鸦"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_67_hollow_bell",
+          "text": "向钟楼守 弗朗茨交付任务成果"
         }
       ],
       "rewards": {
@@ -2252,6 +2517,11 @@
           "target": "gravel_mite",
           "count": 6,
           "text": "清剿 6 只砂砾螨"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_68_rift_rat_cleanup",
+          "text": "向管事 哈勒交付任务成果"
         }
       ],
       "rewards": {
@@ -2488,6 +2758,11 @@
           "target": "icicle_slime",
           "count": 4,
           "text": "清理 4 只冰晶史莱姆"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_73_tundra_hunt",
+          "text": "向猎人 奥斯卡交付任务成果"
         }
       ],
       "rewards": {
@@ -2598,6 +2873,11 @@
           "target": "rift_shard",
           "count": 3,
           "text": "收集 3 块裂隙碎片"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_77_moss_bridge_repair",
+          "text": "向石匠 拉斐尔交付任务成果"
         }
       ],
       "rewards": {
@@ -2616,6 +2896,11 @@
           "target": "moss_boar",
           "count": 5,
           "text": "猎杀 5 头苔原野猪"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_78_moss_boar_stew",
+          "text": "向厨子 格瑞交付任务成果"
         }
       ],
       "rewards": {
@@ -2669,6 +2954,11 @@
           "target": "iron_sword",
           "count": 1,
           "text": "收集 1 把铁剑"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_80_wild_boar_tusks",
+          "text": "向商人 布鲁交付任务成果"
         }
       ],
       "rewards": {
@@ -2692,6 +2982,11 @@
           "target": "mire_toad",
           "count": 4,
           "text": "猎杀 4 只泥沼蟾蜍"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_81_bog_mapping",
+          "text": "向测绘员 诺亚交付任务成果"
         }
       ],
       "rewards": {
@@ -2739,6 +3034,11 @@
           "target": "scholar_robe",
           "count": 1,
           "text": "收集 1 件学者长袍材料"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_83_rot_sample",
+          "text": "向研究员 莫德交付任务成果"
         }
       ],
       "rewards": {
@@ -2763,6 +3063,11 @@
           "target": "ash_helm",
           "count": 1,
           "text": "收集 1 顶灰烬头盔"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_84_gravel_mine",
+          "text": "向矿工头 格雷厄姆交付任务成果"
         }
       ],
       "rewards": {
@@ -2787,6 +3092,11 @@
           "target": "rift_blade",
           "count": 1,
           "text": "收集 1 件裂隙刃材料"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_85_void_moth_wings",
+          "text": "向画家 莉亚交付任务成果"
         }
       ],
       "rewards": {
@@ -2811,6 +3121,11 @@
           "target": "rift_shard",
           "count": 4,
           "text": "收集 4 块裂隙碎片"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_86_rift_fragment_hunt",
+          "text": "向学者 奥斯卡交付任务成果"
         }
       ],
       "rewards": {
@@ -2834,6 +3149,11 @@
           "type": "reach",
           "target": "ash_archive",
           "text": "回到灰烬档案馆"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_87_scholar_lamp",
+          "text": "向灯匠 琳达交付任务成果"
         }
       ],
       "rewards": {
@@ -2857,6 +3177,11 @@
           "type": "reach",
           "target": "ash_road_camp",
           "text": "把信送到灰烬之路营地"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_88_stride_courier",
+          "text": "向驿站长 汉娜交付任务成果"
         }
       ],
       "rewards": {
@@ -2881,6 +3206,11 @@
           "target": "ash_crow",
           "count": 3,
           "text": "击落 3 只灰烬乌鸦"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_89_ash_helm_repair",
+          "text": "向修补匠 格雷格交付任务成果"
         }
       ],
       "rewards": {
@@ -3029,6 +3359,11 @@
           "target": "rift_shard",
           "count": 1,
           "text": "收集 1 块裂隙碎片"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_91_frost_rat_nest",
+          "text": "向猎人 科尔交付任务成果"
         }
       ],
       "rewards": {
@@ -3047,6 +3382,11 @@
           "target": "icicle_slime",
           "count": 8,
           "text": "清理 8 只冰晶史莱姆"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_92_slime_cores",
+          "text": "向炼金师 伊莎交付任务成果"
         }
       ],
       "rewards": {
@@ -3065,6 +3405,11 @@
           "target": "ember_lizard",
           "count": 5,
           "text": "猎杀 5 只余烬蜥蜴"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_93_lizard_scales",
+          "text": "向皮匠 玛琳交付任务成果"
         }
       ],
       "rewards": {
@@ -3089,6 +3434,11 @@
           "target": "rift_shard",
           "count": 2,
           "text": "收集 2 块裂隙碎片"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_94_cinder_fragments",
+          "text": "向熔炉工 奥利弗交付任务成果"
         }
       ],
       "rewards": {
@@ -3107,6 +3457,11 @@
           "target": "ash_crow",
           "count": 6,
           "text": "击落 6 只灰烬乌鸦"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_95_crow_nest_gather",
+          "text": "向驯鸦人 阿尔玛交付任务成果"
         }
       ],
       "rewards": {
@@ -3125,6 +3480,11 @@
           "target": "ember_hound",
           "count": 6,
           "text": "猎杀 6 只余烬猎犬"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_96_hound_pups",
+          "text": "向驯犬师 皮特交付任务成果"
         }
       ],
       "rewards": {
@@ -3143,6 +3503,11 @@
           "target": "sand_scorpion",
           "count": 6,
           "text": "猎杀 6 只沙漠蝎"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_97_dune_scorpions",
+          "text": "向向导 阿米尔交付任务成果"
         }
       ],
       "rewards": {
@@ -3166,6 +3531,11 @@
           "type": "reach",
           "target": "hyena_den",
           "text": "找到鬣狗的巢穴"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_98_hyena_den",
+          "text": "向驿站管理员 扎克交付任务成果"
         }
       ],
       "rewards": {
@@ -3190,6 +3560,11 @@
           "target": "plains_raider",
           "count": 4,
           "text": "击败 4 名平原掠夺者"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_99_raider_supplies",
+          "text": "向军需官 海伦交付任务成果"
         }
       ],
       "rewards": {
@@ -3213,6 +3588,11 @@
           "type": "reach",
           "target": "moss_glade",
           "text": "把野猪群引到苔藓林地"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_100_boar_herd",
+          "text": "向牧人 奥伦交付任务成果"
         }
       ],
       "rewards": {
@@ -3231,6 +3611,11 @@
           "target": "bark_stag",
           "count": 5,
           "text": "猎杀 5 只树皮鹿"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_101_stag_horns",
+          "text": "向猎人 阿尔弗交付任务成果"
         }
       ],
       "rewards": {
@@ -3255,6 +3640,11 @@
           "target": "rift_shard",
           "count": 1,
           "text": "收集 1 块裂隙碎片"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_102_grove_sprouts",
+          "text": "向园丁 米拉交付任务成果"
         }
       ],
       "rewards": {
@@ -3279,6 +3669,11 @@
           "target": "scholar_robe",
           "count": 1,
           "text": "收集 1 件学者长袍材料"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_103_hollow_feather",
+          "text": "向羽毛商 罗西交付任务成果"
         }
       ],
       "rewards": {
@@ -3302,6 +3697,11 @@
           "type": "reach",
           "target": "grass_ridge",
           "text": "沿着草原山脊追踪"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_104_stalker_tracks",
+          "text": "向追踪者 海德交付任务成果"
         }
       ],
       "rewards": {
@@ -3326,6 +3726,11 @@
           "target": "rift_shard",
           "count": 1,
           "text": "收集 1 块裂隙碎片"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_105_toad_eggs",
+          "text": "向渔夫 艾伦交付任务成果"
         }
       ],
       "rewards": {
@@ -3344,6 +3749,11 @@
           "target": "bog_leech",
           "count": 8,
           "text": "清除 8 只沼泽水蛭"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_106_leech_clean",
+          "text": "向医师 露娜交付任务成果"
         }
       ],
       "rewards": {
@@ -3367,6 +3777,11 @@
           "type": "reach",
           "target": "mire_shrine",
           "text": "把灯笼挂回泥沼神龛"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_107_wraith_lanterns",
+          "text": "向僧人 康交付任务成果"
         }
       ],
       "rewards": {
@@ -3390,6 +3805,11 @@
           "type": "reach",
           "target": "rot_pits",
           "text": "封闭腐化坑"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_108_rot_pits",
+          "text": "向守坑人 杜加交付任务成果"
         }
       ],
       "rewards": {
@@ -3408,6 +3828,11 @@
           "target": "gravel_mite",
           "count": 10,
           "text": "清剿 10 只砂砾螨"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_109_mite_tunnels",
+          "text": "向矿工 比尔交付任务成果"
         }
       ],
       "rewards": {
@@ -3432,6 +3857,11 @@
           "target": "rift_blade",
           "count": 1,
           "text": "收集 1 件裂隙刃材料"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_110_moth_lanterns",
+          "text": "向灯匠 奥莉维亚交付任务成果"
         }
       ],
       "rewards": {
@@ -3456,6 +3886,11 @@
           "target": "rift_shard",
           "count": 3,
           "text": "收集 3 块裂隙碎片"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_111_fragment_cache",
+          "text": "向管理员 维克交付任务成果"
         }
       ],
       "rewards": {
@@ -3479,6 +3914,11 @@
           "target": "scholar_robe",
           "count": 3,
           "text": "收集 3 件学者长袍材料"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_112_archive_inventory",
+          "text": "向档案员 西奥多交付任务成果"
         }
       ],
       "rewards": {
@@ -3503,6 +3943,11 @@
           "target": "cinder_golem",
           "count": 1,
           "text": "击碎 1 尊余烬魔像"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_113_helm_forge",
+          "text": "向铁匠 格朗交付任务成果"
         }
       ],
       "rewards": {
@@ -3527,6 +3972,11 @@
           "target": "grass_stalker",
           "count": 3,
           "text": "猎杀 3 只草原潜猎者"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_114_boot_trials",
+          "text": "向鞋匠 奥斯汀交付任务成果"
         }
       ],
       "rewards": {
@@ -3550,6 +4000,11 @@
           "type": "reach",
           "target": "glacier_watch",
           "text": "登上冰川守望台"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_115_glacier_watch",
+          "text": "向哨兵 艾尔莎交付任务成果"
         }
       ],
       "rewards": {
@@ -3574,6 +4029,11 @@
           "target": "rift_shard",
           "count": 4,
           "text": "收集 4 块裂隙碎片"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_116_ice_warden_key",
+          "text": "向看门人 雷克交付任务成果"
         }
       ],
       "rewards": {
@@ -3597,6 +4057,11 @@
           "type": "reach",
           "target": "grove_library",
           "text": "进入林中图书馆"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_117_grove_library",
+          "text": "向图书管理员 莉拉交付任务成果"
         }
       ],
       "rewards": {
@@ -3620,6 +4085,11 @@
           "type": "reach",
           "target": "mire_shrine",
           "text": "为亡灵祈祷"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_118_mire_rest",
+          "text": "向僧侣 托马斯交付任务成果"
         }
       ],
       "rewards": {
@@ -3649,6 +4119,11 @@
           "type": "reach",
           "target": "dune_pass",
           "text": "穿过沙丘隘口"
+        },
+        {
+          "type": "talk",
+          "target": "npc_side_119_dune_pass",
+          "text": "向隘口守卫 卡西交付任务成果"
         }
       ],
       "rewards": {

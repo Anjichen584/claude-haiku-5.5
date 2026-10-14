@@ -16340,6 +16340,2476 @@
           "next": null
         }
       }
+    },
+    {
+      "id": "npc_side_02_frost_bounty_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "赏金官 哈尔德",
+          "text": "四只霜狼的赏金，我已经准备好了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "赏金官 哈尔德",
+          "text": "霜狼的牙齿我收下了，这是你的证明。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "赏金官 哈尔德",
+          "text": "赏金按规矩付，不多不少。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "赏金官 哈尔德",
+          "text": "北边还有更大的悬赏，等你准备好再来。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_03_snow_herbs_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "草药商 薇拉",
+          "text": "两块裂隙碎片，正好是我熬药的引子。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "草药商 薇拉",
+          "text": "雪原草药我还没采到，但碎片能让草药长得更快。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "草药商 薇拉",
+          "text": "你的诚意我记下了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "草药商 薇拉",
+          "text": "下次采药，记得带上雪铲。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_04_ember_eggs_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "蛋贩 格伦",
+          "text": "三只余烬蜥蜴被击败，它们的蛋我会妥善照看。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "蛋贩 格伦",
+          "text": "蛋壳还有余温，过几天会孵出小蜥蜴。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "蛋贩 格伦",
+          "text": "孵出来以后，我给你留一只。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "蛋贩 格伦",
+          "text": "余烬洞的蜥蜴窝，我以后再慢慢找。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_05_sand_map_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "地图商 阿里",
+          "text": "你已经抵达沙丘哨站，这张地图的最后一角我替你补全了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "地图商 阿里",
+          "text": "哨站的井在北边，第二口井最深。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "地图商 阿里",
+          "text": "地图会随沙暴变化，别太相信第一眼。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "地图商 阿里",
+          "text": "下次要去哪儿，先来问我。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_06_bog_frogs_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "猎蛙人 莫里",
+          "text": "三只泥沼蟾蜍，你身上都是泥了吧。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "猎蛙人 莫里",
+          "text": "蟾蜍的皮我卖给药铺，换来的钱分你一份。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "猎蛙人 莫里",
+          "text": "剩下的蟾蜍毒，留给懂的人。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "猎蛙人 莫里",
+          "text": "泥沼涨水的时候，我还需要你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_07_hollow_wings_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "羽毛匠 露辛达",
+          "text": "四只空洞猫头鹰，翅膀还是完整的。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "羽毛匠 露辛达",
+          "text": "空洞猫头鹰的羽毛做笔最好，写下的字不会褪色。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "羽毛匠 露辛达",
+          "text": "我替你写一封感谢信，放进你的行囊。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "羽毛匠 露辛达",
+          "text": "夜里要是听到翅膀声，别抬头。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_08_mossy_bark_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "木匠 艾伦",
+          "text": "两只树皮鹿的皮，还有两块碎片，苔藓林地的屋顶有救了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "木匠 艾伦",
+          "text": "树皮我用来补屋顶，碎片我放进林子的井里。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "木匠 艾伦",
+          "text": "林子里的井水会变甜，你尝尝看。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "木匠 艾伦",
+          "text": "下次再来，我请你喝苔藓茶。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_09_grass_hunt_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "猎手头目 托克",
+          "text": "五只草丛潜伏者，草原终于能安心放牧了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "猎手头目 托克",
+          "text": "它们的皮我卖给了商队，钱分你一份。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "猎手头目 托克",
+          "text": "草丛里还有别的声音，你听见了吗？",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "猎手头目 托克",
+          "text": "下次狩猎，记得先听风。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_10_raider_camp_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "驿站长 萨拉",
+          "text": "四名劫匪已经被赶走，驿站今晚能开门了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "驿站长 萨拉",
+          "text": "他们留下的粮食我清点过了，够冬天用。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "驿站长 萨拉",
+          "text": "你是这片草原的朋友。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "驿站长 萨拉",
+          "text": "驿站的门，永远为你开着。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_11_gravel_mite_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "矿工 格雷",
+          "text": "六只碎石螨，矿井里的支柱又结实了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "矿工 格雷",
+          "text": "螨虫的壳很硬，我用它做了护目镜。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "矿工 格雷",
+          "text": "你在地底的样子，像个真正的矿工。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "矿工 格雷",
+          "text": "下次来矿井，我请你吃一块干面包。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_12_void_study_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "研究员 维克托",
+          "text": "三只虚空飞蛾的样本，我终于能看清它们的翅纹了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "研究员 维克托",
+          "text": "翅纹像一种文字，我还在努力读懂。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "研究员 维克托",
+          "text": "样本我会妥善保存。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "研究员 维克托",
+          "text": "你要是读懂了，告诉我。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_13_rot_root_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "园丁 奥利",
+          "text": "五只腐化爬虫被清除，腐根终于断了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "园丁 奥利",
+          "text": "断根的地方，我种了一棵新的小树。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "园丁 奥利",
+          "text": "它会慢慢长大，替我们记住你。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "园丁 奥利",
+          "text": "下次腐根再冒头，我还找你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_14_swamp_cure_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "草药师 玛尔塔",
+          "text": "四块裂隙碎片，我能用它们熬出沼泽解药了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "草药师 玛尔塔",
+          "text": "解药的配方我改了三次，这次应该能成。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "草药师 玛尔塔",
+          "text": "第一瓶给最需要的孩子。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "草药师 玛尔塔",
+          "text": "泥沼的人会记得你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_15_icicle_bells_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "铃匠 伊娃",
+          "text": "五只冰晶软泥被清理，冰晶铃铛终于能响了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "铃匠 伊娃",
+          "text": "铃声能驱散雪原的寒意。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "铃匠 伊娃",
+          "text": "这一串铃铛送给你，走路时它会替你报平安。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "铃匠 伊娃",
+          "text": "下次雪落下来，我在门口等你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_16_dust_letters_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "信使 哈米德",
+          "text": "信已经送到摄政宫殿外，守卫收下了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "信使 哈米德",
+          "text": "收信人没有出来，但信封上的印章亮了一下。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "信使 哈米德",
+          "text": "他会回信的，我感觉得到。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "信使 哈米德",
+          "text": "沙海的信，总是慢一些。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_17_cinder_forge_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "熔炉工 格朗",
+          "text": "两个煤渣傀儡被摧毁，熔炉终于又能烧起来了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "熔炉工 格朗",
+          "text": "煤渣傀儡的核心，我熔成了一块好钢。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "熔炉工 格朗",
+          "text": "委托的钱照付，这块钢也送你。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "熔炉工 格朗",
+          "text": "下次熔炉有活，我还找你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_18_thorn_garden_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "园丁 艾瑞",
+          "text": "五个荆棘精灵被驱散，花园里的玫瑰终于能开了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "园丁 艾瑞",
+          "text": "荆棘的刺也被修剪得很整齐。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "园丁 艾瑞",
+          "text": "花园的门为你开着。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "园丁 艾瑞",
+          "text": "下次来，我给你摘一朵最红的。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_19_boar_trail_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "猎人 瑞斯",
+          "text": "四只苔野猪，足迹全断在了我们的陷阱前。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "猎人 瑞斯",
+          "text": "你的箭法比我想的还准。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "猎人 瑞斯",
+          "text": "野猪的肉我分给了村里的孩子。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "猎人 瑞斯",
+          "text": "下次追踪，记得留一串脚印给我看。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_20_ghost_river_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "河边老人 贝尔",
+          "text": "三只沼泽幽影被击散，河面不再冒雾了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "河边老人 贝尔",
+          "text": "河水清了，我又能看见河底的石头。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "河边老人 贝尔",
+          "text": "老人对你说一声谢谢。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "河边老人 贝尔",
+          "text": "幽灵河的故事，以后我讲给你听。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_21_hound_pack_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "驯犬师 格里",
+          "text": "两只余烬蜥蜴，两只霜狼，你两边都跑了一趟。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "驯犬师 格里",
+          "text": "猎犬群的头领已经不再咆哮。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "驯犬师 格里",
+          "text": "它们会听你的口令了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "驯犬师 格里",
+          "text": "下次猎犬要是乱跑，我再找你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_22_scorpion_tail_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "收购商 哈林",
+          "text": "四只沙蝎的尾巴，我全部收下了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "收购商 哈林",
+          "text": "蝎尾的毒能卖个好价钱。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "收购商 哈林",
+          "text": "这笔钱你拿着，路上买点水。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "收购商 哈林",
+          "text": "沙丘的蝎子，永远收不完。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_23_rat_nest_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "仓库管家 托比",
+          "text": "六只霜鼠，粮仓终于干净了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "仓库管家 托比",
+          "text": "老鼠留下的洞，我用冰封住了。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "仓库管家 托比",
+          "text": "粮食我分给了营地的每个人。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "仓库管家 托比",
+          "text": "下次仓库再遭鼠害，我还找你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_24_leech_spring_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "泉水守 丽莎",
+          "text": "六只沼泽水蛭，泉水终于清了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "泉水守 丽莎",
+          "text": "水里还有一股奇怪的甜味。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "泉水守 丽莎",
+          "text": "我替你打了一壶，喝一口会想起家。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "泉水守 丽莎",
+          "text": "泉边的小路，你随时可以来。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_25_ash_crows_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "驱鸦人 西蒙",
+          "text": "六只灰烬乌鸦被赶走，田里的麦子保住了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "驱鸦人 西蒙",
+          "text": "乌鸦飞走前留下了一根黑色羽毛。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "驱鸦人 西蒙",
+          "text": "羽毛我替你收着。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "驱鸦人 西蒙",
+          "text": "下次它们再来，我还用这套办法。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_26_marsh_wraith_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "守夜人 乔治",
+          "text": "五个沼泽幽影被击散，夜里终于安静了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "守夜人 乔治",
+          "text": "今晚的钟声，我能敲完整整一夜。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "守夜人 乔治",
+          "text": "你替我们挡住了黑暗。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "守夜人 乔治",
+          "text": "明天早上，我请你吃热汤。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_27_rift_scraps_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "收购人 伊莲娜",
+          "text": "八块裂隙碎片，这是我收到的最多的一次。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "收购人 伊莲娜",
+          "text": "碎片的价钱照旧，我多给你一份好酒。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "收购人 伊莲娜",
+          "text": "碎片的用途我不问，我只负责收。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "收购人 伊莲娜",
+          "text": "下次有碎片，记得先来找我。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_28_wild_hunt_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "猎头 布鲁诺",
+          "text": "野猪头目已经倒下，荒原上的野兽终于散了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "猎头 布鲁诺",
+          "text": "它的獠牙我留给了你。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "猎头 布鲁诺",
+          "text": "荒原的人会记住这场狩猎。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "猎头 布鲁诺",
+          "text": "这一次，你是真正的猎手。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_29_grave_moss_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "墓守 亚当",
+          "text": "三只腐化爬虫，三块裂隙碎片，墓苔终于不再长在墓碑上。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "墓守 亚当",
+          "text": "碑上的名字又清楚了一些。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "墓守 亚当",
+          "text": "你替死去的人清理了一点痕迹。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "墓守 亚当",
+          "text": "下次来，替我擦一擦墓碑。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_32_ice_warden_watch_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "巡守员 赫尔曼",
+          "text": "冰封守卫已经倒下，湖边终于不再有那种蓝光。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "巡守员 赫尔曼",
+          "text": "它的核心碎片我替你收着，别在湖边久留。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "巡守员 赫尔曼",
+          "text": "守望的任务，你替我们完成了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "巡守员 赫尔曼",
+          "text": "明天的巡逻，我请你一起去看看湖面。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_33_snow_hare_stew_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "厨师 玛丽",
+          "text": "六只雪兔，今晚的炖汤有肉了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "厨师 玛丽",
+          "text": "兔子皮我留着做了手套，给冬天的孩子们。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "厨师 玛丽",
+          "text": "炖汤的第一碗，先给你盛。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "厨师 玛丽",
+          "text": "下次雪兔多了，我再请你来。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_34_ember_tracks_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "猎人 托马斯",
+          "text": "五只余烬猎犬，它们的巢穴我也找到了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "猎人 托马斯",
+          "text": "巢穴里有很多旧爪印，像是被人养过。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "猎人 托马斯",
+          "text": "巢穴的位置我画在了地图上。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "猎人 托马斯",
+          "text": "这个秘密，先别告诉别人。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_35_crow_feathers_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "羽毛商 米拉",
+          "text": "四只灰烬乌鸦，学者长袍材料也到手了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "羽毛商 米拉",
+          "text": "乌鸦的羽毛我分类好了，黑的卖给画师，灰的留给自己。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "羽毛商 米拉",
+          "text": "长袍材料很好，缝出来的袍子会很暖。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "羽毛商 米拉",
+          "text": "下次有新羽毛，我还找你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_36_lizard_scale_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "皮匠 莉娜",
+          "text": "三只余烬蜥蜴，灰烬板甲材料也齐了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "皮匠 莉娜",
+          "text": "蜥蜴鳞片很亮，像是还带着火。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "皮匠 莉娜",
+          "text": "这些鳞片能做成很硬的护甲。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "皮匠 莉娜",
+          "text": "下次我做好甲，穿给你看。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_37_scorpion_venom_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "毒药商 哈桑",
+          "text": "五只沙漠蝎，毒囊都完整地取了下来。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "毒药商 哈桑",
+          "text": "沙蝎的毒很烈，我只卖给懂得用的人。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "毒药商 哈桑",
+          "text": "这一批毒，我分了一瓶给你。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "毒药商 哈桑",
+          "text": "路上小心，别让毒沾到手上。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_38_cinder_core_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "熔炉匠 奥格",
+          "text": "两尊余烬魔像被击碎，三块裂隙碎片也到手了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "熔炉匠 奥格",
+          "text": "魔像的核心还在发热，我把它放进了炉子。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "熔炉匠 奥格",
+          "text": "炉火会烧得更旺，能锻出更好的铁。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "熔炉匠 奥格",
+          "text": "熔炉的门，你随时可以进来。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_39_moss_boar_hunt_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "猎户 伯特",
+          "text": "四头苔原野猪，村里的冬天有肉吃了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "猎户 伯特",
+          "text": "野猪的獠牙我留给了你，那是你的战利品。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "猎户 伯特",
+          "text": "剩下的肉我分给了每一户人家。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "猎户 伯特",
+          "text": "下次苔原上有野猪群，我还找你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_40_thorn_seed_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "园艺师 米娅",
+          "text": "五个荆棘精灵被清除，你还深入了荆棘林。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "园艺师 米娅",
+          "text": "荆棘种子我收集到了一小袋。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "园艺师 米娅",
+          "text": "这些种子我会种在林子边缘，让它们替我们守着。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "园艺师 米娅",
+          "text": "林子深处的路，你比我更熟悉了。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_41_stag_antler_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "鹿角匠 奥尔",
+          "text": "三只树皮鹿，古鹿长老也倒下了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "鹿角匠 奥尔",
+          "text": "古鹿的鹿角我磨成了一把梳子，送给了林子里的女孩。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "鹿角匠 奥尔",
+          "text": "长老的灵魂应该会安息了吧。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "鹿角匠 奥尔",
+          "text": "你替森林做了一件很大的事。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_43_stalker_trail_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "猎户 卢卡",
+          "text": "六只草原潜猎者，草丛里终于安静了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "猎户 卢卡",
+          "text": "它们的皮很薄，但很有韧性，我做成了轻甲。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "猎户 卢卡",
+          "text": "草丛里还有它们的足迹，我记下来了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "猎户 卢卡",
+          "text": "下次狩猎，我请你喝马奶茶。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_44_hyena_pack_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "驿站管理员 扎克",
+          "text": "五只沙尘鬣狗，铁剑也到手了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "驿站管理员 扎克",
+          "text": "驿站的门终于能安心开了。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "驿站管理员 扎克",
+          "text": "这把铁剑我修过，锋利得很。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "驿站管理员 扎克",
+          "text": "下次鬣狗群再来，我还找你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_45_raider_camp_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "掠夺者 瓦尔",
+          "text": "六名平原掠夺者，野猪领主也倒下了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "掠夺者 瓦尔",
+          "text": "掠夺营地的火堆我已经熄灭。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "掠夺者 瓦尔",
+          "text": "我会把抢来的东西还给村民。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "掠夺者 瓦尔",
+          "text": "你做得没错，草原需要这样的人。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_46_bog_leech_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "渔夫 洛克",
+          "text": "六只沼泽水蛭，靴子材料也找到了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "渔夫 洛克",
+          "text": "水蛭的身体很滑，我用它做了鱼饵。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "渔夫 洛克",
+          "text": "靴子的材料我替你缝好了一双。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "渔夫 洛克",
+          "text": "下次泥沼涨水，我还找你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_47_toad_bounty_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "赏金官 格雷",
+          "text": "四只泥沼蟾蜍，赏金照付。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "赏金官 格雷",
+          "text": "蟾蜍的毒囊我卖给药铺，换来的钱分你一半。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "赏金官 格雷",
+          "text": "泥沼的人都知道你的名字了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "赏金官 格雷",
+          "text": "下次有赏金，我第一个找你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_48_wraith_warning_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "神龛祭司 莉娜",
+          "text": "三个沼泽幽影被驱散，你也到了泥沼神龛。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "神龛祭司 莉娜",
+          "text": "神龛里的碎镜还在，它映出了你的影子。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "神龛祭司 莉娜",
+          "text": "别盯着它看太久。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "神龛祭司 莉娜",
+          "text": "谢谢你替神龛守住了这一夜。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_49_rot_cleanup_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "清洁工 布兰",
+          "text": "七只腐化爬行者，腐化的气味终于散了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "清洁工 布兰",
+          "text": "清理出来的泥土，我种上了一排小树。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "清洁工 布兰",
+          "text": "这片地又能住人了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "清洁工 布兰",
+          "text": "你是这里的英雄。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_50_rift_moths_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "收藏家 赛琳",
+          "text": "四只虚空飞蛾，裂隙刃的材料也到手了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "收藏家 赛琳",
+          "text": "飞蛾的鳞粉我留了一小瓶，给你做护目镜。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "收藏家 赛琳",
+          "text": "裂隙刃的材料很沉，小心拿。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "收藏家 赛琳",
+          "text": "下次我再收集新的翅膀，你还来吗？",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_53_war_chief_banner_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "旗手 卡洛琳",
+          "text": "战争酋长已经倒下，三名平原掠夺者也被击败。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "旗手 卡洛琳",
+          "text": "战旗我替你收起来了，它会记住这场战斗。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "旗手 卡洛琳",
+          "text": "酒杯里的酒，我替你敬一杯。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "旗手 卡洛琳",
+          "text": "草原的风会记得你的名字。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_56_shaman_mask_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "面具匠 诺雅",
+          "text": "泥沼萨满已经倒下，面具也到手了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "面具匠 诺雅",
+          "text": "面具上的花纹我认得，是神龛的图案。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "面具匠 诺雅",
+          "text": "你回到神龛时，祭司会感激你。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "面具匠 诺雅",
+          "text": "这张面具我替你好好保存。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_58_colossus_rot_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "清道夫 比尔",
+          "text": "腐化巨像已经倒下，五只爬行者也清理干净了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "清道夫 比尔",
+          "text": "巨像的腐肉我埋进了深坑里。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "清道夫 比尔",
+          "text": "地面终于不再冒臭气。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "清道夫 比尔",
+          "text": "这份功劳，我会告诉村里的人。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_59_alpha_fang_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "驯兽师 鲁道夫",
+          "text": "霜狼头领的獠牙，还有三只霜狼，狼群算是散了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "驯兽师 鲁道夫",
+          "text": "獠牙我磨成了一条项链，挂在了我的屋里。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "驯兽师 鲁道夫",
+          "text": "狼群的首领倒下，它们会四散。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "驯兽师 鲁道夫",
+          "text": "北方的夜，又安静了一些。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_62_stride_race_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "赛跑员 托尼",
+          "text": "四只草原潜猎者，疾行靴的材料也找到了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "赛跑员 托尼",
+          "text": "靴子的材料很轻，穿上后跑起来像风。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "赛跑员 托尼",
+          "text": "比赛我替你报了名，下次一起跑。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "赛跑员 托尼",
+          "text": "别忘了，赢的人请喝酒。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_64_snowbound_camp_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "营地守卫 阿兰",
+          "text": "六只冰晶史莱姆被清理，你也抵达了霜原营地。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "营地守卫 阿兰",
+          "text": "营地的火终于烧起来了。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "营地守卫 阿兰",
+          "text": "大家都在等你回来。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "营地守卫 阿兰",
+          "text": "下次雪落下来，一起守夜吧。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_67_hollow_bell_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "钟楼守 弗朗茨",
+          "text": "五只空洞猫头鹰，四只灰烬乌鸦，钟楼的夜终于安静了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "钟楼守 弗朗茨",
+          "text": "钟声会在明天早上重新响起来。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "钟楼守 弗朗茨",
+          "text": "它们的羽毛我挂在钟绳上，像一串风铃。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "钟楼守 弗朗茨",
+          "text": "下次夜里钟声乱响，我还找你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_68_rift_rat_cleanup_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "管事 哈勒",
+          "text": "八只霜原鼠，六只砂砾螨，仓库终于清干净了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "管事 哈勒",
+          "text": "鼠洞和螨洞我都用碎石封上了。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "管事 哈勒",
+          "text": "粮食可以放心堆到屋顶。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "管事 哈勒",
+          "text": "下次再有鼠害，我还叫你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_73_tundra_hunt_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "猎人 奥斯卡",
+          "text": "八只雪兔，四只冰晶史莱姆，苔原的狩猎算是完成了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "猎人 奥斯卡",
+          "text": "雪兔的毛很暖，我分给了村里的老人。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "猎人 奥斯卡",
+          "text": "冰晶史莱姆的核心，我磨成了一块透明的石头。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "猎人 奥斯卡",
+          "text": "下次狩猎，还带上我的狗。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_77_moss_bridge_repair_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "石匠 拉斐尔",
+          "text": "三尊苔藓魔像被击碎，三块碎片也收齐了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "石匠 拉斐尔",
+          "text": "苔藓桥的石缝我已经补好了。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "石匠 拉斐尔",
+          "text": "桥上现在可以安心走马车。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "石匠 拉斐尔",
+          "text": "桥修好了，谢谢你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_78_moss_boar_stew_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "厨子 格瑞",
+          "text": "五头苔原野猪，今晚的炖汤有了主料。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "厨子 格瑞",
+          "text": "野猪的骨头我熬成了高汤。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "厨子 格瑞",
+          "text": "第一碗，我替你盛好了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "厨子 格瑞",
+          "text": "下次再有野猪，我还等你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_80_wild_boar_tusks_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "商人 布鲁",
+          "text": "野猪领主倒下了，獠牙和铁剑也到手了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "商人 布鲁",
+          "text": "獠牙在黑市上很值钱，但我替你留了一份好价。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "商人 布鲁",
+          "text": "铁剑我磨过一遍，拿着顺手。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "商人 布鲁",
+          "text": "这笔买卖，我们都赚了。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_81_bog_mapping_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "测绘员 诺亚",
+          "text": "你测量了沼泽的边缘，还猎杀了四只泥沼蟾蜍。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "测绘员 诺亚",
+          "text": "湿地的位置我都标在了新地图上。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "测绘员 诺亚",
+          "text": "地图拿好，它会比旧图准确很多。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "测绘员 诺亚",
+          "text": "下次沼泽变化，我再请你帮忙。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_83_rot_sample_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "研究员 莫德",
+          "text": "六只腐化爬行者，学者长袍材料也收到了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "研究员 莫德",
+          "text": "样本我装在瓶子里，已经放进了研究室。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "研究员 莫德",
+          "text": "腐化的原因我还没找到，但有了线索。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "研究员 莫德",
+          "text": "谢谢你的样本，它很有价值。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_84_gravel_mine_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "矿工头 格雷厄姆",
+          "text": "八只砂砾螨，灰烬头盔也到手了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "矿工头 格雷厄姆",
+          "text": "头盔戴上去很稳，矿工们会安心下井。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "矿工头 格雷厄姆",
+          "text": "矿井的支柱我让人检查了一遍。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "矿工头 格雷厄姆",
+          "text": "下次矿井要扩建，我还找你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_85_void_moth_wings_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "画家 莉亚",
+          "text": "五只虚空飞蛾，裂隙刃的材料也齐了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "画家 莉亚",
+          "text": "翅膀在月光下显出了图案，我终于能画下来了。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "画家 莉亚",
+          "text": "画好的那幅，我送给你。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "画家 莉亚",
+          "text": "下次飞蛾再来，我还想看看它们的光。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_86_rift_fragment_hunt_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "学者 奥斯卡",
+          "text": "四块裂隙碎片怪被击碎，碎片也收齐了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "学者 奥斯卡",
+          "text": "碎片的排列我记下了，它们在慢慢拼成一个图形。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "学者 奥斯卡",
+          "text": "图形的最后一角，还需要你去找。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "学者 奥斯卡",
+          "text": "你的研究，比我想象的更有用。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_87_scholar_lamp_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "灯匠 琳达",
+          "text": "两件学者长袍材料，你也回到了灰烬档案馆。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "灯匠 琳达",
+          "text": "油灯我替你点上了，光很稳。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "灯匠 琳达",
+          "text": "档案馆的门，永远会为你留一盏灯。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "灯匠 琳达",
+          "text": "下次我需要长袍材料，还找你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_88_stride_courier_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "驿站长 汉娜",
+          "text": "疾行靴的材料已到手，信也送到了灰烬之路营地。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "驿站长 汉娜",
+          "text": "营地的人收到信后都很高兴。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "驿站长 汉娜",
+          "text": "靴子的材料我替你缝好了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "驿站长 汉娜",
+          "text": "下次有信，我还派你去。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_89_ash_helm_repair_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "修补匠 格雷格",
+          "text": "两顶灰烬头盔，三只灰烬乌鸦，头盔都修好了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "修补匠 格雷格",
+          "text": "修补的地方我用银线缝了一圈，很结实。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "修补匠 格雷格",
+          "text": "乌鸦的羽毛我做成了头盔的装饰。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "修补匠 格雷格",
+          "text": "这样的头盔，能保你平安。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_91_frost_rat_nest_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "猎人 科尔",
+          "text": "六只霜原鼠，裂隙碎片也找到了一块。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "猎人 科尔",
+          "text": "鼠窝我已经用冰封住了，不会再出来。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "猎人 科尔",
+          "text": "碎片我放进了火里，火焰变成了蓝色。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "猎人 科尔",
+          "text": "下次霜鼠再冒头，我还找你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_92_slime_cores_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "炼金师 伊莎",
+          "text": "八只冰晶史莱姆，它们的核心我都收好了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "炼金师 伊莎",
+          "text": "核心放进药剂里，能做成一种很有用的冷却剂。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "炼金师 伊莎",
+          "text": "第一瓶，我送给你。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "炼金师 伊莎",
+          "text": "下次冰晶史莱姆多了，我还要。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_93_lizard_scales_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "皮匠 玛琳",
+          "text": "五只余烬蜥蜴，鳞片都是活着剥下来的。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "皮匠 玛琳",
+          "text": "鳞片很亮，做出来的护甲会很耐热。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "皮匠 玛琳",
+          "text": "我替你挑了最好的那一片。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "皮匠 玛琳",
+          "text": "下次要做甲，还找我。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_94_cinder_fragments_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "熔炉工 奥利弗",
+          "text": "两尊余烬魔像，两块裂隙碎片，熔炉的火又烧旺了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "熔炉工 奥利弗",
+          "text": "魔像的碎石我留着铺路。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "熔炉工 奥利弗",
+          "text": "碎片我放进了炉子，火焰更亮。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "熔炉工 奥利弗",
+          "text": "熔炉会记住你的功劳。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_95_crow_nest_gather_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "驯鸦人 阿尔玛",
+          "text": "六只灰烬乌鸦，它们的巢我也收拾好了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "驯鸦人 阿尔玛",
+          "text": "巢里的羽毛很干净，我分给了孩子们做玩具。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "驯鸦人 阿尔玛",
+          "text": "乌鸦会记得你，它们以后不会再来扰民。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "驯鸦人 阿尔玛",
+          "text": "下次它们再飞来，我还找你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_96_hound_pups_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "驯犬师 皮特",
+          "text": "六只余烬猎犬，它们的幼崽已经被送回了母亲身边。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "驯犬师 皮特",
+          "text": "猎犬的项圈我替它们取了下来。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "驯犬师 皮特",
+          "text": "它们终于不用再被驱使了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "驯犬师 皮特",
+          "text": "谢谢你替它们找到了回家的路。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_97_dune_scorpions_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "向导 阿米尔",
+          "text": "六只沙漠蝎，沙丘的路终于清了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "向导 阿米尔",
+          "text": "蝎子的壳我留给了你，做护身符很合适。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "向导 阿米尔",
+          "text": "沙丘的路，我可以带你去任何一个地方。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "向导 阿米尔",
+          "text": "下次沙暴前，来找我。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_98_hyena_den_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "驿站管理员 扎克",
+          "text": "六只沙尘鬣狗，鬣狗的巢穴也找到了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "驿站管理员 扎克",
+          "text": "巢穴里有很多骨头，我替那些旅人立了碑。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "驿站管理员 扎克",
+          "text": "驿站的人今晚可以安心睡觉了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "驿站管理员 扎克",
+          "text": "这份功劳，我记在驿站的账本上。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_99_raider_supplies_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "军需官 海伦",
+          "text": "一把铁剑，四名平原掠夺者，补给的去向终于查清了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "军需官 海伦",
+          "text": "补给被藏在营地的地窖里，我已经取回来了。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "军需官 海伦",
+          "text": "营地的人都在感谢你。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "军需官 海伦",
+          "text": "这把剑，就当是报酬。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_100_boar_herd_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "牧人 奥伦",
+          "text": "六头苔原野猪，它们已经被引到了苔藓林地。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "牧人 奥伦",
+          "text": "野猪在林地边缘安了家，不会再跑出来。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "牧人 奥伦",
+          "text": "林子里的草长得比去年更高。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "牧人 奥伦",
+          "text": "下次野猪群迁徙，我还找你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_101_stag_horns_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "猎人 阿尔弗",
+          "text": "五只树皮鹿，它们的鹿角我收齐了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "猎人 阿尔弗",
+          "text": "鹿角会在春天重新长出来，我把它们放回了林子里。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "猎人 阿尔弗",
+          "text": "剩下的角，我做成了灯架。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "猎人 阿尔弗",
+          "text": "下次林子里有鹿群，我还找你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_102_grove_sprouts_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "园丁 米拉",
+          "text": "八个荆棘精灵被清除，林地的新芽终于能长出来了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "园丁 米拉",
+          "text": "裂隙碎片我埋进了土里，它会帮新芽长得更快。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "园丁 米拉",
+          "text": "小树苗已经冒出了嫩叶。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "园丁 米拉",
+          "text": "你替林子保住了春天。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_103_hollow_feather_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "羽毛商 罗西",
+          "text": "六只空洞猫头鹰，学者长袍材料也收齐了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "羽毛商 罗西",
+          "text": "空洞猫头鹰的羽毛我分类好了，最白的留给你。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "羽毛商 罗西",
+          "text": "长袍材料我替你缝进了袍子里。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "羽毛商 罗西",
+          "text": "下次羽毛多了，我还找你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_104_stalker_tracks_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "追踪者 海德",
+          "text": "六只草原潜猎者，山脊的踪迹也追到了尽头。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "追踪者 海德",
+          "text": "它们留下的记号，我替你标在地图上。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "追踪者 海德",
+          "text": "山脊的另一边，还有新的脚印。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "追踪者 海德",
+          "text": "下次追踪，我们一起去。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_105_toad_eggs_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "渔夫 艾伦",
+          "text": "六只泥沼蟾蜍，蟾蜍卵里的裂隙碎片也找到了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "渔夫 艾伦",
+          "text": "卵我放进了湖里，它们会在水里慢慢长大。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "渔夫 艾伦",
+          "text": "碎片被我收进了渔网。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "渔夫 艾伦",
+          "text": "湖面会记住你的名字。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_106_leech_clean_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "医师 露娜",
+          "text": "八只沼泽水蛭，沼泽终于清了淤。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "医师 露娜",
+          "text": "水蛭我留了几只，给病人用。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "医师 露娜",
+          "text": "清完淤的水，喝起来是甜的。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "医师 露娜",
+          "text": "下次泥沼涨水，我还需要你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_107_wraith_lanterns_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "僧人 康",
+          "text": "六个沼泽幽影被驱散，灯笼也挂回了泥沼神龛。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "僧人 康",
+          "text": "灯火亮起来的那一刻，我看见了一个笑脸。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "僧人 康",
+          "text": "幽影不会再迷路了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "僧人 康",
+          "text": "神龛的规矩，你记得很清楚。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_108_rot_pits_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "守坑人 杜加",
+          "text": "八只腐化爬行者，腐化坑也封闭了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "守坑人 杜加",
+          "text": "封口的石头我亲手压了一遍。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "守坑人 杜加",
+          "text": "坑底的气味终于散了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "守坑人 杜加",
+          "text": "下次雨夜，我睡得安稳多了。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_109_mite_tunnels_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "矿工 比尔",
+          "text": "十只砂砾螨，隧道终于通了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "矿工 比尔",
+          "text": "隧道里的支柱我都检查过了。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "矿工 比尔",
+          "text": "矿工们可以安心下井了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "矿工 比尔",
+          "text": "下次挖矿，还请你来帮忙。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_110_moth_lanterns_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "灯匠 奥莉维亚",
+          "text": "四只虚空飞蛾，裂隙刃的材料也到了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "灯匠 奥莉维亚",
+          "text": "飞蛾的翅膀我做成了灯罩，光是紫色的。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "灯匠 奥莉维亚",
+          "text": "裂隙刃的材料我替你好好放着。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "灯匠 奥莉维亚",
+          "text": "第一盏灯，送给你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_111_fragment_cache_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "管理员 维克",
+          "text": "五块裂隙碎片怪被击碎，碎片也收齐了三块。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "管理员 维克",
+          "text": "储藏室的门我替你打开了。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "管理员 维克",
+          "text": "碎片的摆放，我替你整理好了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "管理员 维克",
+          "text": "下次有新的碎片，我还等你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_112_archive_inventory_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "档案员 西奥多",
+          "text": "你回到了灰烬档案馆，三件学者长袍材料也到了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "档案员 西奥多",
+          "text": "盘点的结果，我替你记在了账本上。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "档案员 西奥多",
+          "text": "那本缺失的书，我还在找。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "档案员 西奥多",
+          "text": "长袍我替你收好了，别弄丢了。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_113_helm_forge_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "铁匠 格朗",
+          "text": "三顶灰烬头盔，一尊余烬魔像，头盔的锻造有了着落。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "铁匠 格朗",
+          "text": "魔像的核心我熔进了铆钉里。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "铁匠 格朗",
+          "text": "头盔做好了，我替你留了一顶。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "铁匠 格朗",
+          "text": "下次锻造，还请你来帮忙。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_114_boot_trials_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "鞋匠 奥斯汀",
+          "text": "一双疾行靴的材料，三只草原潜猎者，靴子的试炼通过了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "鞋匠 奥斯汀",
+          "text": "靴子的鞋底我加了一层软皮，跑起来更轻。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "鞋匠 奥斯汀",
+          "text": "穿上它，你会跑得很快。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "鞋匠 奥斯汀",
+          "text": "下次试炼，我还给你做一双。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_115_glacier_watch_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "哨兵 艾尔莎",
+          "text": "六只霜狼，你也登上了冰川守望台。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "哨兵 艾尔莎",
+          "text": "台上的风很冷，但守望的火一直亮着。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "哨兵 艾尔莎",
+          "text": "北方的狼群，今晚不会再靠近了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "哨兵 艾尔莎",
+          "text": "守望台的钥匙，我替你留着。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_116_ice_warden_key_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "看门人 雷克",
+          "text": "冰封守卫已经倒下，四块裂隙碎片也收齐了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "看门人 雷克",
+          "text": "冰钥匙我替你镶好了，它会发出淡蓝色的光。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "看门人 雷克",
+          "text": "北方的那扇门，现在可以打开了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "看门人 雷克",
+          "text": "门后的东西，你要小心。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_117_grove_library_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "图书管理员 莉拉",
+          "text": "四个荆棘精灵被清除，你也进入了林中图书馆。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "图书管理员 莉拉",
+          "text": "书架上的书，有的在低声说话。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "图书管理员 莉拉",
+          "text": "你读到的那一页，我替你记了下来。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "图书管理员 莉拉",
+          "text": "下次来，我请你喝一杯树汁。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_118_mire_rest_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "僧侣 托马斯",
+          "text": "四个沼泽幽影被驱散，你也为亡灵做了祈祷。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "僧侣 托马斯",
+          "text": "祈祷的声音很轻，但湖面平静了。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "僧侣 托马斯",
+          "text": "亡灵的名字，我一个一个念过了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "僧侣 托马斯",
+          "text": "愿他们安息。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "npc_side_119_dune_pass_delivery",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "隘口守卫 卡西",
+          "text": "四只沙蝎，四只沙尘鬣狗，你也穿过了沙丘隘口。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "隘口守卫 卡西",
+          "text": "风暴停下的时候，我看见了通往南方的路。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "隘口守卫 卡西",
+          "text": "通行证我替你写好了。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "隘口守卫 卡西",
+          "text": "南方的路不好走，记得带水。",
+          "next": null
+        }
+      }
     }
   ]
 }

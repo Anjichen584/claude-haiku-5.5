@@ -125,6 +125,576 @@
       "name": "桥卫 托马斯",
       "location": "frozen_bridge",
       "dialogueId": "side_90_bridge_guard_delivery"
+    },
+    {
+      "id": "npc_side_02_frost_bounty",
+      "name": "赏金官 哈尔德",
+      "location": "snow_gate",
+      "dialogueId": "npc_side_02_frost_bounty_delivery"
+    },
+    {
+      "id": "npc_side_03_snow_herbs",
+      "name": "草药商 薇拉",
+      "location": "frost_camp",
+      "dialogueId": "npc_side_03_snow_herbs_delivery"
+    },
+    {
+      "id": "npc_side_04_ember_eggs",
+      "name": "蛋贩 格伦",
+      "location": "ash_road_camp",
+      "dialogueId": "npc_side_04_ember_eggs_delivery"
+    },
+    {
+      "id": "npc_side_05_sand_map",
+      "name": "地图商 阿里",
+      "location": "dune_outpost",
+      "dialogueId": "npc_side_05_sand_map_delivery"
+    },
+    {
+      "id": "npc_side_06_bog_frogs",
+      "name": "猎蛙人 莫里",
+      "location": "mire_village",
+      "dialogueId": "npc_side_06_bog_frogs_delivery"
+    },
+    {
+      "id": "npc_side_07_hollow_wings",
+      "name": "羽毛匠 露辛达",
+      "location": "lava_heart",
+      "dialogueId": "npc_side_07_hollow_wings_delivery"
+    },
+    {
+      "id": "npc_side_08_mossy_bark",
+      "name": "木匠 艾伦",
+      "location": "thorn_grove",
+      "dialogueId": "npc_side_08_mossy_bark_delivery"
+    },
+    {
+      "id": "npc_side_09_grass_hunt",
+      "name": "猎手头目 托克",
+      "location": "tribe_camp",
+      "dialogueId": "npc_side_09_grass_hunt_delivery"
+    },
+    {
+      "id": "npc_side_10_raider_camp",
+      "name": "驿站长 萨拉",
+      "location": "tribe_throne",
+      "dialogueId": "npc_side_10_raider_camp_delivery"
+    },
+    {
+      "id": "npc_side_11_gravel_mite",
+      "name": "矿工 格雷",
+      "location": "red_tide_camp",
+      "dialogueId": "npc_side_11_gravel_mite_delivery"
+    },
+    {
+      "id": "npc_side_12_void_study",
+      "name": "研究员 维克托",
+      "location": "rot_pits",
+      "dialogueId": "npc_side_12_void_study_delivery"
+    },
+    {
+      "id": "npc_side_13_rot_root",
+      "name": "园丁 奥利",
+      "location": "red_tide_camp",
+      "dialogueId": "npc_side_13_rot_root_delivery"
+    },
+    {
+      "id": "npc_side_14_swamp_cure",
+      "name": "草药师 玛尔塔",
+      "location": "moth_cave",
+      "dialogueId": "npc_side_14_swamp_cure_delivery"
+    },
+    {
+      "id": "npc_side_15_icicle_bells",
+      "name": "铃匠 伊娃",
+      "location": "frost_shrine",
+      "dialogueId": "npc_side_15_icicle_bells_delivery"
+    },
+    {
+      "id": "npc_side_16_dust_letters",
+      "name": "信使 哈米德",
+      "location": "titan_gate",
+      "dialogueId": "npc_side_16_dust_letters_delivery"
+    },
+    {
+      "id": "npc_side_17_cinder_forge",
+      "name": "熔炉工 格朗",
+      "location": "ember_hollow",
+      "dialogueId": "npc_side_17_cinder_forge_delivery"
+    },
+    {
+      "id": "npc_side_18_thorn_garden",
+      "name": "园丁 艾瑞",
+      "location": "bark_bridge",
+      "dialogueId": "npc_side_18_thorn_garden_delivery"
+    },
+    {
+      "id": "npc_side_19_boar_trail",
+      "name": "猎人 瑞斯",
+      "location": "moss_glade",
+      "dialogueId": "npc_side_19_boar_trail_delivery"
+    },
+    {
+      "id": "npc_side_20_ghost_river",
+      "name": "河边老人 贝尔",
+      "location": "mother_nest",
+      "dialogueId": "npc_side_20_ghost_river_delivery"
+    },
+    {
+      "id": "npc_side_21_hound_pack",
+      "name": "驯犬师 格里",
+      "location": "frozen_bridge",
+      "dialogueId": "npc_side_21_hound_pack_delivery"
+    },
+    {
+      "id": "npc_side_22_scorpion_tail",
+      "name": "收购商 哈林",
+      "location": "regent_palace",
+      "dialogueId": "npc_side_22_scorpion_tail_delivery"
+    },
+    {
+      "id": "npc_side_23_rat_nest",
+      "name": "仓库管家 托比",
+      "location": "snow_gate",
+      "dialogueId": "npc_side_23_rat_nest_delivery"
+    },
+    {
+      "id": "npc_side_24_leech_spring",
+      "name": "泉水守 丽莎",
+      "location": "mire_shrine",
+      "dialogueId": "npc_side_24_leech_spring_delivery"
+    },
+    {
+      "id": "npc_side_25_ash_crows",
+      "name": "驱鸦人 西蒙",
+      "location": "ember_memorial",
+      "dialogueId": "npc_side_25_ash_crows_delivery"
+    },
+    {
+      "id": "npc_side_26_marsh_wraith",
+      "name": "守夜人 乔治",
+      "location": "bog_edge",
+      "dialogueId": "npc_side_26_marsh_wraith_delivery"
+    },
+    {
+      "id": "npc_side_27_rift_scraps",
+      "name": "收购人 伊莲娜",
+      "location": "rot_pits",
+      "dialogueId": "npc_side_27_rift_scraps_delivery"
+    },
+    {
+      "id": "npc_side_28_wild_hunt",
+      "name": "猎头 布鲁诺",
+      "location": "hyena_den",
+      "dialogueId": "npc_side_28_wild_hunt_delivery"
+    },
+    {
+      "id": "npc_side_29_grave_moss",
+      "name": "墓守 亚当",
+      "location": "grove_library",
+      "dialogueId": "npc_side_29_grave_moss_delivery"
+    },
+    {
+      "id": "npc_side_32_ice_warden_watch",
+      "name": "巡守员 赫尔曼",
+      "location": "snow_gate",
+      "dialogueId": "npc_side_32_ice_warden_watch_delivery"
+    },
+    {
+      "id": "npc_side_33_snow_hare_stew",
+      "name": "厨师 玛丽",
+      "location": "frost_camp",
+      "dialogueId": "npc_side_33_snow_hare_stew_delivery"
+    },
+    {
+      "id": "npc_side_34_ember_tracks",
+      "name": "猎人 托马斯",
+      "location": "ash_road_camp",
+      "dialogueId": "npc_side_34_ember_tracks_delivery"
+    },
+    {
+      "id": "npc_side_35_crow_feathers",
+      "name": "羽毛商 米拉",
+      "location": "lava_heart",
+      "dialogueId": "npc_side_35_crow_feathers_delivery"
+    },
+    {
+      "id": "npc_side_36_lizard_scale",
+      "name": "皮匠 莉娜",
+      "location": "ember_hollow",
+      "dialogueId": "npc_side_36_lizard_scale_delivery"
+    },
+    {
+      "id": "npc_side_37_scorpion_venom",
+      "name": "毒药商 哈桑",
+      "location": "dune_outpost",
+      "dialogueId": "npc_side_37_scorpion_venom_delivery"
+    },
+    {
+      "id": "npc_side_38_cinder_core",
+      "name": "熔炉匠 奥格",
+      "location": "ember_memorial",
+      "dialogueId": "npc_side_38_cinder_core_delivery"
+    },
+    {
+      "id": "npc_side_39_moss_boar_hunt",
+      "name": "猎户 伯特",
+      "location": "thorn_grove",
+      "dialogueId": "npc_side_39_moss_boar_hunt_delivery"
+    },
+    {
+      "id": "npc_side_40_thorn_seed",
+      "name": "园艺师 米娅",
+      "location": "bark_bridge",
+      "dialogueId": "npc_side_40_thorn_seed_delivery"
+    },
+    {
+      "id": "npc_side_41_stag_antler",
+      "name": "鹿角匠 奥尔",
+      "location": "moss_glade",
+      "dialogueId": "npc_side_41_stag_antler_delivery"
+    },
+    {
+      "id": "npc_side_43_stalker_trail",
+      "name": "猎户 卢卡",
+      "location": "tribe_camp",
+      "dialogueId": "npc_side_43_stalker_trail_delivery"
+    },
+    {
+      "id": "npc_side_44_hyena_pack",
+      "name": "驿站管理员 扎克",
+      "location": "titan_gate",
+      "dialogueId": "npc_side_44_hyena_pack_delivery"
+    },
+    {
+      "id": "npc_side_45_raider_camp",
+      "name": "掠夺者 瓦尔",
+      "location": "tribe_throne",
+      "dialogueId": "npc_side_45_raider_camp_delivery"
+    },
+    {
+      "id": "npc_side_46_bog_leech",
+      "name": "渔夫 洛克",
+      "location": "mire_village",
+      "dialogueId": "npc_side_46_bog_leech_delivery"
+    },
+    {
+      "id": "npc_side_47_toad_bounty",
+      "name": "赏金官 格雷",
+      "location": "moth_cave",
+      "dialogueId": "npc_side_47_toad_bounty_delivery"
+    },
+    {
+      "id": "npc_side_48_wraith_warning",
+      "name": "神龛祭司 莉娜",
+      "location": "mother_nest",
+      "dialogueId": "npc_side_48_wraith_warning_delivery"
+    },
+    {
+      "id": "npc_side_49_rot_cleanup",
+      "name": "清洁工 布兰",
+      "location": "red_tide_camp",
+      "dialogueId": "npc_side_49_rot_cleanup_delivery"
+    },
+    {
+      "id": "npc_side_50_rift_moths",
+      "name": "收藏家 赛琳",
+      "location": "rot_pits",
+      "dialogueId": "npc_side_50_rift_moths_delivery"
+    },
+    {
+      "id": "npc_side_53_war_chief_banner",
+      "name": "旗手 卡洛琳",
+      "location": "hyena_den",
+      "dialogueId": "npc_side_53_war_chief_banner_delivery"
+    },
+    {
+      "id": "npc_side_56_shaman_mask",
+      "name": "面具匠 诺雅",
+      "location": "mire_shrine",
+      "dialogueId": "npc_side_56_shaman_mask_delivery"
+    },
+    {
+      "id": "npc_side_58_colossus_rot",
+      "name": "清道夫 比尔",
+      "location": "red_tide_camp",
+      "dialogueId": "npc_side_58_colossus_rot_delivery"
+    },
+    {
+      "id": "npc_side_59_alpha_fang",
+      "name": "驯兽师 鲁道夫",
+      "location": "frost_shrine",
+      "dialogueId": "npc_side_59_alpha_fang_delivery"
+    },
+    {
+      "id": "npc_side_62_stride_race",
+      "name": "赛跑员 托尼",
+      "location": "grass_ridge",
+      "dialogueId": "npc_side_62_stride_race_delivery"
+    },
+    {
+      "id": "npc_side_64_snowbound_camp",
+      "name": "营地守卫 阿兰",
+      "location": "frozen_bridge",
+      "dialogueId": "npc_side_64_snowbound_camp_delivery"
+    },
+    {
+      "id": "npc_side_67_hollow_bell",
+      "name": "钟楼守 弗朗茨",
+      "location": "ash_road_camp",
+      "dialogueId": "npc_side_67_hollow_bell_delivery"
+    },
+    {
+      "id": "npc_side_68_rift_rat_cleanup",
+      "name": "管事 哈勒",
+      "location": "snow_gate",
+      "dialogueId": "npc_side_68_rift_rat_cleanup_delivery"
+    },
+    {
+      "id": "npc_side_73_tundra_hunt",
+      "name": "猎人 奥斯卡",
+      "location": "frost_camp",
+      "dialogueId": "npc_side_73_tundra_hunt_delivery"
+    },
+    {
+      "id": "npc_side_77_moss_bridge_repair",
+      "name": "石匠 拉斐尔",
+      "location": "thorn_grove",
+      "dialogueId": "npc_side_77_moss_bridge_repair_delivery"
+    },
+    {
+      "id": "npc_side_78_moss_boar_stew",
+      "name": "厨子 格瑞",
+      "location": "bark_bridge",
+      "dialogueId": "npc_side_78_moss_boar_stew_delivery"
+    },
+    {
+      "id": "npc_side_80_wild_boar_tusks",
+      "name": "商人 布鲁",
+      "location": "tribe_camp",
+      "dialogueId": "npc_side_80_wild_boar_tusks_delivery"
+    },
+    {
+      "id": "npc_side_81_bog_mapping",
+      "name": "测绘员 诺亚",
+      "location": "mire_village",
+      "dialogueId": "npc_side_81_bog_mapping_delivery"
+    },
+    {
+      "id": "npc_side_83_rot_sample",
+      "name": "研究员 莫德",
+      "location": "red_tide_camp",
+      "dialogueId": "npc_side_83_rot_sample_delivery"
+    },
+    {
+      "id": "npc_side_84_gravel_mine",
+      "name": "矿工头 格雷厄姆",
+      "location": "lava_heart",
+      "dialogueId": "npc_side_84_gravel_mine_delivery"
+    },
+    {
+      "id": "npc_side_85_void_moth_wings",
+      "name": "画家 莉亚",
+      "location": "rot_pits",
+      "dialogueId": "npc_side_85_void_moth_wings_delivery"
+    },
+    {
+      "id": "npc_side_86_rift_fragment_hunt",
+      "name": "学者 奥斯卡",
+      "location": "red_tide_camp",
+      "dialogueId": "npc_side_86_rift_fragment_hunt_delivery"
+    },
+    {
+      "id": "npc_side_87_scholar_lamp",
+      "name": "灯匠 琳达",
+      "location": "ember_hollow",
+      "dialogueId": "npc_side_87_scholar_lamp_delivery"
+    },
+    {
+      "id": "npc_side_88_stride_courier",
+      "name": "驿站长 汉娜",
+      "location": "ember_memorial",
+      "dialogueId": "npc_side_88_stride_courier_delivery"
+    },
+    {
+      "id": "npc_side_89_ash_helm_repair",
+      "name": "修补匠 格雷格",
+      "location": "ash_archive",
+      "dialogueId": "npc_side_89_ash_helm_repair_delivery"
+    },
+    {
+      "id": "npc_side_91_frost_rat_nest",
+      "name": "猎人 科尔",
+      "location": "frost_shrine",
+      "dialogueId": "npc_side_91_frost_rat_nest_delivery"
+    },
+    {
+      "id": "npc_side_92_slime_cores",
+      "name": "炼金师 伊莎",
+      "location": "frozen_bridge",
+      "dialogueId": "npc_side_92_slime_cores_delivery"
+    },
+    {
+      "id": "npc_side_93_lizard_scales",
+      "name": "皮匠 玛琳",
+      "location": "hidden_archive_vault",
+      "dialogueId": "npc_side_93_lizard_scales_delivery"
+    },
+    {
+      "id": "npc_side_94_cinder_fragments",
+      "name": "熔炉工 奥利弗",
+      "location": "ash_road_camp",
+      "dialogueId": "npc_side_94_cinder_fragments_delivery"
+    },
+    {
+      "id": "npc_side_95_crow_nest_gather",
+      "name": "驯鸦人 阿尔玛",
+      "location": "lava_heart",
+      "dialogueId": "npc_side_95_crow_nest_gather_delivery"
+    },
+    {
+      "id": "npc_side_96_hound_pups",
+      "name": "驯犬师 皮特",
+      "location": "ember_hollow",
+      "dialogueId": "npc_side_96_hound_pups_delivery"
+    },
+    {
+      "id": "npc_side_97_dune_scorpions",
+      "name": "向导 阿米尔",
+      "location": "dune_outpost",
+      "dialogueId": "npc_side_97_dune_scorpions_delivery"
+    },
+    {
+      "id": "npc_side_98_hyena_den",
+      "name": "驿站管理员 扎克",
+      "location": "titan_gate",
+      "dialogueId": "npc_side_98_hyena_den_delivery"
+    },
+    {
+      "id": "npc_side_99_raider_supplies",
+      "name": "军需官 海伦",
+      "location": "tribe_throne",
+      "dialogueId": "npc_side_99_raider_supplies_delivery"
+    },
+    {
+      "id": "npc_side_100_boar_herd",
+      "name": "牧人 奥伦",
+      "location": "moss_glade",
+      "dialogueId": "npc_side_100_boar_herd_delivery"
+    },
+    {
+      "id": "npc_side_101_stag_horns",
+      "name": "猎人 阿尔弗",
+      "location": "thorn_grove",
+      "dialogueId": "npc_side_101_stag_horns_delivery"
+    },
+    {
+      "id": "npc_side_102_grove_sprouts",
+      "name": "园丁 米拉",
+      "location": "bark_bridge",
+      "dialogueId": "npc_side_102_grove_sprouts_delivery"
+    },
+    {
+      "id": "npc_side_103_hollow_feather",
+      "name": "羽毛商 罗西",
+      "location": "ash_road_camp",
+      "dialogueId": "npc_side_103_hollow_feather_delivery"
+    },
+    {
+      "id": "npc_side_104_stalker_tracks",
+      "name": "追踪者 海德",
+      "location": "tribe_camp",
+      "dialogueId": "npc_side_104_stalker_tracks_delivery"
+    },
+    {
+      "id": "npc_side_105_toad_eggs",
+      "name": "渔夫 艾伦",
+      "location": "mire_village",
+      "dialogueId": "npc_side_105_toad_eggs_delivery"
+    },
+    {
+      "id": "npc_side_106_leech_clean",
+      "name": "医师 露娜",
+      "location": "moth_cave",
+      "dialogueId": "npc_side_106_leech_clean_delivery"
+    },
+    {
+      "id": "npc_side_107_wraith_lanterns",
+      "name": "僧人 康",
+      "location": "mother_nest",
+      "dialogueId": "npc_side_107_wraith_lanterns_delivery"
+    },
+    {
+      "id": "npc_side_108_rot_pits",
+      "name": "守坑人 杜加",
+      "location": "red_tide_camp",
+      "dialogueId": "npc_side_108_rot_pits_delivery"
+    },
+    {
+      "id": "npc_side_109_mite_tunnels",
+      "name": "矿工 比尔",
+      "location": "rot_pits",
+      "dialogueId": "npc_side_109_mite_tunnels_delivery"
+    },
+    {
+      "id": "npc_side_110_moth_lanterns",
+      "name": "灯匠 奥莉维亚",
+      "location": "red_tide_camp",
+      "dialogueId": "npc_side_110_moth_lanterns_delivery"
+    },
+    {
+      "id": "npc_side_111_fragment_cache",
+      "name": "管理员 维克",
+      "location": "rot_pits",
+      "dialogueId": "npc_side_111_fragment_cache_delivery"
+    },
+    {
+      "id": "npc_side_112_archive_inventory",
+      "name": "档案员 西奥多",
+      "location": "lava_heart",
+      "dialogueId": "npc_side_112_archive_inventory_delivery"
+    },
+    {
+      "id": "npc_side_113_helm_forge",
+      "name": "铁匠 格朗",
+      "location": "ember_hollow",
+      "dialogueId": "npc_side_113_helm_forge_delivery"
+    },
+    {
+      "id": "npc_side_114_boot_trials",
+      "name": "鞋匠 奥斯汀",
+      "location": "tribe_throne",
+      "dialogueId": "npc_side_114_boot_trials_delivery"
+    },
+    {
+      "id": "npc_side_115_glacier_watch",
+      "name": "哨兵 艾尔莎",
+      "location": "snow_gate",
+      "dialogueId": "npc_side_115_glacier_watch_delivery"
+    },
+    {
+      "id": "npc_side_116_ice_warden_key",
+      "name": "看门人 雷克",
+      "location": "frost_camp",
+      "dialogueId": "npc_side_116_ice_warden_key_delivery"
+    },
+    {
+      "id": "npc_side_117_grove_library",
+      "name": "图书管理员 莉拉",
+      "location": "moss_glade",
+      "dialogueId": "npc_side_117_grove_library_delivery"
+    },
+    {
+      "id": "npc_side_118_mire_rest",
+      "name": "僧侣 托马斯",
+      "location": "mire_shrine",
+      "dialogueId": "npc_side_118_mire_rest_delivery"
+    },
+    {
+      "id": "npc_side_119_dune_pass",
+      "name": "隘口守卫 卡西",
+      "location": "dune_outpost",
+      "dialogueId": "npc_side_119_dune_pass_delivery"
     }
   ]
 }
