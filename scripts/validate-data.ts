@@ -186,7 +186,7 @@ for (const quest of quests) {
     if (obj.type === 'kill' && !enemyIds.has(obj.target)) {
       fail(`quests.${quest.id}: 击杀目标敌人 "${obj.target}" 不存在`);
     }
-    if (obj.type === 'kill' && (obj.count ?? 0) < 1) {
+    if (obj.type === 'kill' && (obj.count ?? 1) < 1) {
       fail(`quests.${quest.id}: 击杀数量必须 >= 1`);
     }
   }
