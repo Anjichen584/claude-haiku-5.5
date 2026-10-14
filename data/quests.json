@@ -67,7 +67,10 @@
         }
       ],
       "rewards": {
-        "gold": 80
+        "gold": 80,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -832,7 +835,10 @@
       ],
       "rewards": {
         "exp": 130,
-        "gold": 100
+        "gold": 100,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -854,7 +860,10 @@
       ],
       "rewards": {
         "exp": 100,
-        "gold": 90
+        "gold": 90,
+        "reputation": {
+          "remnant_empire": 5
+        }
       }
     },
     {
@@ -877,7 +886,10 @@
       ],
       "rewards": {
         "exp": 140,
-        "gold": 110
+        "gold": 110,
+        "reputation": {
+          "red_tide": 5
+        }
       }
     },
     {
@@ -900,7 +912,10 @@
       ],
       "rewards": {
         "exp": 140,
-        "gold": 110
+        "gold": 110,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -952,7 +967,10 @@
       ],
       "rewards": {
         "exp": 150,
-        "gold": 120
+        "gold": 120,
+        "reputation": {
+          "wild_tribes": 5
+        }
       }
     },
     {
@@ -975,7 +993,10 @@
       ],
       "rewards": {
         "exp": 170,
-        "gold": 140
+        "gold": 140,
+        "reputation": {
+          "wild_tribes": 5
+        }
       }
     },
     {
@@ -1069,7 +1090,10 @@
       ],
       "rewards": {
         "exp": 140,
-        "gold": 110
+        "gold": 110,
+        "reputation": {
+          "red_tide": 5
+        }
       }
     },
     {
@@ -1116,7 +1140,10 @@
       ],
       "rewards": {
         "exp": 180,
-        "gold": 140
+        "gold": 140,
+        "reputation": {
+          "remnant_empire": 5
+        }
       }
     },
     {
@@ -1139,7 +1166,10 @@
       ],
       "rewards": {
         "exp": 200,
-        "gold": 160
+        "gold": 160,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -1208,7 +1238,10 @@
       ],
       "rewards": {
         "exp": 190,
-        "gold": 150
+        "gold": 150,
+        "reputation": {
+          "red_tide": 5
+        }
       }
     },
     {
@@ -1263,7 +1296,10 @@
       ],
       "rewards": {
         "exp": 170,
-        "gold": 140
+        "gold": 140,
+        "reputation": {
+          "remnant_empire": 5
+        }
       }
     },
     {
@@ -1309,7 +1345,10 @@
       ],
       "rewards": {
         "exp": 130,
-        "gold": 100
+        "gold": 100,
+        "reputation": {
+          "red_tide": 5
+        }
       }
     },
     {
@@ -1332,7 +1371,10 @@
       ],
       "rewards": {
         "exp": 130,
-        "gold": 100
+        "gold": 100,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -1357,7 +1399,10 @@
       ],
       "rewards": {
         "exp": 230,
-        "gold": 180
+        "gold": 180,
+        "reputation": {
+          "red_tide": 5
+        }
       }
     },
     {
@@ -1405,7 +1450,10 @@
       ],
       "rewards": {
         "exp": 260,
-        "gold": 220
+        "gold": 220,
+        "reputation": {
+          "wild_tribes": 5
+        }
       }
     },
     {
@@ -1453,7 +1501,10 @@
       ],
       "rewards": {
         "exp": 120,
-        "gold": 100
+        "gold": 100,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -1556,7 +1607,10 @@
       ],
       "rewards": {
         "exp": 300,
-        "gold": 110
+        "gold": 110,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -1585,7 +1639,10 @@
       ],
       "rewards": {
         "exp": 200,
-        "gold": 90
+        "gold": 90,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -1614,7 +1671,10 @@
       ],
       "rewards": {
         "exp": 280,
-        "gold": 130
+        "gold": 130,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -1637,7 +1697,10 @@
       ],
       "rewards": {
         "exp": 250,
-        "gold": 100
+        "gold": 100,
+        "reputation": {
+          "remnant_empire": 5
+        }
       }
     },
     {
@@ -1666,7 +1729,10 @@
       ],
       "rewards": {
         "exp": 340,
-        "gold": 150
+        "gold": 150,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -1769,7 +1835,10 @@
       ],
       "rewards": {
         "exp": 230,
-        "gold": 90
+        "gold": 90,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -1792,7 +1861,10 @@
       ],
       "rewards": {
         "exp": 260,
-        "gold": 110
+        "gold": 110,
+        "reputation": {
+          "wild_tribes": 5
+        }
       }
     },
     {
@@ -1821,7 +1893,10 @@
       ],
       "rewards": {
         "exp": 290,
-        "gold": 120
+        "gold": 120,
+        "reputation": {
+          "remnant_empire": 5
+        }
       }
     },
     {
@@ -1850,7 +1925,10 @@
       ],
       "rewards": {
         "exp": 520,
-        "gold": 240
+        "gold": 240,
+        "reputation": {
+          "wild_tribes": 5
+        }
       }
     },
     {
@@ -1879,7 +1957,10 @@
       ],
       "rewards": {
         "exp": 240,
-        "gold": 95
+        "gold": 95,
+        "reputation": {
+          "red_tide": 5
+        }
       }
     },
     {
@@ -1902,7 +1983,10 @@
       ],
       "rewards": {
         "exp": 210,
-        "gold": 85
+        "gold": 85,
+        "reputation": {
+          "red_tide": 5
+        }
       }
     },
     {
@@ -1930,7 +2014,10 @@
       ],
       "rewards": {
         "exp": 390,
-        "gold": 160
+        "gold": 160,
+        "reputation": {
+          "red_tide": 5
+        }
       }
     },
     {
@@ -2108,7 +2195,10 @@
       ],
       "rewards": {
         "exp": 520,
-        "gold": 220
+        "gold": 220,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -2166,7 +2256,10 @@
       ],
       "rewards": {
         "exp": 560,
-        "gold": 240
+        "gold": 240,
+        "reputation": {
+          "wild_tribes": 5
+        }
       }
     },
     {
@@ -2195,7 +2288,10 @@
       ],
       "rewards": {
         "exp": 580,
-        "gold": 250
+        "gold": 250,
+        "reputation": {
+          "remnant_empire": 5
+        }
       }
     },
     {
@@ -2224,7 +2320,10 @@
       ],
       "rewards": {
         "exp": 600,
-        "gold": 260
+        "gold": 260,
+        "reputation": {
+          "red_tide": 5
+        }
       }
     },
     {
@@ -2252,7 +2351,10 @@
       ],
       "rewards": {
         "exp": 580,
-        "gold": 240
+        "gold": 240,
+        "reputation": {
+          "red_tide": 5
+        }
       }
     },
     {
@@ -2281,7 +2383,10 @@
       ],
       "rewards": {
         "exp": 620,
-        "gold": 270
+        "gold": 270,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -2367,7 +2472,10 @@
       ],
       "rewards": {
         "exp": 300,
-        "gold": 120
+        "gold": 120,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -2396,7 +2504,10 @@
       ],
       "rewards": {
         "exp": 330,
-        "gold": 140
+        "gold": 140,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -2425,7 +2536,10 @@
       ],
       "rewards": {
         "exp": 340,
-        "gold": 150
+        "gold": 150,
+        "reputation": {
+          "wild_tribes": 5
+        }
       }
     },
     {
@@ -2454,7 +2568,10 @@
       ],
       "rewards": {
         "exp": 420,
-        "gold": 180
+        "gold": 180,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -2511,7 +2628,10 @@
       ],
       "rewards": {
         "exp": 330,
-        "gold": 130
+        "gold": 130,
+        "reputation": {
+          "remnant_empire": 5
+        }
       }
     },
     {
@@ -2540,7 +2660,10 @@
       ],
       "rewards": {
         "exp": 380,
-        "gold": 160
+        "gold": 160,
+        "reputation": {
+          "red_tide": 5
+        }
       }
     },
     {
@@ -2569,7 +2692,10 @@
       ],
       "rewards": {
         "exp": 310,
-        "gold": 120
+        "gold": 120,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -2655,7 +2781,10 @@
       ],
       "rewards": {
         "exp": 280,
-        "gold": 110
+        "gold": 110,
+        "reputation": {
+          "red_tide": 5
+        }
       }
     },
     {
@@ -2782,7 +2911,10 @@
       ],
       "rewards": {
         "exp": 300,
-        "gold": 120
+        "gold": 120,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -2868,7 +3000,10 @@
       ],
       "rewards": {
         "exp": 330,
-        "gold": 130
+        "gold": 130,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -2896,7 +3031,10 @@
       ],
       "rewards": {
         "exp": 290,
-        "gold": 115
+        "gold": 115,
+        "reputation": {
+          "remnant_empire": 5
+        }
       }
     },
     {
@@ -3006,7 +3144,10 @@
       ],
       "rewards": {
         "exp": 340,
-        "gold": 135
+        "gold": 135,
+        "reputation": {
+          "wild_tribes": 5
+        }
       }
     },
     {
@@ -3035,7 +3176,10 @@
       ],
       "rewards": {
         "exp": 480,
-        "gold": 200
+        "gold": 200,
+        "reputation": {
+          "wild_tribes": 5
+        }
       }
     },
     {
@@ -3063,7 +3207,10 @@
       ],
       "rewards": {
         "exp": 270,
-        "gold": 105
+        "gold": 105,
+        "reputation": {
+          "red_tide": 5
+        }
       }
     },
     {
@@ -3086,7 +3233,10 @@
       ],
       "rewards": {
         "exp": 370,
-        "gold": 155
+        "gold": 155,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -3144,7 +3294,10 @@
       ],
       "rewards": {
         "exp": 310,
-        "gold": 125
+        "gold": 125,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -3230,7 +3383,10 @@
       ],
       "rewards": {
         "exp": 310,
-        "gold": 130
+        "gold": 130,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -3258,7 +3414,10 @@
       ],
       "rewards": {
         "exp": 300,
-        "gold": 125
+        "gold": 125,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -3287,7 +3446,10 @@
       ],
       "rewards": {
         "exp": 330,
-        "gold": 135
+        "gold": 135,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -3486,7 +3648,10 @@
       ],
       "rewards": {
         "exp": 320,
-        "gold": 130
+        "gold": 130,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -3515,7 +3680,10 @@
       ],
       "rewards": {
         "exp": 360,
-        "gold": 150
+        "gold": 150,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -3538,7 +3706,10 @@
       ],
       "rewards": {
         "exp": 300,
-        "gold": 120
+        "gold": 120,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -3561,7 +3732,10 @@
       ],
       "rewards": {
         "exp": 340,
-        "gold": 135
+        "gold": 135,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -3584,7 +3758,10 @@
       ],
       "rewards": {
         "exp": 320,
-        "gold": 130
+        "gold": 130,
+        "reputation": {
+          "remnant_empire": 5
+        }
       }
     },
     {
@@ -3612,7 +3789,10 @@
       ],
       "rewards": {
         "exp": 330,
-        "gold": 135
+        "gold": 135,
+        "reputation": {
+          "remnant_empire": 5
+        }
       }
     },
     {
@@ -3641,7 +3821,10 @@
       ],
       "rewards": {
         "exp": 350,
-        "gold": 140
+        "gold": 140,
+        "reputation": {
+          "wild_tribes": 5
+        }
       }
     },
     {
@@ -3750,7 +3933,10 @@
       ],
       "rewards": {
         "exp": 330,
-        "gold": 130
+        "gold": 130,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -3778,7 +3964,10 @@
       ],
       "rewards": {
         "exp": 340,
-        "gold": 135
+        "gold": 135,
+        "reputation": {
+          "wild_tribes": 5
+        }
       }
     },
     {
@@ -3807,7 +3996,10 @@
       ],
       "rewards": {
         "exp": 300,
-        "gold": 120
+        "gold": 120,
+        "reputation": {
+          "red_tide": 5
+        }
       }
     },
     {
@@ -3830,7 +4022,10 @@
       ],
       "rewards": {
         "exp": 320,
-        "gold": 125
+        "gold": 125,
+        "reputation": {
+          "red_tide": 5
+        }
       }
     },
     {
@@ -3858,7 +4053,10 @@
       ],
       "rewards": {
         "exp": 380,
-        "gold": 160
+        "gold": 160,
+        "reputation": {
+          "red_tide": 5
+        }
       }
     },
     {
@@ -3995,7 +4193,10 @@
       ],
       "rewards": {
         "exp": 320,
-        "gold": 135
+        "gold": 135,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -4024,7 +4225,10 @@
       ],
       "rewards": {
         "exp": 380,
-        "gold": 160
+        "gold": 160,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
@@ -4053,7 +4257,10 @@
       ],
       "rewards": {
         "exp": 350,
-        "gold": 140
+        "gold": 140,
+        "reputation": {
+          "wild_tribes": 5
+        }
       }
     },
     {
@@ -4166,7 +4373,10 @@
       ],
       "rewards": {
         "exp": 360,
-        "gold": 150
+        "gold": 150,
+        "reputation": {
+          "red_tide": 5
+        }
       }
     },
     {
@@ -4200,7 +4410,10 @@
       ],
       "rewards": {
         "exp": 400,
-        "gold": 170
+        "gold": 170,
+        "reputation": {
+          "remnant_empire": 5
+        }
       }
     },
     {
@@ -4223,7 +4436,10 @@
       ],
       "rewards": {
         "exp": 500,
-        "gold": 230
+        "gold": 230,
+        "reputation": {
+          "ashguard": 5
+        }
       }
     },
     {
