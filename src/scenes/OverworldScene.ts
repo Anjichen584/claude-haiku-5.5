@@ -5,6 +5,10 @@ import { DAY_LENGTH_MS, getDayState } from '../world/time';
 import { rollWeather, type Weather } from '../world/weather';
 import { loadGameData } from '../data/loader';
 import type { BiomeDef } from '../data/schema';
+import { WorldState } from '../state/WorldState';
+import { QuestManager } from '../narrative/QuestManager';
+import { LocationRegistry, arriveAt } from '../world/locations';
+import { placeLocations, type PlacedLocation } from '../world/placement';
 
 /**
  * 阶段 3 地表场景：无缝区块世界、群系配色、河流与道路、昼夜光照与天气。
@@ -20,6 +24,9 @@ const MOVE_TILES_PER_SEC = 9;
 const LOAD_RADIUS = 2;
 /** 超出该半径的区块会被卸载 */
 const UNLOAD_RADIUS = 3;
+/** 玩家与地点中心的距离（瓦片）小于该值即视为抵达 */
+const ARRIVE_RADIUS = 1.5;
+const TOAST_MS = 2600;
 const RIVER_RGB = 0x3a6ea5;
 const ROAD_RGB = 0x8a7a5c;
 
@@ -55,13 +62,30 @@ export class OverworldScene extends Phaser.Scene {
   private weatherOverlay!: Phaser.GameObjects.Rectangle;
   private hud!: Phaser.GameObjects.Text;
   private keys!: Record<'W' | 'A' | 'S' | 'D' | 'T', Phaser.Input.Keyboard.Key>;
+  private world!: WorldState;
+  private quests!: QuestManager;
+  private locationRegistry!: LocationRegistry;
+  private places: PlacedLocation[] = [];
+  private visited = new Set<string>();
+  private toast!: Phaser.GameObjects.Text;
+  private toastUntil = 0;
 
   constructor() {
     super('OverworldScene');
   }
 
   create(): void {
-    this.biomes = loadGameData().biomes;
+    const data = loadGameData();
+    this.biomes = data.biomes;
+    this.world = new WorldState();
+    this.quests = new QuestManager(data.quests, this.world);
+    this.locationRegistry = new LocationRegistry(data.locations);
+    this.places = placeLocations(data.locations, WORLD_SEED);
+    this.toast = this.add.text(display.baseWidth / 2, 80, '', {
+      fontFamily: 'sans-serif', fontSize: '16px', color: '#ffe9a8',
+      backgroundColor: '#00000088', padding: { x: 10, y: 6 },
+    }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(200).setVisible(false);
+    this.drawLocationMarkers();
     const kb = this.input.keyboard;
     if (!kb) throw new Error('Keyboard input is not available');
     this.keys = kb.addKeys({ W: 'W', A: 'A', S: 'S', D: 'D', T: 'T' }) as typeof this.keys;
@@ -115,7 +139,45 @@ export class OverworldScene extends Phaser.Scene {
       this.syncChunks();
     }
 
+    this.checkArrivals();
+    if (this.toast.visible && this.time.now > this.toastUntil) this.toast.setVisible(false);
     this.updateEnvironment();
+  }
+
+  // ---------- 地点 ----------
+
+  private drawLocationMarkers(): void {
+    for (const p of this.places) {
+      const px = p.x * TILE_PX;
+      const py = p.y * TILE_PX;
+      this.add.circle(px, py, TILE_PX * 1.2, 0xffd166, 0.9).setDepth(6);
+      this.add.text(px, py - TILE_PX * 2.5, p.name, {
+        fontFamily: 'sans-serif', fontSize: '12px', color: '#fff3c4',
+        backgroundColor: '#00000088', padding: { x: 4, y: 2 },
+      }).setOrigin(0.5, 1).setDepth(6);
+    }
+  }
+
+  /** 玩家走近未访问的地点时，上报一次 reach 事件并提示。 */
+  private checkArrivals(): void {
+    for (const p of this.places) {
+      if (this.visited.has(p.id)) continue;
+      const d = Math.hypot(this.tileX - p.x, this.tileY - p.y);
+      if (d > ARRIVE_RADIUS) continue;
+      this.visited.add(p.id);
+      const done = arriveAt(this.locationRegistry, this.quests, p.id);
+      const lines = [`抵达：${p.name}`];
+      for (const c of done) {
+        const title = this.quests.def(c.questId)?.title ?? c.questId;
+        lines.push(`任务完成：${title}`);
+      }
+      this.showToast(lines.join('\n'));
+    }
+  }
+
+  private showToast(text: string): void {
+    this.toast.setText(text).setVisible(true);
+    this.toastUntil = this.time.now + TOAST_MS;
   }
 
   // ---------- 区块加载 ----------

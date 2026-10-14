@@ -24,7 +24,9 @@ import type {
   FactionDataFile,
   ItemDataFile,
   LocationDataFile,
+  LocationDef,
   NpcDataFile,
+  NpcDef,
   QuestDataFile,
   SkillDataFile,
 } from './schema';
@@ -46,6 +48,8 @@ export interface GameData {
   dungeon: DungeonFloorFile;
   itemSets: ItemSetDef[];
   combos: ComboDef[];
+  locations: LocationDef[];
+  npcs: NpcDef[];
 }
 
 let cached: Readonly<GameData> | null = null;
