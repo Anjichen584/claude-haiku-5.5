@@ -10,7 +10,7 @@ import { WorldState } from '../src/state/WorldState';
 import type { QuestDef } from '../src/data/schema';
 
 const quests = (JSON.parse(readFileSync('data/quests.json', 'utf8')) as { quests: QuestDef[] }).quests;
-const main = quests.filter((q) => q.type === 'main').sort((a, b) => a.chapter - b.chapter);
+const main = quests.filter((q) => q.type === 'main').sort((a, b) => (a.chapter ?? 0) - (b.chapter ?? 0));
 
 describe('主线通关检查', () => {
   it('24 个主线任务都可以按顺序完成', () => {

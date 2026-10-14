@@ -3,6 +3,7 @@ import { display } from '../config/display';
 import { CHUNK_SIZE, FLAG_RIVER, FLAG_ROAD, chunkOf, generateChunk, type Chunk } from '../world/chunk';
 import { DAY_LENGTH_MS, getDayState } from '../world/time';
 import { rollWeather, type Weather } from '../world/weather';
+import { BASE_SIGHT_TILES, detectMultiplier, sightRadius } from '../world/modifiers';
 import { loadGameData } from '../data/loader';
 import type { BiomeDef } from '../data/schema';
 import { WorldState } from '../state/WorldState';
@@ -70,7 +71,8 @@ interface LoadedChunk {
   textureKey: string;
   /** 尚未击败的地表刷新点 */
   spawns: SurfaceSpawn[];
-  markers: Phaser.GameObjects.GameObject[];
+  /** 每个刷新点的标记（按刷新点分组，便于按视野显示） */
+  markers: Array<{ spawn: SurfaceSpawn; objs: Phaser.GameObjects.GameObject[] }>;
 }
 
 function hexToRgb(hex: string): [number, number, number] {
@@ -355,6 +357,10 @@ export class OverworldScene extends Phaser.Scene {
     this.choicePrompt.setText(`关键抉择：${c.question}\n${opts}`).setVisible(true);
   }
 
+  private detectMult = 1;
+  /** 当前视野（格），由时段和天气决定 */
+  private sightTiles = BASE_SIGHT_TILES;
+
   private toggleRepPanel(): void {
     this.repPanelOpen = !this.repPanelOpen;
     this.repPanel.setVisible(this.repPanelOpen);
@@ -410,7 +416,7 @@ export class OverworldScene extends Phaser.Scene {
     for (const loaded of this.chunks.values()) {
       for (const spawn of loaded.spawns) {
         const d = Math.hypot(this.tileX - spawn.tileX, this.tileY - spawn.tileY);
-        if (d > ENCOUNTER_RADIUS) continue;
+        if (d > ENCOUNTER_RADIUS * this.detectMult) continue;
         this.transitioning = true;
         this.syncToSession();
         const request: EncounterRequest = { enemyIds: spawn.enemyIds, spawnKey: spawn.key };
@@ -643,7 +649,7 @@ export class OverworldScene extends Phaser.Scene {
       const { cx, cy } = loaded.chunk;
       if (Math.abs(cx - center.cx) > UNLOAD_RADIUS || Math.abs(cy - center.cy) > UNLOAD_RADIUS) {
         loaded.image.destroy();
-        for (const m of loaded.markers) m.destroy();
+        for (const m of loaded.markers) for (const o of m.objs) o.destroy();
         if (this.textures.exists(loaded.textureKey)) this.textures.remove(loaded.textureKey);
         this.chunks.delete(key);
       }
@@ -688,7 +694,7 @@ export class OverworldScene extends Phaser.Scene {
       .setDepth(0);
     const spawns = surfaceSpawnsForChunk(WORLD_SEED, chunk, this.biomes, this.enemyDefs)
       .filter((s) => !this.session.defeated.has(s.key));
-    const markers = spawns.flatMap((s) => this.drawSpawnMarker(s));
+    const markers = spawns.map((s) => ({ spawn: s, objs: this.drawSpawnMarker(s) }));
     this.chunks.set(key, { chunk, image: img, textureKey, spawns, markers });
   }
 
@@ -725,6 +731,17 @@ export class OverworldScene extends Phaser.Scene {
     const w = WEATHER_OVERLAY[weather];
     this.weatherOverlay.setFillStyle(w.color, w.alpha);
 
+    // 视野：只显示视野内的敌人刷新点；夜晚侦测距离变大
+    this.sightTiles = sightRadius(time.phase, weather);
+    this.detectMult = detectMultiplier(time.phase);
+    for (const loaded of this.chunks.values()) {
+      for (const m of loaded.markers) {
+        const d = Math.hypot(this.tileX - m.spawn.tileX, this.tileY - m.spawn.tileY);
+        const visible = d <= this.sightTiles;
+        for (const o of m.objs) (o as unknown as { setVisible(v: boolean): unknown }).setVisible(visible);
+      }
+    }
+
     const tile = ((ty % CHUNK_SIZE) + CHUNK_SIZE) % CHUNK_SIZE * CHUNK_SIZE + (((tx % CHUNK_SIZE) + CHUNK_SIZE) % CHUNK_SIZE);
     const onRiver = chunk ? (chunk.flags[tile] & FLAG_RIVER) !== 0 : false;
     const onRoad = chunk ? (chunk.flags[tile] & FLAG_ROAD) !== 0 : false;
@@ -733,7 +750,7 @@ export class OverworldScene extends Phaser.Scene {
     this.hud.setText([
       `群系 ${biome?.name ?? '未知'} · ${place}   坐标 ${tx}, ${ty}`,
       `第 ${time.day} 日 · ${phaseName(time.phase)}   天气 ${weatherName(weather)}`,
-      `已加载区块 ${this.chunks.size}`,
+      `视野 ${Math.round(this.sightTiles)} 格   已加载区块 ${this.chunks.size}`,
     ]);
   }
 }
