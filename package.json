@@ -11,7 +11,8 @@
     "preview": "vite preview --host 0.0.0.0",
     "typecheck": "tsc --noEmit",
     "validate:data": "tsx scripts/validate-data.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "content:stats": "tsx scripts/content-stats.ts"
   },
   "dependencies": {
     "phaser": "^3.80.1"
