@@ -91,6 +91,12 @@ for (const npc of npcs) {
 }
 checkUniqueIds('affixes', affixes);
 if (affixes.length < 60) fail(`affixes: 词条至少需要 60 种，目前 ${affixes.length} 种`);
+// 词条池必须能为最高品质抽取足够的“不重复 id 且不重复属性”词条（裂隙品质 = 4 + 1 隐藏）
+{
+  const distinctStats = new Set(affixes.map((a: { stat: string }) => a.stat)).size;
+  const need = 4 + 1;
+  if (distinctStats < need) fail(`affixes: 不同属性只有 ${distinctStats} 种，最高品质需要至少 ${need} 种`);
+}
 
 // ---------- 物品 ----------
 for (const item of items) {

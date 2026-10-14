@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import itemsJson from '../data/items.json';
 import type { ItemDef } from '../src/data/schema';
-import { BASE_STATS, combatStats, cycleSlot, equippableFor } from '../src/state/equipment';
+import { BASE_STATS, combatStats, cycleSlot, equipmentDetailLines, equippableFor } from '../src/state/equipment';
 import type { AffixDef } from '../src/data/schema';
 import type { ItemSetDef } from '../src/items/sets';
 import { newSession } from '../src/state/session';
@@ -111,5 +111,24 @@ describe('词条与套装加成', () => {
 
   it('未提供词条池时不抽取词条，不报错', () => {
     expect(() => combatStats({ head: 'ash_helm' }, gear)).not.toThrow();
+  });
+});
+
+describe('装备明细', () => {
+  it('列出词条，并显示已激活的套装效果', () => {
+    const gear: ItemDef[] = [
+      { id: 'ash_helm', name: '灰烬头盔', type: 'armor', slot: 'head', baseDamage: 0, rarity: 'epic', price: 1, setId: 'ash', itemLevel: 1, defense: 3 },
+      { id: 'ash_plate', name: '灰烬胸甲', type: 'armor', slot: 'chest', baseDamage: 0, rarity: 'epic', price: 1, setId: 'ash', itemLevel: 1, defense: 6 },
+    ];
+    const pool: AffixDef[] = [
+      { id: 'tough', name: '坚韧', stat: 'defense', min: 1, max: 5, weight: 10 },
+      { id: 'vital', name: '活力', stat: 'maxHp', min: 10, max: 20, weight: 10 },
+      { id: 'sharp', name: '锋利', stat: 'attack', min: 1, max: 5, weight: 10 },
+    ];
+    const sets: ItemSetDef[] = [{ id: 'ash', name: '灰烬', bonuses: [{ pieces: 2, stat: 'defense', value: 5, text: '防御 +5' }] }];
+    const lines = equipmentDetailLines({ head: 'ash_helm', chest: 'ash_plate' }, gear, pool, sets);
+    expect(lines.filter((l) => l.includes('·')).length).toBe(3 * 2);
+    expect(lines.some((l) => l.includes('◆ 灰烬（2 件）') && l.includes('防御 +5'))).toBe(true);
+    expect(equipmentDetailLines({}, gear, pool, sets)).toEqual([]);
   });
 });

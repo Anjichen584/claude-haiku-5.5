@@ -17,7 +17,7 @@ const GATE_RADIUS = 2;
 import { surfaceSpawnsForChunk, type EncounterRequest, type SurfaceSpawn } from '../world/encounters';
 import { activeQuestLog, formatQuestLog } from '../narrative/questLog';
 import { formatInventory, inventoryLines } from '../state/inventory';
-import { combatStats, cycleSlot, EQUIP_SLOTS, SLOT_LABEL } from '../state/equipment';
+import { combatStats, cycleSlot, EQUIP_SLOTS, equipmentDetailLines, SLOT_LABEL } from '../state/equipment';
 import { getSession, persistSession, setSession } from '../state/sessionStore';
 import { newSession, type GameSession } from '../state/session';
 import type { AffixDef, EnemyDef, ItemDef, QuestDef } from '../data/schema';
@@ -310,7 +310,8 @@ export class OverworldScene extends Phaser.Scene {
     this.equipPanel.setText([
       '装备（C 关闭 · 数字键切换）',
       ...rows,
-      `攻击 ${stats.attack}   防御 ${stats.defense}`,
+      `攻击 ${stats.attack}   防御 ${stats.defense}   生命 ${stats.maxHp}`,
+      ...equipmentDetailLines(eq, this.itemDefs, this.affixDefs, this.itemSetDefs),
     ].join('\n'));
   }
 

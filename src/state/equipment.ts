@@ -116,3 +116,39 @@ export function combatStats(
 function addIfCombat(totals: Record<CombatStatName, number>, stat: string, value: number): void {
   if ((COMBAT_STATS as readonly string[]).includes(stat)) totals[stat as CombatStatName] += value;
 }
+
+/**
+ * 装备明细文本（给装备面板用）：每件已装备物品的词条，以及已激活的套装效果。
+ * 没有词条或套装时返回空数组。
+ */
+export function equipmentDetailLines(
+  equipment: Partial<Record<string, string>>,
+  items: readonly ItemDef[],
+  affixes: readonly AffixDef[],
+  sets: readonly ItemSetDef[],
+): string[] {
+  const byId = new Map(items.map((i) => [i.id, i]));
+  const worn: ItemDef[] = [];
+  const lines: string[] = [];
+  for (const slot of EQUIP_SLOTS) {
+    const id = equipment[slot];
+    const item = id ? byId.get(id) : undefined;
+    if (!item) continue;
+    worn.push(item);
+    for (const a of itemAffixes(item, affixes)) {
+      lines.push(`  · ${item.name}：${a.name} +${a.value}（${a.stat}）${a.hidden ? ' [隐藏]' : ''}`);
+    }
+  }
+  const bonuses = activeSetBonuses(sets, worn);
+  const bySet = new Map<string, { name: string; pieces: number; texts: string[] }>();
+  for (const b of bonuses) {
+    const entry = bySet.get(b.setId) ?? { name: b.setName, pieces: b.pieces, texts: [] };
+    entry.pieces = Math.max(entry.pieces, b.pieces);
+    entry.texts.push(b.text);
+    bySet.set(b.setId, entry);
+  }
+  for (const entry of bySet.values()) {
+    lines.push(`  ◆ ${entry.name}（${entry.pieces} 件）：${entry.texts.join('；')}`);
+  }
+  return lines;
+}
