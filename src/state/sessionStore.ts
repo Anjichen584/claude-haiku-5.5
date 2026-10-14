@@ -1,12 +1,15 @@
 /**
- * 当前会话与浏览器存档（localStorage）。
+ * 当前会话、当前地牢探索与浏览器存档（localStorage）。
  * 场景之间通过这里共享同一个会话对象；存档读写失败时返回 null，不抛出异常。
  */
+import type { DungeonRun } from '../dungeon/run';
 import { serializeSave, toSaveFile, type GameSession } from './session';
 
 const SAVE_KEY = 'rift-chronicles-save-v1';
 
 let current: GameSession | null = null;
+/** 当前地牢探索。不写入存档：离开地牢即放弃未完成的房间进度，已获得的奖励已经发放。 */
+let currentRun: DungeonRun | null = null;
 
 export function getSession(): GameSession | null {
   return current;
@@ -14,6 +17,14 @@ export function getSession(): GameSession | null {
 
 export function setSession(session: GameSession | null): void {
   current = session;
+}
+
+export function getRun(): DungeonRun | null {
+  return currentRun;
+}
+
+export function setRun(run: DungeonRun | null): void {
+  currentRun = run;
 }
 
 function storage(): Storage | null {

@@ -9,7 +9,11 @@ import { WorldState } from '../state/WorldState';
 import { QuestManager } from '../narrative/QuestManager';
 import { LocationRegistry, arriveAt } from '../world/locations';
 import { NpcRegistry, startTalk, type TalkSession } from '../world/npcs';
-import { placeLocations, type PlacedLocation } from '../world/placement';
+import { placeLocations, REGION_ANCHORS, type PlacedLocation } from '../world/placement';
+
+/** 地牢传送门位于裂隙区域的锚点上 */
+const GATE_TILE = REGION_ANCHORS['裂隙'];
+const GATE_RADIUS = 2;
 import { surfaceSpawnsForChunk, type EncounterRequest, type SurfaceSpawn } from '../world/encounters';
 import { activeQuestLog, formatQuestLog } from '../narrative/questLog';
 import { getSession, persistSession, setSession } from '../state/sessionStore';
@@ -139,6 +143,7 @@ export class OverworldScene extends Phaser.Scene {
       backgroundColor: '#00000088', padding: { x: 10, y: 6 },
     }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(200).setVisible(false);
     this.drawLocationMarkers();
+    this.drawGate();
 
     this.npcRegistry = new NpcRegistry(data.npcs);
     for (const d of data.dialogues) this.npcDialogues.set(d.id, d);
@@ -360,9 +365,33 @@ export class OverworldScene extends Phaser.Scene {
     return best?.id ?? null;
   }
 
+  /** 靠近地牢传送门时按 E 进入地牢。 */
+  private tryEnterGate(): void {
+    if (this.transitioning) return;
+    const d = Math.hypot(this.tileX - GATE_TILE.x, this.tileY - GATE_TILE.y);
+    if (d > GATE_RADIUS) return;
+    this.transitioning = true;
+    this.syncToSession();
+    this.scene.start('DungeonScene');
+  }
+
+  private drawGate(): void {
+    const px = GATE_TILE.x * TILE_PX;
+    const py = GATE_TILE.y * TILE_PX;
+    this.add.circle(px, py, TILE_PX * 2.2, 0x7a3cff, 0.35).setDepth(6);
+    this.add.circle(px, py, TILE_PX * 1.2, 0xb89cff, 0.9).setDepth(6);
+    this.add.text(px, py - TILE_PX * 3, `裂隙地牢 · 第 ${this.session.dungeonFloor} 层（按 E 进入）`, {
+      fontFamily: 'sans-serif', fontSize: '12px', color: '#e6d9ff',
+      backgroundColor: '#00000088', padding: { x: 4, y: 2 },
+    }).setOrigin(0.5, 1).setDepth(6);
+  }
+
   private tryStartTalk(): void {
     const npcId = this.nearestNpcId();
-    if (!npcId) return;
+    if (!npcId) {
+      this.tryEnterGate();
+      return;
+    }
     const npc = this.npcRegistry.get(npcId)!;
     // 先接取该 NPC 发布的任务（不进入对话）；再次按 E 才开始对话
     const offered = this.quests.acceptFromNpc(npcId);

@@ -73,6 +73,8 @@ export function surfaceSpawnsForChunk(
 /** 从地表进入战斗场景时传递的参数 */
 export interface EncounterRequest {
   enemyIds: string[];
-  /** 对应 SurfaceSpawn.key；胜利后写入会话的 defeated 集合 */
+  /** 对应 SurfaceSpawn.key；胜利后写入会话的 defeated 集合（地牢战斗不写入） */
   spawnKey: string;
+  /** 地牢房间战斗时提供；胜负结果会回写到当前地牢探索 */
+  dungeon?: { roomId: number; boss: boolean };
 }

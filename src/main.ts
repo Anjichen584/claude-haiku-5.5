@@ -4,6 +4,7 @@ import { BootScene } from './scenes/BootScene';
 import { OverworldScene } from './scenes/OverworldScene';
 import { TestRoomScene } from './scenes/TestRoomScene';
 import { TitleScene } from './scenes/TitleScene';
+import { DungeonScene } from './scenes/DungeonScene';
 
 const game = new Phaser.Game({
   type: Phaser.AUTO,
@@ -15,7 +16,7 @@ const game = new Phaser.Game({
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  scene: [BootScene, TitleScene, OverworldScene, TestRoomScene],
+  scene: [BootScene, TitleScene, OverworldScene, TestRoomScene, DungeonScene],
 });
 
 // 便于调试时在控制台访问

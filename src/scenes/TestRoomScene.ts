@@ -11,9 +11,10 @@ import {
 import { loadGameData } from '../data/loader';
 import type { EnemyDef } from '../data/schema';
 import type { QuestCompletion } from '../narrative/QuestManager';
-import { getSession, persistSession } from '../state/sessionStore';
-import { grantQuestRewards } from '../state/rewards';
-import { PLAYER_MAX_HP, type GameSession } from '../state/session';
+import { getRun, getSession, persistSession, setRun } from '../state/sessionStore';
+import { applyGains, grantQuestRewards } from '../state/rewards';
+import { MAX_DUNGEON_FLOOR, PLAYER_MAX_HP, type GameSession } from '../state/session';
+import { combatGains, markCleared } from '../dungeon/run';
 import type { EncounterRequest } from '../world/encounters';
 
 /**
@@ -139,9 +140,11 @@ export class TestRoomScene extends Phaser.Scene {
   private finishEncounter(won: boolean): void {
     this.finished = true;
     this.won = won;
-    if (won && this.encounter && this.session) this.session.defeated.add(this.encounter.spawnKey);
+    // 地牢战斗不写入地表的击败记录
+    if (won && this.encounter && this.session && !this.encounter.dungeon) this.session.defeated.add(this.encounter.spawnKey);
 
     const lines = [won ? '胜利！' : '你倒下了……'];
+    if (this.encounter?.dungeon) lines.push(...this.settleDungeonRoom(this.encounter.dungeon, won));
     const session = this.session;
     if (session) {
       const items = loadGameData().items;
@@ -164,6 +167,24 @@ export class TestRoomScene extends Phaser.Scene {
       .setDepth(50);
   }
 
+  /** 地牢房间战斗结算：胜利发放奖励、标记清理、Boss 通关后推进层数；战败结束探索。 */
+  private settleDungeonRoom(dungeon: { roomId: number; boss: boolean }, won: boolean): string[] {
+    const run = getRun();
+    const session = this.session;
+    if (!run || !session) return [];
+    if (!won) {
+      setRun(null);
+      return ['地牢探索失败，已返回地表'];
+    }
+    markCleared(run, dungeon.roomId);
+    const lines = applyGains(session, combatGains(run, dungeon.boss));
+    if (dungeon.boss) {
+      if (session.dungeonFloor === run.floor && run.floor < MAX_DUNGEON_FLOOR) session.dungeonFloor = run.floor + 1;
+      lines.push(`击败了本层 Boss！下一层解锁：第 ${session.dungeonFloor} 层`);
+    }
+    return lines;
+  }
+
   private returnToOverworld(): void {
     if (this.session && this.encounter) {
       // 胜利保留剩余生命；战败恢复到最大生命的 30%，且地表给予短暂的脱离保护
@@ -172,6 +193,12 @@ export class TestRoomScene extends Phaser.Scene {
         : Math.max(1, Math.ceil(PLAYER_MAX_HP * 0.3));
     }
     if (this.session) persistSession(this.session);
+    if (this.encounter?.dungeon) {
+      // 地牢：胜利回到地牢继续探索；战败则结束本次探索，回到地表
+      if (this.won && getRun()) this.scene.start('DungeonScene', { resume: true });
+      else this.scene.start('OverworldScene', { retreated: !this.won });
+      return;
+    }
     this.scene.start('OverworldScene', { retreated: !this.won });
   }
   private won = false;
