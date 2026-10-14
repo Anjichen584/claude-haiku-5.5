@@ -68,9 +68,13 @@ export interface DialogueDef {
 export interface BiomeDef {
   id: string;
   name: string;
+  /** 地图上显示的颜色（十六进制） */
+  color: string;
   temperature: [number, number];
   humidity: [number, number];
   enemyTable: string[];
+  weatherWeights: Partial<Record<'clear' | 'rain' | 'fog' | 'snowstorm' | 'sandstorm' | 'thunder', number>>;
+  resources: string[];
 }
 
 export interface EndingDef {

@@ -1,11 +1,54 @@
 {
   "biomes": [
     {
+      "id": "snow",
+      "name": "霜白雪原",
+      "color": "#dfe9f2",
+      "temperature": [0.0, 0.3],
+      "humidity": [0.0, 1.0],
+      "enemyTable": ["ash_wolf"],
+      "weatherWeights": { "clear": 4, "fog": 2, "snowstorm": 3 },
+      "resources": ["ice_crystal"]
+    },
+    {
+      "id": "ashland",
+      "name": "余烬荒原",
+      "color": "#8c5a3c",
+      "temperature": [0.7, 1.0],
+      "humidity": [0.0, 0.3],
+      "enemyTable": ["ember_hound"],
+      "weatherWeights": { "clear": 5, "sandstorm": 3, "thunder": 1 },
+      "resources": ["ore", "ash_crystal"]
+    },
+    {
       "id": "forest",
       "name": "灰烬森林",
+      "color": "#2f5d3a",
       "temperature": [0.3, 0.7],
-      "humidity": [0.5, 0.9],
-      "enemyTable": ["ash_wolf"]
+      "humidity": [0.5, 1.0],
+      "enemyTable": ["ash_wolf", "moss_golem", "ember_hound"],
+      "weatherWeights": { "clear": 4, "rain": 3, "fog": 2 },
+      "resources": ["wood", "herb"]
+    },
+    {
+      "id": "plains",
+      "name": "枯草平原",
+      "color": "#9aa35a",
+      "temperature": [0.3, 0.7],
+      "humidity": [0.0, 0.5],
+      "enemyTable": ["ash_wolf", "ember_hound"],
+      "weatherWeights": { "clear": 5, "rain": 2, "thunder": 1 },
+      "resources": ["herb", "stone"]
+    },
+    {
+      "id": "marsh",
+      "name": "潮泥沼泽",
+      "color": "#4d6b52",
+      "temperature": [0.7, 1.0],
+      "humidity": [0.3, 1.0],
+      "enemyTable": ["moss_golem"],
+      "weatherWeights": { "fog": 4, "rain": 4, "thunder": 1 },
+      "resources": ["moss", "clay"]
     }
   ]
 }
