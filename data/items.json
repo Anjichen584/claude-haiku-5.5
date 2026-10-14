@@ -75,6 +75,208 @@
       "rarity": "rift",
       "price": 900,
       "itemLevel": 10
+    },
+    {
+      "id": "ash_sword",
+      "name": "灰烬长剑",
+      "type": "weapon",
+      "slot": "main_hand",
+      "price": 260,
+      "itemLevel": 5,
+      "rarity": "epic",
+      "setId": "ash_warden",
+      "baseDamage": 16
+    },
+    {
+      "id": "ash_boots",
+      "name": "灰烬战靴",
+      "type": "armor",
+      "slot": "feet",
+      "price": 180,
+      "itemLevel": 5,
+      "rarity": "epic",
+      "setId": "ash_warden",
+      "defense": 3
+    },
+    {
+      "id": "ash_gloves",
+      "name": "灰烬护手",
+      "type": "armor",
+      "slot": "hands",
+      "price": 170,
+      "itemLevel": 5,
+      "rarity": "epic",
+      "setId": "ash_warden",
+      "defense": 2
+    },
+    {
+      "id": "ash_amulet",
+      "name": "灰烬徽记",
+      "type": "accessory",
+      "slot": "neck",
+      "price": 200,
+      "itemLevel": 5,
+      "rarity": "epic",
+      "setId": "ash_warden",
+      "defense": 1
+    },
+    {
+      "id": "scholar_staff",
+      "name": "学者法杖",
+      "type": "weapon",
+      "slot": "main_hand",
+      "price": 300,
+      "itemLevel": 6,
+      "rarity": "epic",
+      "setId": "rift_scholar",
+      "baseDamage": 18
+    },
+    {
+      "id": "scholar_hood",
+      "name": "学者兜帽",
+      "type": "armor",
+      "slot": "head",
+      "price": 200,
+      "itemLevel": 6,
+      "rarity": "epic",
+      "setId": "rift_scholar",
+      "defense": 2
+    },
+    {
+      "id": "scholar_boots",
+      "name": "学者软靴",
+      "type": "armor",
+      "slot": "feet",
+      "price": 190,
+      "itemLevel": 6,
+      "rarity": "epic",
+      "setId": "rift_scholar",
+      "defense": 2
+    },
+    {
+      "id": "scholar_gloves",
+      "name": "学者手套",
+      "type": "armor",
+      "slot": "hands",
+      "price": 180,
+      "itemLevel": 6,
+      "rarity": "epic",
+      "setId": "rift_scholar",
+      "defense": 1
+    },
+    {
+      "id": "scholar_amulet",
+      "name": "学者棱镜",
+      "type": "accessory",
+      "slot": "neck",
+      "price": 240,
+      "itemLevel": 6,
+      "rarity": "epic",
+      "setId": "rift_scholar",
+      "defense": 1
+    },
+    {
+      "id": "wild_blade",
+      "name": "荒原猎刃",
+      "type": "weapon",
+      "slot": "main_hand",
+      "price": 180,
+      "itemLevel": 4,
+      "rarity": "rare",
+      "setId": "wild_stride",
+      "baseDamage": 14
+    },
+    {
+      "id": "wild_hood",
+      "name": "荒原兜帽",
+      "type": "armor",
+      "slot": "head",
+      "price": 120,
+      "itemLevel": 4,
+      "rarity": "rare",
+      "setId": "wild_stride",
+      "defense": 2
+    },
+    {
+      "id": "wild_vest",
+      "name": "荒原猎衣",
+      "type": "armor",
+      "slot": "chest",
+      "price": 180,
+      "itemLevel": 4,
+      "rarity": "rare",
+      "setId": "wild_stride",
+      "defense": 4
+    },
+    {
+      "id": "wild_gloves",
+      "name": "荒原护手",
+      "type": "armor",
+      "slot": "hands",
+      "price": 110,
+      "itemLevel": 4,
+      "rarity": "rare",
+      "setId": "wild_stride",
+      "defense": 1
+    },
+    {
+      "id": "wild_amulet",
+      "name": "荒原狼牙",
+      "type": "accessory",
+      "slot": "neck",
+      "price": 140,
+      "itemLevel": 4,
+      "rarity": "rare",
+      "setId": "wild_stride",
+      "defense": 1
+    },
+    {
+      "id": "leather_cap",
+      "name": "旅人皮帽",
+      "type": "armor",
+      "slot": "head",
+      "price": 25,
+      "itemLevel": 1,
+      "rarity": "common",
+      "defense": 1
+    },
+    {
+      "id": "leather_vest",
+      "name": "旅人皮衣",
+      "type": "armor",
+      "slot": "chest",
+      "price": 35,
+      "itemLevel": 1,
+      "rarity": "common",
+      "defense": 2
+    },
+    {
+      "id": "health_potion",
+      "name": "治疗药剂",
+      "type": "consumable",
+      "price": 18,
+      "rarity": "common",
+      "stackable": true,
+      "maxStack": 99,
+      "consumable": {
+        "resource": "hp",
+        "amount": 50,
+        "cooldownMs": 8000
+      }
+    },
+    {
+      "id": "mana_potion",
+      "name": "魔力药剂",
+      "type": "consumable",
+      "price": 15,
+      "rarity": "common",
+      "stackable": true,
+      "maxStack": 99,
+      "consumable": {
+        "resource": "mana",
+        "amount": 40,
+        "cooldownMs": 8000
+      }
     }
   ]
 }

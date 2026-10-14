@@ -1,3 +1,4 @@
+import { useConsumable } from '../state/consumables';
 import Phaser from 'phaser';
 import { bufferSceneKeys, pressed } from '../input/bufferedKeys';
 import { panel, text, UI, button } from '../ui/theme';
@@ -56,6 +57,7 @@ export class DungeonScene extends Phaser.Scene {
   private hud!: Phaser.GameObjects.Text;
   private message!: Phaser.GameObjects.Text;
   private keyE!: Phaser.Input.Keyboard.Key;
+  private supplyKeys!:Phaser.Input.Keyboard.Key[];
   private keyL!: Phaser.Input.Keyboard.Key;
 
   constructor() {
@@ -94,7 +96,7 @@ export class DungeonScene extends Phaser.Scene {
     text(this,1080,381,'数字键选择相邻房间\nE 与当前房间互动',14,'#9bb5a3').setOrigin(.5).setAlign('center').setLineSpacing(12);
     button(this,1080,468,260,'E  探索当前房间',()=>{if(!this.shopOpen)this.interact();});
     button(this,1120,674,260,'L  返回地表',()=>{if(!this.shopOpen)this.leave();});
-    text(this,42,661,'已获得的奖励将被保留。',14,'#8da996');
+    text(this,42,661,'H 治疗药剂 · M 魔力药剂 · 已获奖励保留。',14,'#8da996');
     this.shop=new ShopView(this,this.session,this.itemDefs,this.factionDefs,()=>this.closeShop());
 
     const keyboard = this.input.keyboard;
@@ -102,6 +104,7 @@ export class DungeonScene extends Phaser.Scene {
     this.keyE = keyboard.addKey('E');
     this.keyL = keyboard.addKey('L');
     this.escape=keyboard.addKey('ESC');
+    this.supplyKeys=[keyboard.addKey('H'),keyboard.addKey('M')];
     bufferSceneKeys(this);
     keyboard.on('keydown', this.onDigit, this);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => keyboard.off('keydown', this.onDigit, this));
@@ -114,6 +117,7 @@ export class DungeonScene extends Phaser.Scene {
 
   update(_time:number,deltaMs:number): void {
     if(this.session.player.mana!==undefined){const d=loadGameData(),p=combatProfile(this.session.player.equipment,d.items,d.affixes,d.itemSets);this.session.player.mana=Math.min(p.maxMana,this.session.player.mana+p.manaRegen*Math.min(100,Math.max(0,deltaMs))/1000);}
+    if(!this.shopOpen)for(let i=0;i<this.supplyKeys.length;i++)if(pressed(this.supplyKeys[i]))this.useSupply(i);
     if(this.shopOpen && pressed(this.escape)){this.closeShop();return;}
     if (!this.shopOpen && pressed(this.keyL)) {
       this.leave();
@@ -123,6 +127,13 @@ export class DungeonScene extends Phaser.Scene {
       if (this.shopOpen) this.closeShop();
       else this.interact();
     }
+  }
+
+  private useSupply(index:number):void{
+    const data=loadGameData(),p=this.session.player,profile=combatProfile(p.equipment,data.items,data.affixes,data.itemSets);
+    const item=data.items.find(i=>i.id===(index?'mana_potion':'health_potion'));if(!item)return;
+    const result=useConsumable(this.session,item,profile,{hp:p.hp,mana:p.mana??profile.maxMana});this.say(result.message);
+    if(result.ok){p.hp=result.hp;p.mana=result.mana;persistSession(this.session);this.render();}
   }
 
   // ---------- 移动 ----------

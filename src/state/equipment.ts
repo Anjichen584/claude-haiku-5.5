@@ -1,5 +1,5 @@
 /**
- * 装备：四个槽位（主手、头部、胸甲、脚部）。
+ * 装备：六个槽位（主手、头部、胸甲、脚部、手部、项链）。
  *
  * - 装备会从背包扣除一件，卸下后放回背包；
  * - 战斗属性 = 基础属性 + 武器伤害 + 护甲防御 + 词条（攻击/防御/生命）+ 套装加成；
@@ -13,11 +13,11 @@ import { activeSetBonuses, type ItemSetDef } from '../items/sets';
 import type { GameSession } from './session';
 import { PLAYER_MAX_HP, PLAYER_MAX_MANA } from './constants';
 
-export const EQUIP_SLOTS = ['main_hand', 'head', 'chest', 'feet'] as const;
+export const EQUIP_SLOTS = ['main_hand', 'head', 'chest', 'feet', 'hands', 'neck'] as const;
 export type EquipSlot = (typeof EQUIP_SLOTS)[number];
 
 export const SLOT_LABEL: Record<EquipSlot, string> = {
-  main_hand: '主手', head: '头部', chest: '胸甲', feet: '脚部',
+  main_hand: '主手', head: '头部', chest: '胸甲', feet: '脚部', hands:'手部', neck:'项链',
 };
 
 /** 玩家的基础战斗属性（不含装备） */
@@ -35,7 +35,7 @@ export function isEquipSlot(value: string): value is EquipSlot {
 
 /** 某个槽位可以装备的物品（武器或护甲，且槽位匹配）。 */
 export function equippableFor(slot: EquipSlot, items: readonly ItemDef[]): ItemDef[] {
-  return items.filter((i) => (i.type === 'weapon' || i.type === 'armor') && i.slot === slot);
+  return items.filter((i) => (i.type === 'weapon' || i.type === 'armor' || i.type === 'accessory') && i.slot === slot);
 }
 
 /**
@@ -60,6 +60,18 @@ export function cycleSlot(session: GameSession, slot: EquipSlot, items: readonly
   session.player.hp = Math.min(session.player.hp, combatStats(equipment, items, affixes, sets).maxHp);
   if(session.player.mana!==undefined)session.player.mana=Math.min(session.player.mana,Math.max(1,PLAYER_MAX_MANA+(equipmentBonuses(equipment,items,affixes,sets).maxMana??0)));
   return next;
+}
+
+/** Equip exactly the selected inventory item (never silently cycle to a different one). */
+export function equipItem(session:GameSession,id:string,items:readonly ItemDef[],affixes:readonly AffixDef[]=[],sets:readonly ItemSetDef[]=[]):boolean{
+  const item=items.find(i=>i.id===id);
+  if(!item?.slot||!isEquipSlot(item.slot)||!equippableFor(item.slot,items).some(i=>i.id===id)||session.world.getItemCount(id)<1)return false;
+  const current=session.player.equipment[item.slot];if(current===id)return false;
+  if(current)session.world.addItem(current,1);
+  session.world.addItem(id,-1);session.player.equipment[item.slot]=id;
+  session.player.hp=Math.min(session.player.hp,combatStats(session.player.equipment,items,affixes,sets).maxHp);
+  if(session.player.mana!==undefined)session.player.mana=Math.min(session.player.mana,Math.max(1,PLAYER_MAX_MANA+(equipmentBonuses(session.player.equipment,items,affixes,sets).maxMana??0)));
+  return true;
 }
 
 /** 字符串哈希（FNV-1a），用于把物品 id 转成稳定的随机种子。 */
@@ -94,7 +106,7 @@ type CombatStatName = (typeof COMBAT_STATS)[number];
 /**
  * 按当前装备计算战斗属性。
  * - affixes / sets 可省略（省略时只计算基础装备数值）。
- * - 词条和套装中，只有 attack、defense、maxHp 会计入战斗；其他词条暂不生效。
+ * - 词条和套装中，只有 attack、defense、maxHp 会计入战斗；扩展属性由 combat/profile.ts 处理。
  */
 export function combatStats(
   equipment: Partial<Record<string, string>>,

@@ -1,3 +1,4 @@
+import { useConsumable } from '../state/consumables';
 import Phaser from 'phaser';
 import { bufferSceneKeys, pressed } from '../input/bufferedKeys';
 import { landscape, panel, UI } from '../ui/theme';
@@ -83,6 +84,8 @@ export class TestRoomScene extends Phaser.Scene {
   private runtime!:CombatRuntime;
   private hotbar!:BattleHotbar;
   private equippedSkills:SkillDef[]=[];
+  private supplyKeys!:Phaser.Input.Keyboard.Key[];
+  private supplyLabels:Phaser.GameObjects.Text[]=[];
   private skillKeys:Phaser.Input.Keyboard.Key[]=[];
   private dashLeftMs = 0;
   private dodgeLeftMs = 0;
@@ -121,6 +124,7 @@ export class TestRoomScene extends Phaser.Scene {
       SHIFT: 'SHIFT', SPACE: 'SPACE', J: 'J', R: 'R',
     }) as typeof this.keys;
     this.exitKey=kb.addKey("ESC");
+    this.supplyKeys=[kb.addKey('H'),kb.addKey('M')];
     this.skillKeys=[1,2,3,4].map(n=>kb.addKey(48+n));
     bufferSceneKeys(this);
     this.resetRoom();
@@ -293,6 +297,7 @@ export class TestRoomScene extends Phaser.Scene {
         alive: true,
       });
     }
+    this.supplyLabels=['治疗药剂','魔力药剂'].map((name,i)=>this.add.text(925,520+i*34,`${i?'M':'H'} ${name}`,{fontFamily:UI.font,fontSize:12,color:'#dfd3b2',backgroundColor:'#1b3638',padding:{x:10,y:7}}).setDepth(211).setInteractive({useHandCursor:true}).on('pointerdown',()=>this.useSupply(i)));
     this.hotbar=new BattleHotbar(this,this.equippedSkills,this.runtime,i=>this.castSkill(i));
     this.pushLog('1–4 施放技能 · J 普攻 · Space 闪避（消耗耐力）');
   }
@@ -341,6 +346,7 @@ export class TestRoomScene extends Phaser.Scene {
       this.movePlayer(mx * PLAYER.speed * this.runtime.speedMultiplier * dt, my * PLAYER.speed * this.runtime.speedMultiplier * dt);
     }
 
+    for(let i=0;i<this.supplyKeys.length;i++)if(pressed(this.supplyKeys[i]))this.useSupply(i);
     for(let i=0;i<this.skillKeys.length;i++)if(pressed(this.skillKeys[i]))this.castSkill(i);
 
     // 攻击
@@ -365,6 +371,15 @@ export class TestRoomScene extends Phaser.Scene {
 
   private targets():CombatTarget[]{
     return this.enemies.filter(e=>e.alive).map(e=>{e.combat.x=e.x;e.combat.y=e.y;return e.combat;});
+  }
+
+  private useSupply(index:number):void{
+    if(this.finished||!this.session||!this.encounter)return;
+    const item=loadGameData().items.find(i=>i.id===(index?'mana_potion':'health_potion'));if(!item)return;
+    const result=useConsumable(this.session,item,this.runtime.profile,{hp:this.playerActor.hp,mana:this.runtime.mana});
+    this.pushLog(result.message);if(!result.ok)return;
+    this.playerActor.hp=result.hp;this.runtime.mana=result.mana;this.floatText(this.px,this.py-82,result.message,'#b6dcab');
+    // Save together with encounter settlement, never save partial kill rewards mid-fight.
   }
 
   private castSkill(index:number):void{
@@ -408,7 +423,7 @@ export class TestRoomScene extends Phaser.Scene {
         // 击杀奖励与掉落（掉落按 战斗键 + 敌人序号 决定，结果稳定）
         const slot = this.enemies.indexOf(enemy);
         const key = `${this.encounter.spawnKey}:${slot}`;
-        const kg = killGains(enemy.def);
+        const kg = killGains(enemy.def,this.runtime.profile.bonuses);
         this.loot.push(`击杀 ${enemy.def.name}：+${kg.exp} 经验、+${kg.gold} 金币`);
         this.loot.push(...applyGains(this.session, kg));
         for (const item of rollDrops(enemy.def, key)) {
@@ -482,6 +497,8 @@ export class TestRoomScene extends Phaser.Scene {
     }
 
     this.hotbar.update();
+    const cd=Math.max(0,Math.ceil(((this.session?.player.consumableReadyAt??0)-Date.now())/1000));
+    this.supplyLabels.forEach((label,i)=>label.setText(`${i?'M 魔力':'H 治疗'} ×${this.session?.world.getItemCount(i?'mana_potion':'health_potion')??0}${cd>0?` · ${cd}s`:''}`));
     for(const trap of this.runtime.traps){this.effects.lineStyle(2,0xacc79a,.7).strokeCircle(trap.x,trap.y,trap.radius);this.effects.lineBetween(trap.x-9,trap.y-9,trap.x+9,trap.y+9);}
     this.health.clear().fillStyle(0x304b44).fillRoundedRect(790,52,300,12,6).fillStyle(0xa3c18c).fillRoundedRect(790,52,300*Math.max(0,this.playerActor.hp/this.playerActor.maxHp),12,6);
     this.hud.setText([

@@ -1,3 +1,4 @@
+import { validateItemContent } from '../src/items/validate';
 import { validateSkillCombat } from '../src/skills/validateCombat';
 /**
  * 数据校验脚本：npm run validate:data
@@ -100,6 +101,7 @@ if (affixes.length < 60) fail(`affixes: 词条至少需要 60 种，目前 ${aff
 }
 
 // ---------- 物品 ----------
+for(const error of validateItemContent(items,itemSetsFile.sets))fail(error);
 for (const item of items) {
   if (typeof item.price !== 'number' || item.price < 0) fail(`items.${item.id}: price 必须为非负数`);
   if (item.stackable && (!item.maxStack || item.maxStack < 1)) {

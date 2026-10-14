@@ -12,10 +12,12 @@ export function bindSkill(state: SkillLoadoutFields, defs: readonly SkillDef[], 
   if (!Number.isInteger(slot) || slot < 0 || slot >= SKILL_SLOTS || !state.unlocked.includes(id)) return false;
   if (!defs.some(s => s.id === id && s.combat && s.combat.kind !== 'passive')) return false;
   const slots = skillLoadout(state, defs);
-  const old = slots.indexOf(id);
-  if (old >= 0) slots.splice(old, 1);
-  // Empty slots are compacted deliberately; there are no holes in legacy JSON arrays.
-  slots.splice(Math.min(slot, slots.length), slot < slots.length ? 1 : 0, id);
+  const old = slots.indexOf(id),target=Math.min(slot,slots.length);
+  if(old>=0){
+    if(target<slots.length)[slots[old],slots[target]]=[slots[target],slots[old]];
+    else {slots.splice(old,1);slots.push(id);}
+  }else if(target<slots.length)slots[target]=id;
+  else slots.push(id);
   state.equipped = slots.slice(0, SKILL_SLOTS);
   return true;
 }

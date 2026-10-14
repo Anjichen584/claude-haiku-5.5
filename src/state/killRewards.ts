@@ -6,9 +6,10 @@ import { hashSeed, Rng } from '../core/Rng';
 import type { EnemyDef } from '../data/schema';
 import type { Gains } from './rewards';
 
-export function killGains(def: Pick<EnemyDef, 'level'>): Gains {
+export function killGains(def: Pick<EnemyDef, 'level'>,bonuses:Readonly<Record<string,number>>={}): Gains {
   const lv = def.level ?? 2;
-  return { exp: 5 + 5 * lv, gold: 2 + 2 * lv, items: [] };
+  const boost=(stat:string)=>1+Math.max(0,Math.min(300,bonuses[stat]??0))/100;
+  return { exp: Math.round((5+5*lv)*boost('expGain')), gold: Math.round((2+2*lv)*boost('goldFind')), items: [] };
 }
 
 /** 按掉落表判定掉落。key 应唯一标识这一次击杀（例如 战斗键 + 序号）。 */

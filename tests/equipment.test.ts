@@ -13,8 +13,8 @@ const quests = (questsJson as unknown as { quests: QuestDef[] }).quests;
 
 describe('槽位候选', () => {
   it('只列出对应槽位的武器或护甲', () => {
-    expect(equippableFor('main_hand', items).map((i) => i.id)).toEqual(['iron_sword', 'rift_blade']);
-    expect(equippableFor('head', items).map((i) => i.id)).toEqual(['ash_helm']);
+    expect(equippableFor('main_hand', items).map((i) => i.id)).toEqual(['iron_sword', 'rift_blade', 'ash_sword', 'scholar_staff', 'wild_blade']);
+    expect(equippableFor('head', items).map((i) => i.id)).toEqual(['ash_helm','scholar_hood','wild_hood','leather_cap']);
   });
 });
 

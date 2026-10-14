@@ -32,6 +32,8 @@ export class CombatRuntime {
   lastCombo:string|null=null;
   dodgeCooldownMs=0;
   dashCooldownMs=0;
+  nextBasicCritical=false;
+  dashAttackLeftMs=0;
   private rng:Rng;
   private skillById:Map<string,SkillDef>;
   readonly learned:Set<string>;
@@ -51,7 +53,7 @@ export class CombatRuntime {
   isStunned(target:CombatTarget):boolean{return this.status(target).stunMs>0;}
   tick(deltaMs:number,targets:readonly CombatTarget[]):void{
     const dt=clamp(Number.isFinite(deltaMs)?deltaMs:0,0,250);
-    this.elapsedMs+=dt;this.actor.tick(dt);
+    this.elapsedMs+=dt;this.actor.tick(dt);this.dashAttackLeftMs=Math.max(0,this.dashAttackLeftMs-dt);
     this.globalCooldownMs=Math.max(0,this.globalCooldownMs-dt);this.basicCooldownMs=Math.max(0,this.basicCooldownMs-dt);
     this.dodgeCooldownMs=Math.max(0,this.dodgeCooldownMs-dt);this.dashCooldownMs=Math.max(0,this.dashCooldownMs-dt);
     for(const [id,cd]of this.cooldowns)this.cooldowns.set(id,Math.max(0,cd-dt));
@@ -78,7 +80,7 @@ export class CombatRuntime {
   }
   tryDash():boolean{
     if(this.actor.isDead||this.actor.isStaggered||this.dashCooldownMs>0||this.stamina<15)return false;
-    this.stamina-=15;this.dashCooldownMs=1000;return true;
+    this.stamina-=15;this.dashCooldownMs=1000;if(this.n('dashAttackBonus')>0)this.dashAttackLeftMs=2000;return true;
   }
   canCast(id:string):CastResult['reason']|undefined{
     const skill=this.skillById.get(id);
@@ -125,25 +127,28 @@ export class CombatRuntime {
     if(combo?.effect.aoeDamage){
       for(const target of targets.filter(e=>!e.actor.isDead&&Math.hypot(e.x-selection.center.x,e.y-selection.center.y)<=150))this.onDamage(target,combo.effect.aoeDamage);
     }
+    if(skill.branch==='arcane'&&this.n('spellNextCrit')>0)this.nextBasicCritical=true;
     return{ok:true,skill,targets:selection.hits,combo,center:selection.center};
   }
   basicAttack(origin:{x:number;y:number},direction:{x:number;y:number},targets:readonly CombatTarget[]):CombatTarget[]{
     if(this.actor.isDead||this.actor.isStaggered||this.globalCooldownMs>0||this.basicCooldownMs>0)return[];
     this.basicCooldownMs=this.profile.attackIntervalMs;
     const {hits}=this.select({kind:'strike',description:'普攻',range:this.profile.weaponRange},origin,direction,targets);
-    for(const target of hits)this.hit(target,{id:'basic',name:'普通攻击',branch:'martial',tier:1,requires:[],element:'none',manaCost:0,cooldown:0,multiplier:1,cost:{skillPoints:0},combat:{kind:'strike',description:'普攻'}});
+    const forceCritical=this.nextBasicCritical;
+    for(const target of hits)this.hit(target,{id:'basic',name:'普通攻击',branch:'martial',tier:1,requires:[],element:'none',manaCost:0,cooldown:0,multiplier:1,cost:{skillPoints:0},combat:{kind:'strike',description:'普攻'}},undefined,forceCritical);
+    if(hits.length)this.nextBasicCritical=false;
     return hits;
   }
-  private hit(target:CombatTarget,skill:SkillDef,combo?:ComboDef):void{
+  private hit(target:CombatTarget,skill:SkillDef,combo?:ComboDef,forceCritical=false):void{
     if(target.actor.isDead)return;
     const effect=skill.combat!,d=this.debuffs.get(target.id)??blankDebuff();
     const shred=Math.max(effect.armorShred??0,combo?.effect.defenseShred??0);
     if(shred>0){d.shred=Math.max(d.shred,shred);d.shredMs=Math.max(d.shredMs,effect.durationMs??5000);}
     this.debuffs.set(target.id,d);
-    const critical=this.rng.next()<clamp(this.profile.critChance+this.passive('critChanceBonus'),0,.85);
+    const critical=forceCritical||this.rng.next()<clamp(this.profile.critChance+this.passive('critChanceBonus'),0,.85);
     const element=(skill.element??'none') as Element;
-    let boost=1+this.buffMax('attackBoost');
-    boost*=1+this.n(skill.branch==='arcane'?'spellDamage':effect.kind==='bolt'?'rangedDamage':'meleeDamage')/100;
+    let boost=1+this.buffMax('attackBoost')+(this.dashAttackLeftMs>0?this.n('dashAttackBonus')/100:0);
+    boost*=1+(this.n(skill.branch==='arcane'?'spellDamage':'meleeDamage')+(effect.kind==='bolt'?this.n('rangedDamage'):0))/100;
     boost*=1+(this.n(`${element}Damage`)+this.n(`${element}SkillDamage`))/100;
     boost*=1+this.n(target.boss?'bossDamage':target.elite?'eliteDamage':'_')/100;
     const damage=calculateDamage({attack:this.profile.attack*boost,multiplier:(skill.multiplier??1)*(combo?.effect.bonusDamageMultiplier??1),element,critical,criticalMultiplier:this.profile.critMultiplier},{defense:Math.max(0,target.defense-(d.shredMs>0?d.shred:0)-this.n('armorShred')),element:target.element});
@@ -173,7 +178,7 @@ export class CombatRuntime {
     if(source && !source.actor.isDead && (applied>0||damage===0)){
       const counter=this.buffs.find(b=>b.effect.retaliate&&!b.retaliated);
       if(counter){counter.retaliated=true;this.onDamage(source,Math.max(1,Math.round(this.profile.attack*counter.effect.retaliate!)));}
-      const reflect=element==='fire'?Math.max(0,...this.buffs.map(b=>b.fireReflect??0)):0;
+      const reflect=element==='fire'?Math.max(this.n('fireReflect'),...this.buffs.map(b=>b.fireReflect??0)):0;
       const reflected=Math.round(applied*reflect/100)+this.n('thorns');
       if(reflected>0&&!source.actor.isDead)this.onDamage(source,reflected);
     }

@@ -31,12 +31,14 @@ export interface PlayerState {
   /** 累计经验，等级由它推导（见 rewards.ts） */
   exp: number;
   gold: number;
-  /** 已装备的物品，键为槽位（main_hand / head / chest / feet） */
+  /** 已装备的物品，键为槽位（main_hand / head / chest / feet / hands / neck） */
   equipment: Partial<Record<string, string>>;
   /** 技能：已解锁的技能 id 与尚未使用的技能点（技能点由升级获得） */
   skills: { unlocked: string[]; points: number; equipped?: string[] };
   /** Optional for backwards-compatible version-1 saves. */
   mana?: number;
+  /** Shared potion cooldown, epoch milliseconds; survives scene changes and saves. */
+  consumableReadyAt?: number;
 }
 
 export interface GameSession {
@@ -69,6 +71,7 @@ export class SaveError extends Error {}
 /** 新开一局：默认出生在原点，满血，可接取的主线任务自动接取。 */
 export function newSession(quests: readonly QuestDef[]): GameSession {
   const world = new WorldState();
+  world.addItem('health_potion',2);world.addItem('mana_potion',1);
   const manager = new QuestManager(quests, world);
   // 支线任务由 NPC 发布，这里只接取非支线任务
   manager.acceptAvailable((d) => d.type !== 'side');
@@ -148,6 +151,8 @@ export function parseSave(raw: string): SaveFile {
   const mana=player.mana;
   const maxMana=combatProfile(equipment,itemsData.items as ItemDef[],affixesData.affixes as AffixDef[],setsData.sets as ItemSetDef[]).maxMana;
   if(mana!==undefined && (!isFiniteNumber(mana) || mana<0 || mana>maxMana))throw new SaveError('魔力数据错误');
+  const consumableReadyAt=player.consumableReadyAt;
+  if(consumableReadyAt!==undefined&&(!isFiniteNumber(consumableReadyAt)||consumableReadyAt<0))throw new SaveError('药剂冷却数据错误');
   const rawFloor: unknown = data.dungeonFloor === undefined ? 1 : data.dungeonFloor;
   if (typeof rawFloor !== 'number' || !Number.isInteger(rawFloor) || rawFloor < 1 || rawFloor > MAX_DUNGEON_FLOOR) {
     throw new SaveError('地牢层数越界');
@@ -174,7 +179,7 @@ export function parseSave(raw: string): SaveFile {
     version: SAVE_VERSION,
     savedAt: typeof data.savedAt === 'string' ? data.savedAt : '',
     world: world as unknown as WorldSnapshot,
-    player: { tileX: player.tileX, tileY: player.tileY, hp: player.hp, exp, gold, equipment, skills, ...(mana===undefined?{}:{mana:mana as number}) },
+    player: { tileX: player.tileX, tileY: player.tileY, hp: player.hp, exp, gold, equipment, skills, ...(mana===undefined?{}:{mana:mana as number}),...(consumableReadyAt===undefined?{}:{consumableReadyAt:consumableReadyAt as number}) },
     elapsedMs: data.elapsedMs,
     visited: data.visited,
     defeated: data.defeated,

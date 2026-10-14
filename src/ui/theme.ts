@@ -52,3 +52,13 @@ export function landscape(scene:Phaser.Scene, battle=false): void {
     scene.tweens.add({targets:mote,y:mote.y-35,alpha:.08,duration:2000+i*181,yoyo:true,repeat:-1});
   }
 }
+
+/** Explicitly pin descendants: Phaser's SetAll skips inherited default scrollFactor fields. */
+export function pinToScreen(root:Phaser.GameObjects.Container):void{
+  root.setScrollFactor(0,0);
+  for(const child of root.list){
+    const object=child as Phaser.GameObjects.GameObject&{setScrollFactor?:(x:number,y?:number)=>unknown};
+    object.setScrollFactor?.(0,0);
+    if(child instanceof Phaser.GameObjects.Container)pinToScreen(child);
+  }
+}

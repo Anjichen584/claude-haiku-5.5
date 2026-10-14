@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { UI } from './theme';
+import { UI, pinToScreen } from './theme';
 export interface PanelCard { title:string; subtitle:string; key?:string; accent?:number; onClick?:()=>void }
 /** Screen-space card board, shared by inventory, equipment, factions and skills. */
 export class CardPanel {
@@ -25,6 +25,6 @@ export class CardPanel {
    const x=306+i*220,y=584,b=this.scene.add.rectangle(x,y,208,27,0x25453f).setOrigin(0).setStrokeStyle(1,0x627c64);this.root.add(b);
    this.label(x+12,y+4,action.label,13,'#e4ce93');b.setInteractive({useHandCursor:true});b.on('pointerdown',action.run);
   });
-  this.root.setScrollFactor(0,0,true);
+  pinToScreen(this.root);
  }
 }

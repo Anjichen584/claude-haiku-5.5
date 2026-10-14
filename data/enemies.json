@@ -15,6 +15,18 @@
         {
           "item": "rift_shard",
           "chance": 0.1
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "stride_boots",
+          "chance": 0.07
         }
       ]
     },
@@ -33,6 +45,18 @@
         {
           "item": "rift_shard",
           "chance": 0.2
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "wild_blade",
+          "chance": 0.07
         }
       ]
     },
@@ -51,6 +75,18 @@
         {
           "item": "rift_shard",
           "chance": 0.05
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "wild_hood",
+          "chance": 0.07
         }
       ]
     },
@@ -70,6 +106,18 @@
         {
           "item": "rift_shard",
           "chance": 0.08
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "scholar_boots",
+          "chance": 0.07
         }
       ]
     },
@@ -89,6 +137,18 @@
         {
           "item": "rift_shard",
           "chance": 0.05
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "scholar_gloves",
+          "chance": 0.07
         }
       ]
     },
@@ -109,6 +169,22 @@
         {
           "item": "rift_shard",
           "chance": 0.1
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "scholar_amulet",
+          "chance": 0.07
+        },
+        {
+          "item": "rift_blade",
+          "chance": 0.12
         }
       ]
     },
@@ -128,6 +204,18 @@
         {
           "item": "rift_shard",
           "chance": 0.12
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "scholar_robe",
+          "chance": 0.07
         }
       ]
     },
@@ -147,6 +235,18 @@
         {
           "item": "rift_shard",
           "chance": 0.06
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "ash_plate",
+          "chance": 0.07
         }
       ]
     },
@@ -166,6 +266,18 @@
         {
           "item": "rift_shard",
           "chance": 0.1
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "ash_sword",
+          "chance": 0.07
         }
       ]
     },
@@ -185,6 +297,18 @@
         {
           "item": "rift_shard",
           "chance": 0.12
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "ash_boots",
+          "chance": 0.07
         }
       ]
     },
@@ -204,6 +328,22 @@
         {
           "item": "rift_shard",
           "chance": 0.15
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "ash_gloves",
+          "chance": 0.07
+        },
+        {
+          "item": "scholar_staff",
+          "chance": 0.12
         }
       ]
     },
@@ -223,6 +363,18 @@
         {
           "item": "rift_shard",
           "chance": 0.08
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "wild_amulet",
+          "chance": 0.07
         }
       ]
     },
@@ -242,6 +394,18 @@
         {
           "item": "rift_shard",
           "chance": 0.1
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "stride_boots",
+          "chance": 0.07
         }
       ]
     },
@@ -261,6 +425,18 @@
         {
           "item": "rift_shard",
           "chance": 0.12
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "wild_blade",
+          "chance": 0.07
         }
       ]
     },
@@ -280,6 +456,18 @@
         {
           "item": "rift_shard",
           "chance": 0.1
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "wild_hood",
+          "chance": 0.07
         }
       ]
     },
@@ -299,6 +487,18 @@
         {
           "item": "rift_shard",
           "chance": 0.09
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "ash_boots",
+          "chance": 0.07
         }
       ]
     },
@@ -318,6 +518,18 @@
         {
           "item": "rift_shard",
           "chance": 0.1
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "ash_gloves",
+          "chance": 0.07
         }
       ]
     },
@@ -337,6 +549,18 @@
         {
           "item": "rift_shard",
           "chance": 0.12
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "ash_amulet",
+          "chance": 0.07
         }
       ]
     },
@@ -356,6 +580,18 @@
         {
           "item": "rift_shard",
           "chance": 0.13
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "ash_helm",
+          "chance": 0.07
         }
       ]
     },
@@ -375,6 +611,18 @@
         {
           "item": "rift_shard",
           "chance": 0.06
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "ash_plate",
+          "chance": 0.07
         }
       ]
     },
@@ -394,6 +642,18 @@
         {
           "item": "rift_shard",
           "chance": 0.1
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "ash_sword",
+          "chance": 0.07
         }
       ]
     },
@@ -413,6 +673,18 @@
         {
           "item": "rift_shard",
           "chance": 0.12
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "ash_boots",
+          "chance": 0.07
         }
       ]
     },
@@ -433,6 +705,18 @@
         {
           "item": "rift_shard",
           "chance": 0.1
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "ash_gloves",
+          "chance": 0.07
         }
       ]
     },
@@ -454,6 +738,18 @@
         {
           "item": "rift_shard",
           "chance": 0.14
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "wild_amulet",
+          "chance": 0.07
         }
       ]
     },
@@ -474,6 +770,18 @@
         {
           "item": "rift_shard",
           "chance": 0.12
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "stride_boots",
+          "chance": 0.07
         }
       ]
     },
@@ -494,6 +802,18 @@
         {
           "item": "rift_shard",
           "chance": 0.08
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "ash_plate",
+          "chance": 0.07
         }
       ]
     },
@@ -513,6 +833,18 @@
         {
           "item": "rift_shard",
           "chance": 0.5
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "scholar_hood",
+          "chance": 0.25
         }
       ],
       "elite": true
@@ -533,6 +865,18 @@
         {
           "item": "rift_shard",
           "chance": 0.5
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "scholar_boots",
+          "chance": 0.25
         }
       ],
       "elite": true
@@ -553,6 +897,18 @@
         {
           "item": "rift_shard",
           "chance": 0.5
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "ash_gloves",
+          "chance": 0.25
         }
       ],
       "elite": true
@@ -573,6 +929,18 @@
         {
           "item": "rift_shard",
           "chance": 0.5
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "ash_amulet",
+          "chance": 0.25
         }
       ],
       "elite": true
@@ -593,6 +961,18 @@
         {
           "item": "rift_shard",
           "chance": 0.5
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "stride_boots",
+          "chance": 0.25
         }
       ],
       "elite": true
@@ -613,6 +993,18 @@
         {
           "item": "rift_shard",
           "chance": 0.5
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "wild_blade",
+          "chance": 0.25
         }
       ],
       "elite": true
@@ -633,6 +1025,18 @@
         {
           "item": "rift_shard",
           "chance": 0.5
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "ash_sword",
+          "chance": 0.25
         }
       ],
       "elite": true
@@ -653,6 +1057,18 @@
         {
           "item": "rift_shard",
           "chance": 0.5
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "ash_boots",
+          "chance": 0.25
         }
       ],
       "elite": true
@@ -673,6 +1089,18 @@
         {
           "item": "rift_shard",
           "chance": 0.5
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "ash_gloves",
+          "chance": 0.25
         }
       ],
       "elite": true
@@ -693,6 +1121,18 @@
         {
           "item": "rift_shard",
           "chance": 0.5
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "ash_amulet",
+          "chance": 0.25
         }
       ],
       "elite": true
@@ -714,6 +1154,18 @@
         {
           "item": "rift_shard",
           "chance": 0.5
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "stride_boots",
+          "chance": 0.25
         }
       ],
       "elite": true
@@ -735,6 +1187,18 @@
         {
           "item": "rift_shard",
           "chance": 0.5
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.08
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.06
+        },
+        {
+          "item": "ash_plate",
+          "chance": 0.25
         }
       ],
       "elite": true
@@ -755,6 +1219,22 @@
         {
           "item": "rift_shard",
           "chance": 1.0
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.18
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.18
+        },
+        {
+          "item": "scholar_hood",
+          "chance": 0.55
+        },
+        {
+          "item": "wild_hood",
+          "chance": 0.4
         }
       ],
       "boss": true,
@@ -776,6 +1256,22 @@
         {
           "item": "rift_shard",
           "chance": 1.0
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.18
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.18
+        },
+        {
+          "item": "ash_boots",
+          "chance": 0.55
+        },
+        {
+          "item": "wild_vest",
+          "chance": 0.4
         }
       ],
       "boss": true,
@@ -797,6 +1293,18 @@
         {
           "item": "rift_shard",
           "chance": 1.0
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.18
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.18
+        },
+        {
+          "item": "wild_gloves",
+          "chance": 0.55
         }
       ],
       "boss": true,
@@ -818,6 +1326,22 @@
         {
           "item": "rift_shard",
           "chance": 1.0
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.18
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.18
+        },
+        {
+          "item": "ash_amulet",
+          "chance": 0.55
+        },
+        {
+          "item": "wild_amulet",
+          "chance": 0.4
         }
       ],
       "boss": true,
@@ -839,6 +1363,22 @@
         {
           "item": "rift_shard",
           "chance": 1.0
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.18
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.18
+        },
+        {
+          "item": "ash_helm",
+          "chance": 0.55
+        },
+        {
+          "item": "leather_cap",
+          "chance": 0.4
         }
       ],
       "boss": true,
@@ -862,6 +1402,22 @@
         {
           "item": "rift_shard",
           "chance": 1.0
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.18
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.18
+        },
+        {
+          "item": "wild_blade",
+          "chance": 0.55
+        },
+        {
+          "item": "leather_vest",
+          "chance": 0.4
         }
       ],
       "boss": true,
@@ -884,6 +1440,22 @@
         {
           "item": "rift_shard",
           "chance": 1.0
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.18
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.18
+        },
+        {
+          "item": "scholar_hood",
+          "chance": 0.55
+        },
+        {
+          "item": "iron_sword",
+          "chance": 0.4
         }
       ],
       "boss": true,
@@ -909,6 +1481,22 @@
         {
           "item": "rift_shard",
           "chance": 1.0
+        },
+        {
+          "item": "health_potion",
+          "chance": 0.18
+        },
+        {
+          "item": "mana_potion",
+          "chance": 0.18
+        },
+        {
+          "item": "ash_boots",
+          "chance": 0.55
+        },
+        {
+          "item": "ash_helm",
+          "chance": 0.4
         }
       ],
       "boss": true,

@@ -44,6 +44,7 @@ export function buyItem(
   multiplier: number,
 ): BuyResult {
   const price = buyPrice(item, multiplier);
+  if(!Number.isFinite(price)||price<=0||!Number.isFinite(multiplier)||multiplier<=0||item.type==='material')return {ok:false,message:'物品或价格无效'};
   if (session.player.gold < price) {
     return { ok: false, message: `金币不足：${item.name} 需要 ${price}，你有 ${session.player.gold}` };
   }
@@ -55,4 +56,14 @@ export function buyItem(
 /** 商店列表文本，每行一个物品，行首编号与数字键对应。 */
 export function shopLines(items: readonly ItemDef[], multiplier: number): string[] {
   return items.map((item, i) => `[${i + 1}] ${item.name}  ${buyPrice(item, multiplier)} 金币`);
+}
+
+/** Only inventory spares may be sold; equipped items are outside inventory. */
+export function sellPrice(item:ItemDef):number{return Math.floor(item.price*.35);}
+export function sellStock(session:GameSession,items:readonly ItemDef[]):ItemDef[]{return items.filter(i=>i.type!=='material'&&sellPrice(i)>0&&session.world.getItemCount(i.id)>0);}
+export function sellItem(session:GameSession,item:ItemDef):BuyResult{
+ const price=sellPrice(item);
+ if(item.type==='material'||!Number.isFinite(price)||price<=0||session.world.getItemCount(item.id)<1)return {ok:false,message:'没有可出售的这件物品'};
+ session.world.addItem(item.id,-1);session.player.gold+=price;
+ return {ok:true,message:`出售 ${item.name}（+${price} 金币）`};
 }

@@ -17,6 +17,7 @@ export interface ItemDef {
   stackable?: boolean;
   maxStack?: number;
   price: number;
+  consumable?: { resource:'hp'|'mana'; amount:number; cooldownMs:number };
   /** 所属套装 id（可选） */
   setId?: string;
   /** 装备等级（可选，用于词条缩放） */

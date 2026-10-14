@@ -20,7 +20,13 @@
           "pieces": 6,
           "stat": "fireResist",
           "value": 20,
-          "text": "火焰抵抗 +20%，受火焰伤害时反弹 10%"
+          "text": "火焰抵抗 +20%"
+        },
+        {
+          "pieces": 6,
+          "stat": "fireReflect",
+          "value": 10,
+          "text": "受到火焰伤害时反弹 10%"
         }
       ]
     },
@@ -44,7 +50,13 @@
           "pieces": 6,
           "stat": "spellDamage",
           "value": 20,
-          "text": "法术伤害 +20%，释放法术后下一次攻击必定暴击"
+          "text": "法术伤害 +20%"
+        },
+        {
+          "pieces": 6,
+          "stat": "spellNextCrit",
+          "value": 1,
+          "text": "施放法术后下一次普通攻击必定暴击"
         }
       ]
     },
@@ -68,7 +80,13 @@
           "pieces": 6,
           "stat": "dodgeChance",
           "value": 10,
-          "text": "闪避率 +10%，冲刺后 2 秒内攻击力 +15%"
+          "text": "闪避率 +10%"
+        },
+        {
+          "pieces": 6,
+          "stat": "dashAttackBonus",
+          "value": 15,
+          "text": "冲刺后 2 秒内攻击力 +15%"
         }
       ]
     }

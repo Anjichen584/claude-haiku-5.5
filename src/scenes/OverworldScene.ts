@@ -1,11 +1,12 @@
+import { useConsumable } from '../state/consumables';
 import Phaser from 'phaser';
 import { bufferSceneKeys, pressed } from '../input/bufferedKeys';
 import { npcRole } from '../art/sprites';
-import { UI, panel, text, button, styleModal } from '../ui/theme';
+import { pinToScreen, UI, panel, text, button, styleModal } from '../ui/theme';
 import { ShopView } from '../ui/ShopView';
 import { CardPanel } from '../ui/CardPanel';
 import { skillLoadout, bindSkill } from '../combat/loadout';
-import { combatProfile } from '../combat/profile';
+import { combatProfile, isSupportedModifier } from '../combat/profile';
 import { settleQuestRewards } from '../state/rewards';
 import { display } from '../config/display';
 import { CHUNK_SIZE, FLAG_RIVER, FLAG_ROAD, chunkOf, generateChunk, type Chunk } from '../world/chunk';
@@ -26,7 +27,7 @@ const GATE_RADIUS = 2;
 import { surfaceSpawnsForChunk, type EncounterRequest, type SurfaceSpawn } from '../world/encounters';
 import { activeQuestLog, formatQuestLog } from '../narrative/questLog';
 import { formatInventory, inventoryLines } from '../state/inventory';
-import { combatStats, cycleSlot, EQUIP_SLOTS, equipmentDetailLines, SLOT_LABEL } from '../state/equipment';
+import { combatStats, cycleSlot, equipItem, itemAffixes, EQUIP_SLOTS, equipmentDetailLines, SLOT_LABEL } from '../state/equipment';
 import { getSession, persistSession, setSession } from '../state/sessionStore';
 import { newSession, type GameSession } from '../state/session';
 import type { AffixDef, EnemyDef, FactionDef, ItemDef, QuestDef } from '../data/schema';
@@ -35,7 +36,7 @@ import { pendingKeyChoice, resolveKeyChoice, type KeyChoiceDef } from '../narrat
 import { resolveEnding } from '../endings/EndingResolver';
 import { blockReason, type RegionGate } from '../factions/regionAccess';
 import type { EndingDef } from '../data/schema';
-import type { ItemSetDef } from '../items/sets';
+import { activeSetBonuses, type ItemSetDef } from '../items/sets';
 import { levelForExp } from '../state/rewards';
 import {
   activeCombos, BRANCH_LABEL, branchSkills, indexSkills, resetBranch, resetCost, storeTree, treeOf,
@@ -118,7 +119,7 @@ export class OverworldScene extends Phaser.Scene {
   private lightOverlay!: Phaser.GameObjects.Rectangle;
   private weatherOverlay!: Phaser.GameObjects.Rectangle;
   private hud!: Phaser.GameObjects.Text;
-  private keys!: Record<'W' | 'A' | 'S' | 'D' | 'T', Phaser.Input.Keyboard.Key>;
+  private keys!: Record<'W' | 'A' | 'S' | 'D' | 'T' | 'H' | 'M', Phaser.Input.Keyboard.Key>;
   private world!: WorldState;
   private quests!: QuestManager;
   private locationRegistry!: LocationRegistry;
@@ -283,7 +284,7 @@ export class OverworldScene extends Phaser.Scene {
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => keyboard.off('keydown', this.onDigitKey, this));
     const kb = this.input.keyboard;
     if (!kb) throw new Error('Keyboard input is not available');
-    this.keys = kb.addKeys({ W: 'W', A: 'A', S: 'S', D: 'D', T: 'T' }) as typeof this.keys;
+    this.keys = kb.addKeys({ W: 'W', A: 'A', S: 'S', D: 'D', T: 'T', H:'H', M:'M' }) as typeof this.keys;
 
     this.player = this.add.image(0, 0, 'actor-hero').setDisplaySize(52,52).setOrigin(.5,.85).setDepth(10);
     this.cameras.main.startFollow(this.player, true, 0.15, 0.15);
@@ -367,6 +368,8 @@ export class OverworldScene extends Phaser.Scene {
       if (pressed(this.keyX)) this.resetSkillBranch();
       if (pressed(this.keyF)) {this.bindSlot=(this.bindSlot+1)%4;this.refreshSkillPanel();}
     }
+    if(this.invPanelOpen){if(pressed(this.keyN)){this.inventoryPage++;this.refreshInventoryPanel();}if(pressed(this.keyB)){this.inventoryPage--;this.refreshInventoryPanel();}}
+    if(!this.talk&&!this.pendingChoice&&!this.endingPanel.visible){if(pressed(this.keys.H))this.useSupply('health_potion');if(pressed(this.keys.M))this.useSupply('mana_potion');}
     if (pressed(this.keyK)) this.saveGame();
     // 结局面板打开时，E 只用于关闭它（先于对话处理消费这次按键）
     if (this.endingPanel.visible && pressed(this.keyE)) {
@@ -605,6 +608,22 @@ export class OverworldScene extends Phaser.Scene {
     if (this.invPanelOpen) this.refreshInventoryPanel();
   }
 
+  private inventoryPageItems():ItemDef[]{
+    const items=this.itemDefs.filter(i=>this.world.getItemCount(i.id)>0),pages=Math.max(1,Math.ceil(items.length/6));
+    this.inventoryPage=(this.inventoryPage%pages+pages)%pages;return items.slice(this.inventoryPage*6,(this.inventoryPage+1)*6);
+  }
+  private useInventoryItem(item:ItemDef):void{
+    if(item.consumable){this.useSupply(item.id);return;}
+    if(equipItem(this.session,item.id,this.itemDefs,this.affixDefs,this.itemSetDefs)){persistSession(this.session);this.showToast(`已装备 ${item.name}`);this.refreshInventoryPanel();}
+  }
+  private useSupply(id:string):void{
+    const item=this.itemDefs.find(i=>i.id===id);if(!item)return;
+    const p=this.session.player,profile=combatProfile(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs);
+    const result=useConsumable(this.session,item,profile,{hp:p.hp,mana:p.mana??profile.maxMana});
+    this.showToast(result.message);if(!result.ok)return;
+    p.hp=result.hp;p.mana=result.mana;persistSession(this.session);if(this.invPanelOpen)this.refreshInventoryPanel();
+  }
+
   private refreshInventoryPanel(): void {
     const lines = inventoryLines(this.world, [...this.itemNames].map(([id, name]) => ({ id, name })));
     this.invPanel.setData('full',null).setData('offset',0);
@@ -803,8 +822,9 @@ export class OverworldScene extends Phaser.Scene {
       this.learnSkill(Number(e.key) - 1);
       return;
     }
-    // 装备面板打开且不在对话中：数字键 1–4 切换对应槽位
-    if (!this.talk && this.equipPanelOpen && /^[1-4]$/.test(e.key)) {
+    if(!this.talk&&this.invPanelOpen&&/^[1-6]$/.test(e.key)){const item=this.inventoryPageItems()[Number(e.key)-1];if(item)this.useInventoryItem(item);return;}
+    // 装备面板打开且不在对话中：数字键 1–6 切换对应槽位
+    if (!this.talk && this.equipPanelOpen && /^[1-6]$/.test(e.key)) {
       cycleSlot(this.session, EQUIP_SLOTS[Number(e.key) - 1], this.itemDefs, this.affixDefs, this.itemSetDefs);
       persistSession(this.session);
       this.refreshEquipPanel();
@@ -956,6 +976,8 @@ export class OverworldScene extends Phaser.Scene {
     return this.chunks.get(`${cx},${cy}`)?.chunk;
   }
 
+  private inventoryPage=0;
+
   private anyPanel(): boolean { return this.questPanelOpen || this.invPanelOpen || this.equipPanelOpen || this.repPanelOpen || this.skillPanelOpen; }
 
   private closePanels(): void {
@@ -974,7 +996,7 @@ export class OverworldScene extends Phaser.Scene {
       const t=this.add.text(x,y,`${i+1}  ${name}`,{fontFamily:UI.font,fontSize:13,color:'#dfd3b2'}).setOrigin(.5);
       this.loadoutUI.add([bg,t]);bg.on('pointerdown',()=>{this.bindSlot=i;this.refreshSkillPanel();});
     }
-    this.loadoutUI.setScrollFactor(0,0,true);
+    pinToScreen(this.loadoutUI);
   }
 
   private renderCards():void {
@@ -995,12 +1017,13 @@ export class OverworldScene extends Phaser.Scene {
     }
     if(this.equipPanelOpen){
       const p=this.session.player,stats=combatProfile(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs);
-      const cards=EQUIP_SLOTS.map((slot,i)=>{const item=this.itemDefs.find(t=>t.id===p.equipment[slot]);return {title:`${SLOT_LABEL[slot]}  /  ${item?.name??'未装备'}`,key:`${i+1}`,subtitle:item?`基础攻击 +${item.baseDamage??0}   防御 +${item.defense??0}`:'点击从背包中切换装备',accent:item?0xd6bb7c:0x536b62,onClick:()=>{cycleSlot(this.session,slot,this.itemDefs,this.affixDefs,this.itemSetDefs);persistSession(this.session);this.refreshEquipPanel();}};});
-      this.cards.show('旅人装备',`攻击 ${stats.attack} · 防御 ${stats.defense} · 生命 ${stats.maxHp} · 魔力 ${stats.maxMana} · 暴击 ${Math.round(stats.critChance*100)}%`,cards,2,equipmentDetailLines(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs).slice(0,2).join('  ')||'装备来自商人购买与掉落。数字键 1–4 也可切换各槽位。');return;
+      const cards=EQUIP_SLOTS.map((slot,i)=>{const item=this.itemDefs.find(t=>t.id===p.equipment[slot]);return {title:`${SLOT_LABEL[slot]}  /  ${item?.name??'未装备'}`,key:`${i+1}`,subtitle:item?`基础攻击 +${item.baseDamage??0} 防御 +${item.defense??0}\n${itemAffixes(item,this.affixDefs).map(a=>`${a.name}+${Math.round(a.value*100)/100}${isSupportedModifier(a.stat)?'':'(预留)'}`).join(' · ')}`:'点击从背包中切换装备',accent:item?0xd6bb7c:0x536b62,onClick:()=>{cycleSlot(this.session,slot,this.itemDefs,this.affixDefs,this.itemSetDefs);persistSession(this.session);this.refreshEquipPanel();}};});
+      this.cards.show('旅人装备',`攻击 ${stats.attack} · 防御 ${stats.defense} · 生命 ${stats.maxHp} · 魔力 ${stats.maxMana} · 暴击 ${Math.round(stats.critChance*100)}%`,cards,2,this.itemSetDefs.map(set=>{const count=Object.values(p.equipment).filter(id=>this.itemDefs.find(i=>i.id===id)?.setId===set.id).length;return `${set.name} ${count}/6 件`;}).join(' · ')+'\n'+(activeSetBonuses(this.itemSetDefs,Object.values(p.equipment).map(id=>this.itemDefs.find(i=>i.id===id)!).filter(Boolean)).map(b=>`${b.pieces}件：${b.text}`).join('；')||'数字键 1–6 切换槽位 · 行囊中点击装备可直接穿戴'));return;
     }
     if(this.invPanelOpen){
-      const items=this.itemDefs.filter(i=>this.world.getItemCount(i.id)>0);
-      this.cards.show('行囊',`金币 ${this.session.player.gold}    ·    ${items.length} 种物品    ·    Esc 关闭`,items.map(i=>({title:i.name,subtitle:`持有 ${this.world.getItemCount(i.id)} 件 · ${i.type==='material'?'材料':i.type==='weapon'?'武器':'护甲'}`,accent:i.type==='material'?0x88b4a2:0xd6bb7c})),2,items.length?'按 C 打开装备面板，使用行囊中的武器和护甲。':'行囊还空着。探索裂隙、完成任务，或者拜访行旅商人。');return;
+      const total=this.itemDefs.filter(i=>this.world.getItemCount(i.id)>0).length,pages=Math.max(1,Math.ceil(total/6));
+      const cards=this.inventoryPageItems().map((i,index)=>({title:i.name,key:`${index+1}`,subtitle:`持有 ${this.world.getItemCount(i.id)} 件 · ${i.consumable?`恢复 ${i.consumable.amount} ${i.consumable.resource==='hp'?'生命':'魔力'}`:i.slot?`${SLOT_LABEL[i.slot as keyof typeof SLOT_LABEL]} · 点击装备`:'任务/制作材料'}`,accent:i.type==='material'?0x88b4a2:0xd6bb7c,onClick:i.type==='material'?undefined:()=>this.useInventoryItem(i)}));
+      this.cards.show('行囊',`金币 ${this.session.player.gold} · ${total} 种物品 · ${this.inventoryPage+1}/${pages} 页`,cards,2,total?'数字键/点击使用本页物品 · H 治疗 / M 魔力 · 药剂共享 8 秒冷却':'行囊还空着。探索裂隙、完成任务，或者拜访行旅商人。',[{label:'B 上一页',run:()=>{this.inventoryPage--;this.refreshInventoryPanel();}},{label:'N 下一页',run:()=>{this.inventoryPage++;this.refreshInventoryPanel();}}]);return;
     }
     if(this.repPanelOpen){
       const lines=reputationLines(this.world,this.factionDefs);
@@ -1083,7 +1106,7 @@ export class OverworldScene extends Phaser.Scene {
     const npc=this.nearestNpcId();
     const merchant=Math.hypot(this.tileX-4,this.tileY-4)<=3;
     const atGate=Math.hypot(this.tileX-GATE_TILE.x,this.tileY-GATE_TILE.y)<=GATE_RADIUS;
-    this.contextHint.setText(this.anyPanel()?'Esc 关闭面板':merchant?'E  与行旅商人交易':npc?`E  与 ${this.npcRegistry.get(npc)?.name} 交谈`:atGate?'E  进入裂隙地牢':'W A S D  移动     ·     E  互动     ·     T  战斗试炼');
+    this.contextHint.setText(this.anyPanel()?'Esc 关闭面板':merchant?'E  与行旅商人交易':npc?`E  与 ${this.npcRegistry.get(npc)?.name} 交谈`:atGate?'E  进入裂隙地牢':'WASD 移动 · E 互动 · H/M 药剂 · T 试炼');
     if(this.time.now<this.miniTimer)return;this.miniTimer=this.time.now+150;
     const g=this.mini;g.clear();
     g.lineStyle(1,0x56746a,.25);for(let i=0;i<5;i++){g.lineBetween(980+i*65,65,980+i*65,205);g.lineBetween(980,65+i*35,1240,65+i*35);}
