@@ -10,6 +10,11 @@ import { QuestManager } from '../narrative/QuestManager';
 import { LocationRegistry, arriveAt } from '../world/locations';
 import { NpcRegistry, startTalk, type TalkSession } from '../world/npcs';
 import { placeLocations, type PlacedLocation } from '../world/placement';
+import { surfaceSpawnsForChunk, type EncounterRequest, type SurfaceSpawn } from '../world/encounters';
+import { activeQuestLog, formatQuestLog } from '../narrative/questLog';
+import { getSession, setSession, writeSaveRaw } from '../state/sessionStore';
+import { newSession, serializeSave, toSaveFile, type GameSession } from '../state/session';
+import type { EnemyDef, QuestDef } from '../data/schema';
 
 /**
  * 阶段 3 地表场景：无缝区块世界、群系配色、河流与道路、昼夜光照与天气。
@@ -28,6 +33,10 @@ const UNLOAD_RADIUS = 3;
 /** 玩家与地点中心的距离（瓦片）小于该值即视为抵达 */
 const ARRIVE_RADIUS = 1.5;
 const TOAST_MS = 2600;
+/** 玩家与地表敌人的距离（瓦片）小于该值即进入战斗 */
+const ENCOUNTER_RADIUS = 1.2;
+/** 战败返回地表后的脱离保护时间（毫秒），避免立刻再次进入同一场战斗 */
+const RETREAT_GRACE_MS = 3000;
 /** 玩家与 NPC 的距离小于该值时可以按 E 对话 */
 const TALK_RADIUS = 2.5;
 const RIVER_RGB = 0x3a6ea5;
@@ -46,6 +55,9 @@ interface LoadedChunk {
   chunk: Chunk;
   image: Phaser.GameObjects.Image;
   textureKey: string;
+  /** 尚未击败的地表刷新点 */
+  spawns: SurfaceSpawn[];
+  markers: Phaser.GameObjects.GameObject[];
 }
 
 function hexToRgb(hex: string): [number, number, number] {
@@ -69,7 +81,17 @@ export class OverworldScene extends Phaser.Scene {
   private quests!: QuestManager;
   private locationRegistry!: LocationRegistry;
   private places: PlacedLocation[] = [];
-  private visited = new Set<string>();
+  private session!: GameSession;
+  private enemyDefs: readonly EnemyDef[] = [];
+  private questDefs: readonly QuestDef[] = [];
+  private questPanel!: Phaser.GameObjects.Text;
+  private questPanelOpen = false;
+  private keyQ!: Phaser.Input.Keyboard.Key;
+  private keyK!: Phaser.Input.Keyboard.Key;
+  /** 战败返回后的剩余保护时间 */
+  private graceMs = 0;
+  /** 已进入战斗，正在切换场景，阻止重复触发 */
+  private transitioning = false;
   private toast!: Phaser.GameObjects.Text;
   private toastUntil = 0;
   private npcRegistry!: NpcRegistry;
@@ -84,11 +106,28 @@ export class OverworldScene extends Phaser.Scene {
     super('OverworldScene');
   }
 
-  create(): void {
+  create(init?: { retreated?: boolean }): void {
     const data = loadGameData();
     this.biomes = data.biomes;
-    this.world = new WorldState();
-    this.quests = new QuestManager(data.quests, this.world);
+    this.enemyDefs = data.enemies;
+    this.questDefs = data.quests;
+
+    // 场景实例会被复用，所有运行时状态都要在这里重置
+    this.chunks = new Map();
+    this.talk = null;
+    this.transitioning = false;
+    this.questPanelOpen = false;
+    this.graceMs = init?.retreated ? RETREAT_GRACE_MS : 0;
+
+    // 会话在整局游戏中唯一；标题菜单负责创建或读取
+    this.session = getSession() ?? newSession(data.quests);
+    setSession(this.session);
+    this.world = this.session.world;
+    this.quests = this.session.quests;
+    this.elapsedMs = this.session.elapsedMs;
+    this.tileX = this.session.player.tileX;
+    this.tileY = this.session.player.tileY;
+
     this.locationRegistry = new LocationRegistry(data.locations);
     this.places = placeLocations(data.locations, WORLD_SEED);
     this.toast = this.add.text(display.baseWidth / 2, 80, '', {
@@ -110,7 +149,11 @@ export class OverworldScene extends Phaser.Scene {
     if (!keyboard) throw new Error('Keyboard input is not available');
     this.keyE = keyboard.addKey('E');
     this.keySpace = keyboard.addKey('SPACE');
+    this.keyQ = keyboard.addKey('Q');
+    this.keyK = keyboard.addKey('K');
     keyboard.on('keydown', this.onDigitKey, this);
+    // 场景重新进入时移除旧监听，否则数字键会重复触发
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => keyboard.off('keydown', this.onDigitKey, this));
     const kb = this.input.keyboard;
     if (!kb) throw new Error('Keyboard input is not available');
     this.keys = kb.addKeys({ W: 'W', A: 'A', S: 'S', D: 'D', T: 'T' }) as typeof this.keys;
@@ -130,24 +173,28 @@ export class OverworldScene extends Phaser.Scene {
       fontFamily: 'monospace', fontSize: '14px', color: '#f4f0ff',
       backgroundColor: '#00000066', padding: { x: 8, y: 6 },
     }).setScrollFactor(0).setDepth(200);
-    this.add.text(16, display.baseHeight - 28, 'WASD 移动 · T 测试房间', {
+    this.add.text(16, display.baseHeight - 28, 'WASD 移动 · E 对话 · Q 任务 · K 存档 · T 测试房间', {
       fontFamily: 'sans-serif', fontSize: '14px', color: '#c9c3dd',
       backgroundColor: '#00000066', padding: { x: 6, y: 3 },
     }).setScrollFactor(0).setDepth(200);
+    this.questPanel = this.add.text(display.baseWidth - 16, 12, '', {
+      fontFamily: 'sans-serif', fontSize: '14px', color: '#f4f0ff', lineSpacing: 4,
+      backgroundColor: '#0b0a1acc', padding: { x: 10, y: 8 }, wordWrap: { width: 360 },
+    }).setOrigin(1, 0).setScrollFactor(0).setDepth(250).setVisible(false);
 
-    // 从第一个群系附近出生，保证在有内容的区域
-    this.tileX = 0;
-    this.tileY = 0;
     this.player.setPosition(this.tileX * TILE_PX, this.tileY * TILE_PX);
     this.syncChunks();
   }
 
   update(_time: number, deltaMs: number): void {
+    if (this.transitioning) return;
     if (Phaser.Input.Keyboard.JustDown(this.keys.T) && !this.talk) {
+      this.syncToSession();
       this.scene.start('TestRoomScene');
       return;
     }
     this.elapsedMs += deltaMs;
+    this.graceMs = Math.max(0, this.graceMs - deltaMs);
     const dt = deltaMs / 1000;
 
     if (this.talk) {
@@ -155,6 +202,8 @@ export class OverworldScene extends Phaser.Scene {
       this.updateEnvironment();
       return;
     }
+    if (Phaser.Input.Keyboard.JustDown(this.keyQ)) this.toggleQuestPanel();
+    if (Phaser.Input.Keyboard.JustDown(this.keyK)) this.saveGame();
     if (Phaser.Input.Keyboard.JustDown(this.keyE)) this.tryStartTalk();
 
     let mx = 0;
@@ -172,8 +221,72 @@ export class OverworldScene extends Phaser.Scene {
     }
 
     this.checkArrivals();
+    this.checkEncounters();
     if (this.toast.visible && this.time.now > this.toastUntil) this.toast.setVisible(false);
+    if (this.questPanelOpen) this.refreshQuestPanel();
+    this.syncToSession();
     this.updateEnvironment();
+  }
+
+  // ---------- 会话与存档 ----------
+
+  /** 把玩家位置与游戏时间写回会话，供存档与场景切换使用。 */
+  private syncToSession(): void {
+    this.session.player.tileX = this.tileX;
+    this.session.player.tileY = this.tileY;
+    this.session.elapsedMs = this.elapsedMs;
+  }
+
+  /** 写入浏览器存档；成功与否都给出提示。 */
+  private saveGame(): boolean {
+    this.syncToSession();
+    const ok = writeSaveRaw(serializeSave(toSaveFile(this.session)));
+    this.showToast(ok ? '已存档' : '存档失败：浏览器拒绝写入（可能存储空间已满）');
+    return ok;
+  }
+
+  // ---------- 任务日志 ----------
+
+  private toggleQuestPanel(): void {
+    this.questPanelOpen = !this.questPanelOpen;
+    this.questPanel.setVisible(this.questPanelOpen);
+    if (this.questPanelOpen) this.refreshQuestPanel();
+  }
+
+  private refreshQuestPanel(): void {
+    this.questPanel.setText(formatQuestLog(activeQuestLog(this.questDefs, this.world)));
+  }
+
+  // ---------- 地表遭遇 ----------
+
+  /** 玩家走到未击败的刷新点附近时，切换到战斗场景。 */
+  private checkEncounters(): void {
+    if (this.graceMs > 0) return;
+    for (const loaded of this.chunks.values()) {
+      for (const spawn of loaded.spawns) {
+        const d = Math.hypot(this.tileX - spawn.tileX, this.tileY - spawn.tileY);
+        if (d > ENCOUNTER_RADIUS) continue;
+        this.transitioning = true;
+        this.syncToSession();
+        const request: EncounterRequest = { enemyIds: spawn.enemyIds, spawnKey: spawn.key };
+        this.scene.start('TestRoomScene', { encounter: request });
+        return;
+      }
+    }
+  }
+
+  private drawSpawnMarker(spawn: SurfaceSpawn): Phaser.GameObjects.GameObject[] {
+    const px = spawn.tileX * TILE_PX;
+    const py = spawn.tileY * TILE_PX;
+    const names = spawn.enemyIds
+      .map((id) => this.enemyDefs.find((e) => e.id === id)?.name ?? id)
+      .join('、');
+    const dot = this.add.circle(px, py, TILE_PX * 0.9, 0xe0584f, 0.85).setDepth(8);
+    const label = this.add.text(px, py - TILE_PX * 1.8, names, {
+      fontFamily: 'sans-serif', fontSize: '11px', color: '#ffd6d1',
+      backgroundColor: '#00000088', padding: { x: 3, y: 1 },
+    }).setOrigin(0.5, 1).setDepth(8);
+    return [dot, label];
   }
 
   // ---------- 地点 ----------
@@ -193,10 +306,10 @@ export class OverworldScene extends Phaser.Scene {
   /** 玩家走近未访问的地点时，上报一次 reach 事件并提示。 */
   private checkArrivals(): void {
     for (const p of this.places) {
-      if (this.visited.has(p.id)) continue;
+      if (this.session.visited.has(p.id)) continue;
       const d = Math.hypot(this.tileX - p.x, this.tileY - p.y);
       if (d > ARRIVE_RADIUS) continue;
-      this.visited.add(p.id);
+      this.session.visited.add(p.id);
       const done = arriveAt(this.locationRegistry, this.quests, p.id);
       const lines = [`抵达：${p.name}`];
       for (const c of done) {
@@ -204,6 +317,9 @@ export class OverworldScene extends Phaser.Scene {
         lines.push(`任务完成：${title}`);
       }
       this.showToast(lines.join('\n'));
+      // 抵达新地点时自动存档（写入失败不打断游戏）
+      this.syncToSession();
+      writeSaveRaw(serializeSave(toSaveFile(this.session)));
     }
   }
 
@@ -323,6 +439,7 @@ export class OverworldScene extends Phaser.Scene {
       const { cx, cy } = loaded.chunk;
       if (Math.abs(cx - center.cx) > UNLOAD_RADIUS || Math.abs(cy - center.cy) > UNLOAD_RADIUS) {
         loaded.image.destroy();
+        for (const m of loaded.markers) m.destroy();
         if (this.textures.exists(loaded.textureKey)) this.textures.remove(loaded.textureKey);
         this.chunks.delete(key);
       }
@@ -335,6 +452,8 @@ export class OverworldScene extends Phaser.Scene {
 
     const chunk = generateChunk(WORLD_SEED, cx, cy, this.biomes);
     const textureKey = `chunk:${key}`;
+    // 纹理在场景之间共享；重新进入地表时旧纹理可能仍然存在
+    if (this.textures.exists(textureKey)) this.textures.remove(textureKey);
     const tex = this.textures.createCanvas(textureKey, CHUNK_SIZE, CHUNK_SIZE);
     if (!tex) throw new Error(`无法创建区块纹理 ${textureKey}`);
     const ctx = tex.getContext();
@@ -363,7 +482,10 @@ export class OverworldScene extends Phaser.Scene {
       .setOrigin(0, 0)
       .setScale(TILE_PX)
       .setDepth(0);
-    this.chunks.set(key, { chunk, image: img, textureKey });
+    const spawns = surfaceSpawnsForChunk(WORLD_SEED, chunk, this.biomes, this.enemyDefs)
+      .filter((s) => !this.session.defeated.has(s.key));
+    const markers = spawns.flatMap((s) => this.drawSpawnMarker(s));
+    this.chunks.set(key, { chunk, image: img, textureKey, spawns, markers });
   }
 
   // ---------- 环境与 HUD ----------

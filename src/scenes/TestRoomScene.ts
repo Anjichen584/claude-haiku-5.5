@@ -10,6 +10,10 @@ import {
 } from '../combat/enemyAi';
 import { loadGameData } from '../data/loader';
 import type { EnemyDef } from '../data/schema';
+import type { QuestCompletion } from '../narrative/QuestManager';
+import { getSession } from '../state/sessionStore';
+import { PLAYER_MAX_HP, type GameSession } from '../state/session';
+import type { EncounterRequest } from '../world/encounters';
 
 /**
  * 阶段 1 测试房间：验证移动、冲刺、闪避、攻击、伤害与敌人 AI。
@@ -74,9 +78,22 @@ export class TestRoomScene extends Phaser.Scene {
   private enemies: EnemyUnit[] = [];
   private hud!: Phaser.GameObjects.Text;
   private log: string[] = [];
+  /** 从地表进入时非空；此时胜负会写回会话并返回地表 */
+  private encounter: EncounterRequest | null = null;
+  private session: GameSession | null = null;
+  private completions: QuestCompletion[] = [];
+  private finished = false;
 
   constructor() {
     super('TestRoomScene');
+  }
+
+  init(data: { encounter?: EncounterRequest } | undefined): void {
+    this.encounter = data?.encounter ?? null;
+    this.session = getSession();
+    this.completions = [];
+    this.finished = false;
+    this.won = false;
   }
 
   create(): void {
@@ -90,15 +107,63 @@ export class TestRoomScene extends Phaser.Scene {
   }
 
   update(_time: number, deltaMs: number): void {
-    if (Phaser.Input.Keyboard.JustDown(this.keys.R)) {
+    if (this.finished) {
+      if (Phaser.Input.Keyboard.JustDown(this.keys.SPACE)) this.returnToOverworld();
+      this.render();
+      return;
+    }
+    // 遭遇战中不允许重置，否则击杀任务会重复计数
+    if (!this.encounter && Phaser.Input.Keyboard.JustDown(this.keys.R)) {
       this.resetRoom();
       return;
     }
     this.playerActor.tick(deltaMs);
     this.updatePlayer(deltaMs);
     this.updateEnemies(deltaMs);
+    this.checkEncounterEnd();
     this.render();
   }
+
+  // ---------- 遭遇战结束 ----------
+
+  private checkEncounterEnd(): void {
+    if (!this.encounter) return;
+    if (this.enemies.every((e) => !e.alive)) {
+      this.finishEncounter(true);
+    } else if (this.playerActor.isDead) {
+      this.finishEncounter(false);
+    }
+  }
+
+  private finishEncounter(won: boolean): void {
+    this.finished = true;
+    this.won = won;
+    if (won && this.encounter && this.session) this.session.defeated.add(this.encounter.spawnKey);
+
+    const lines = [won ? '胜利！' : '你倒下了……'];
+    for (const c of this.completions) {
+      lines.push(`任务完成：${this.session?.quests.def(c.questId)?.title ?? c.questId}`);
+    }
+    lines.push(won ? '按 Space 返回地表' : '按 Space 返回地表（生命恢复少量）');
+    this.add
+      .text(display.baseWidth / 2, display.baseHeight / 2 - 60, lines.join('\n'), {
+        fontFamily: 'sans-serif', fontSize: '24px', color: '#fff3c4',
+        backgroundColor: '#00000099', padding: { x: 16, y: 12 }, align: 'center',
+      })
+      .setOrigin(0.5)
+      .setDepth(50);
+  }
+
+  private returnToOverworld(): void {
+    if (this.session && this.encounter) {
+      // 胜利保留剩余生命；战败恢复到最大生命的 30%，且地表给予短暂的脱离保护
+      this.session.player.hp = this.won
+        ? Math.max(1, this.playerActor.hp)
+        : Math.max(1, Math.ceil(PLAYER_MAX_HP * 0.3));
+    }
+    this.scene.start('OverworldScene', { retreated: !this.won });
+  }
+  private won = false;
 
   // ---------- 初始化 ----------
 
@@ -108,7 +173,7 @@ export class TestRoomScene extends Phaser.Scene {
     this.log = [];
 
     this.add.rectangle(display.baseWidth / 2, display.baseHeight / 2, display.baseWidth, display.baseHeight, 0x14141c);
-    this.add.text(16, 12, '阶段 1 测试房间', { fontFamily: 'sans-serif', fontSize: '18px', color: '#9aa0b4' });
+    this.add.text(16, 12, this.encounter ? '遭遇战' : '测试房间', { fontFamily: 'sans-serif', fontSize: '18px', color: '#9aa0b4' });
     this.add.text(16, display.baseHeight - 28,
       'WASD 移动 · Shift 冲刺 · Space 闪避 · J 攻击 · R 重置',
       { fontFamily: 'sans-serif', fontSize: '14px', color: '#6b7089' });
@@ -119,6 +184,10 @@ export class TestRoomScene extends Phaser.Scene {
     this.px = 320;
     this.py = display.baseHeight / 2;
     this.playerActor = new Actor({ maxHp: PLAYER.maxHp, staggerMs: 150 });
+    if (this.session) {
+      // 生命从会话带入（已被击败的刷新点不会再次进入）
+      this.playerActor.hp = Math.max(1, Math.min(PLAYER.maxHp, this.session.player.hp));
+    }
     this.playerBody = this.add.circle(this.px, this.py, PLAYER.radius, 0x7aa2ff);
     this.attackCooldownMs = 0;
     this.dashCooldownMs = 0;
@@ -126,7 +195,10 @@ export class TestRoomScene extends Phaser.Scene {
     this.dodgeLeftMs = 0;
 
     const data = loadGameData();
-    for (const spawn of ENEMY_SPAWNS) {
+    const spawns = this.encounter
+      ? this.encounter.enemyIds.map((id, i) => ({ id, x: 820 + (i % 2) * 80, y: 200 + i * 120 }))
+      : ENEMY_SPAWNS;
+    for (const spawn of spawns) {
       const def = data.enemies.find((e) => e.id === spawn.id);
       if (!def) continue;
       const actor = new Actor({ maxHp: def.hp, staggerMs: def.id === 'moss_golem' ? 0 : 200 });
@@ -232,6 +304,10 @@ export class TestRoomScene extends Phaser.Scene {
       enemy.alive = false;
       enemy.body.setFillStyle(0x3a3a44);
       this.pushLog(`${enemy.def.name} 被击败`);
+      if (this.encounter && this.session) {
+        // 遭遇战中的击杀计入 kill 任务
+        this.completions.push(...this.session.quests.report({ type: 'kill', target: enemy.def.id, amount: 1 }));
+      }
     }
   }
 
