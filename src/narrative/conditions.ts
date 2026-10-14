@@ -24,6 +24,7 @@ export interface Condition {
   reputation?: Record<string, RangeCheck>;
   quests?: Record<string, QuestStatus>;
   items?: Record<string, RangeCheck>;
+  stability?: RangeCheck;
 }
 
 function inRange(value: number, check: RangeCheck): boolean {
@@ -47,5 +48,6 @@ export function evaluateCondition(condition: Condition | undefined, world: World
   for (const [itemId, check] of Object.entries(condition.items ?? {})) {
     if (!inRange(world.getItemCount(itemId), check)) return false;
   }
+  if (condition.stability && !inRange(world.stability, condition.stability)) return false;
   return true;
 }

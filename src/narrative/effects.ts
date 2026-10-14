@@ -9,6 +9,7 @@ export interface Effects {
   reputation?: Record<string, number>;
   items?: Record<string, number>;
   startQuest?: string[];
+  stability?: number;
 }
 
 /**
@@ -25,5 +26,6 @@ export function applyEffects(effects: Effects | undefined, world: WorldState): {
   for (const [itemId, count] of Object.entries(effects.items ?? {})) {
     world.addItem(itemId, count);
   }
+  if (effects.stability) world.addStability(effects.stability);
   return { startQuests: [...(effects.startQuest ?? [])] };
 }

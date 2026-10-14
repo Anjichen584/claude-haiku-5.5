@@ -17,6 +17,8 @@ export interface WorldSnapshot {
   reputation: Record<string, number>;
   quests: Record<string, QuestRecord>;
   inventory: Record<string, number>;
+  /** 裂隙稳定度 0–100，缺省为 50（旧存档兼容） */
+  stability?: number;
 }
 
 export class WorldState {
@@ -24,6 +26,16 @@ export class WorldState {
   private reputation = new Map<string, number>();
   private quests = new Map<string, QuestRecord>();
   private inventory = new Map<string, number>();
+  private _stability = 50;
+
+  // ---- 裂隙稳定度（0–100） ----
+  get stability(): number {
+    return this._stability;
+  }
+  addStability(delta: number): number {
+    this._stability = Math.max(0, Math.min(100, this._stability + delta));
+    return this._stability;
+  }
 
   // ---- 标记 ----
   hasFlag(flag: string): boolean {
@@ -74,6 +86,7 @@ export class WorldState {
       reputation: Object.fromEntries([...this.reputation].sort()),
       quests: Object.fromEntries([...this.quests].sort(([a], [b]) => a.localeCompare(b))),
       inventory: Object.fromEntries([...this.inventory].sort()),
+      stability: this._stability,
     };
   }
 
@@ -83,6 +96,7 @@ export class WorldState {
     Object.entries(snapshot.reputation).forEach(([k, v]) => world.reputation.set(k, v));
     Object.entries(snapshot.quests).forEach(([k, v]) => world.quests.set(k, v));
     Object.entries(snapshot.inventory).forEach(([k, v]) => world.inventory.set(k, v));
+    world._stability = snapshot.stability ?? 50;
     return world;
   }
 }

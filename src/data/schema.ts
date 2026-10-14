@@ -85,7 +85,10 @@ export interface BiomeDef {
 export interface EndingDef {
   id: string;
   name: string;
+  /** 数字越小优先级越高；多个结局同时满足时取优先级最高的 */
   priority: number;
+  /** 判定条件，结构同 narrative/conditions.ts */
+  conditions: Record<string, unknown>;
   text: string;
 }
 
