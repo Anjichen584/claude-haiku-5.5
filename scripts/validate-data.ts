@@ -50,6 +50,8 @@ const biomesFile = load('biomes.json');
 const endingsFile = load('endings.json');
 const factionsFile = load('factions.json');
 const affixesFile = load('affixes.json');
+const dungeonFile = load('dungeon.json');
+const roomTemplatesFile = load('room-templates.json');
 
 if (!expectArray('items', itemsFile.items)) process.exit(1);
 
@@ -159,6 +161,35 @@ for (const f of factions) {
 // ---------- 结局 ----------
 const priorities = endings.map((e: { priority: number }) => e.priority);
 if (new Set(priorities).size !== priorities.length) fail('endings: priority 必须唯一');
+
+// ---------- 地牢楼层 ----------
+if (!Array.isArray(dungeonFile.floors) || dungeonFile.floors.length !== 12) {
+  fail('dungeon: floors 必须包含 12 层');
+} else {
+  const enemyIdSet = enemyIds;
+  dungeonFile.floors.forEach((f: any, idx: number) => {
+    if (f.floor !== idx + 1) fail(`dungeon: 第 ${idx + 1} 项的 floor 应为 ${idx + 1}`);
+    if (f.roomMin > f.roomMax) fail(`dungeon.floor${f.floor}: roomMin 不能大于 roomMax`);
+    if (f.roomMin < 2) fail(`dungeon.floor${f.floor}: roomMin 至少为 2（入口与 Boss）`);
+    if (f.loopChance < 0 || f.loopChance > 1) fail(`dungeon.floor${f.floor}: loopChance 必须在 0–1 之间`);
+    if (f.bossId !== null && !enemyIdSet.has(f.bossId)) {
+      fail(`dungeon.floor${f.floor}: bossId "${f.bossId}" 不存在`);
+    }
+  });
+}
+
+// ---------- 房间模板 ----------
+const roomKinds = ['entrance', 'combat', 'chest', 'event', 'shop', 'rest', 'boss'];
+checkUniqueIds('room-templates', roomTemplatesFile.templates);
+for (const kind of roomKinds) {
+  if (!roomTemplatesFile.templates.some((t: any) => t.kind === kind)) {
+    fail(`room-templates: 缺少类型 "${kind}" 的模板`);
+  }
+}
+for (const t of roomTemplatesFile.templates) {
+  if (!roomKinds.includes(t.kind)) fail(`room-templates.${t.id}: 未知房间类型 "${t.kind}"`);
+  if (t.weight <= 0) fail(`room-templates.${t.id}: weight 必须大于 0`);
+}
 
 // ---------- 输出 ----------
 if (errors.length > 0) {
