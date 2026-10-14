@@ -31,7 +31,7 @@ describe('地点注册表', () => {
 });
 
 describe('抵达地点触发 reach 目标', () => {
-  it('抵达地点后，reach 进度增加，并与其他目标合并判定完成', () => {
+  it('抵达地点后，reach 进度增加，并与其他目标合并判定完成（末尾需交付 NPC）', () => {
     // side_60_ash_archive：reach ash_archive + collect rift_shard ×2
     const { manager, registry } = newGame();
     manager.accept('side_60_ash_archive');
@@ -40,7 +40,10 @@ describe('抵达地点触发 reach 目标', () => {
     expect(manager.progressOf('side_60_ash_archive')!.progress[0]).toBe(1);
     expect(manager.progressOf('side_60_ash_archive')!.status).toBe('active');
 
-    const done = manager.report({ type: 'collect', target: 'rift_shard', amount: 2 });
+    manager.report({ type: 'collect', target: 'rift_shard', amount: 2 });
+    // 任务末尾需要回到 NPC 交付（talk 目标）
+    expect(manager.progressOf('side_60_ash_archive')!.status).toBe('active');
+    const done = manager.report({ type: 'talk', target: 'npc_side_60_archive_keeper' });
     expect(done.map((c) => c.questId)).toContain('side_60_ash_archive');
     expect(manager.progressOf('side_60_ash_archive')!.status).toBe('completed');
   });
