@@ -23,10 +23,42 @@ async def main():
         await pg.wait_for_function("window.__game.scene.getScene('DungeonScene').scene.isActive()", timeout=10000)
         await pg.wait_for_timeout(500)
         await pg.screenshot(path="/tmp/dungeon1.png")
+        # 战斗往返：把当前房间设为一个战斗房间，进入战斗，击败敌人，回到地牢
+        cid = await pg.evaluate("""() => { const s = window.__game.scene.getScene('DungeonScene');
+            const r = s.run.layout.rooms.find((x) => x.kind === 'combat'); s.run.current = r.id; return r.id; }""")
+        await pg.keyboard.press("e")
+        await pg.wait_for_function("window.__game.scene.getScene('TestRoomScene').scene.isActive()", timeout=10000)
+        await pg.wait_for_timeout(300)
+        await pg.evaluate("""() => { const t = window.__game.scene.getScene('TestRoomScene');
+            for (const e of [...t.enemies]) t.damageEnemy(e, 99999); }""")
+        await pg.wait_for_timeout(300)
+        await pg.keyboard.press("Space")
+        await pg.wait_for_function("window.__game.scene.getScene('DungeonScene').scene.isActive()", timeout=10000)
+        await pg.wait_for_timeout(300)
+        cleared = await pg.evaluate("() => [...window.__game.scene.getScene('DungeonScene').run.cleared]")
+        print("combat room", cid, "cleared after return:", cleared)
+        assert cid in cleared, "combat room not marked cleared"
+        print("combat round trip OK")
         # move through a neighbor
         await pg.keyboard.press("1")
         await pg.wait_for_timeout(200)
         await pg.screenshot(path="/tmp/dungeon2.png")
+        # Boss 通关：设为 Boss 房间并击败，检查下一层解锁
+        bid = await pg.evaluate("""() => { const s = window.__game.scene.getScene('DungeonScene');
+            const r = s.run.layout.rooms.find((x) => x.kind === 'boss'); s.run.current = r.id; return r.id; }""")
+        await pg.keyboard.press("e")
+        await pg.wait_for_function("window.__game.scene.getScene('TestRoomScene').scene.isActive()", timeout=10000)
+        await pg.wait_for_timeout(300)
+        await pg.evaluate("""() => { const t = window.__game.scene.getScene('TestRoomScene');
+            for (const e of [...t.enemies]) t.damageEnemy(e, 99999); }""")
+        await pg.wait_for_timeout(300)
+        await pg.keyboard.press("Space")
+        await pg.wait_for_function("window.__game.scene.getScene('DungeonScene').scene.isActive()", timeout=10000)
+        await pg.wait_for_timeout(300)
+        floor = await pg.evaluate("() => window.__game.scene.getScene('DungeonScene').session.dungeonFloor")
+        print("boss room", bid, "dungeonFloor after boss:", floor)
+        assert floor == 2, "dungeon floor did not advance after boss"
+        print("boss clear OK")
         await pg.keyboard.press("l")
         await pg.wait_for_function("window.__game.scene.getScene('OverworldScene').scene.isActive()", timeout=10000)
         print("OK back in overworld")
