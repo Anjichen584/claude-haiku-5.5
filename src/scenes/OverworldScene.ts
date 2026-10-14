@@ -16,6 +16,7 @@ const GATE_TILE = REGION_ANCHORS['裂隙'];
 const GATE_RADIUS = 2;
 import { surfaceSpawnsForChunk, type EncounterRequest, type SurfaceSpawn } from '../world/encounters';
 import { activeQuestLog, formatQuestLog } from '../narrative/questLog';
+import { formatInventory, inventoryLines } from '../state/inventory';
 import { getSession, persistSession, setSession } from '../state/sessionStore';
 import { newSession, type GameSession } from '../state/session';
 import type { EnemyDef, QuestDef } from '../data/schema';
@@ -95,6 +96,9 @@ export class OverworldScene extends Phaser.Scene {
   private questPanelOpen = false;
   private keyQ!: Phaser.Input.Keyboard.Key;
   private keyK!: Phaser.Input.Keyboard.Key;
+  private keyI!: Phaser.Input.Keyboard.Key;
+  private invPanel!: Phaser.GameObjects.Text;
+  private invPanelOpen = false;
   /** 战败返回后的剩余保护时间 */
   private graceMs = 0;
   /** 已进入战斗，正在切换场景，阻止重复触发 */
@@ -160,6 +164,7 @@ export class OverworldScene extends Phaser.Scene {
     this.keySpace = keyboard.addKey('SPACE');
     this.keyQ = keyboard.addKey('Q');
     this.keyK = keyboard.addKey('K');
+    this.keyI = keyboard.addKey('I');
     keyboard.on('keydown', this.onDigitKey, this);
     // 场景重新进入时移除旧监听，否则数字键会重复触发
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => keyboard.off('keydown', this.onDigitKey, this));
@@ -182,7 +187,7 @@ export class OverworldScene extends Phaser.Scene {
       fontFamily: 'monospace', fontSize: '14px', color: '#f4f0ff',
       backgroundColor: '#00000066', padding: { x: 8, y: 6 },
     }).setScrollFactor(0).setDepth(200);
-    this.add.text(16, display.baseHeight - 28, 'WASD 移动 · E 对话 · Q 任务 · K 存档 · T 测试房间', {
+    this.add.text(16, display.baseHeight - 28, 'WASD 移动 · E 对话/进入 · Q 任务 · I 背包 · K 存档 · T 测试房间', {
       fontFamily: 'sans-serif', fontSize: '14px', color: '#c9c3dd',
       backgroundColor: '#00000066', padding: { x: 6, y: 3 },
     }).setScrollFactor(0).setDepth(200);
@@ -190,6 +195,11 @@ export class OverworldScene extends Phaser.Scene {
       fontFamily: 'sans-serif', fontSize: '14px', color: '#f4f0ff', lineSpacing: 4,
       backgroundColor: '#0b0a1acc', padding: { x: 10, y: 8 }, wordWrap: { width: 360 },
     }).setOrigin(1, 0).setScrollFactor(0).setDepth(250).setVisible(false);
+    this.invPanel = this.add.text(16, 110, '', {
+      fontFamily: 'sans-serif', fontSize: '14px', color: '#f4f0ff', lineSpacing: 4,
+      backgroundColor: '#0b0a1acc', padding: { x: 10, y: 8 },
+    }).setScrollFactor(0).setDepth(250).setVisible(false);
+    this.invPanelOpen = false;
 
     this.player.setPosition(this.tileX * TILE_PX, this.tileY * TILE_PX);
     this.syncChunks();
@@ -213,6 +223,7 @@ export class OverworldScene extends Phaser.Scene {
     }
     if (Phaser.Input.Keyboard.JustDown(this.keyQ)) this.toggleQuestPanel();
     if (Phaser.Input.Keyboard.JustDown(this.keyK)) this.saveGame();
+    if (Phaser.Input.Keyboard.JustDown(this.keyI)) this.toggleInventoryPanel();
     if (Phaser.Input.Keyboard.JustDown(this.keyE)) this.tryStartTalk();
 
     let mx = 0;
@@ -233,6 +244,7 @@ export class OverworldScene extends Phaser.Scene {
     this.checkEncounters();
     if (this.toast.visible && this.time.now > this.toastUntil) this.toast.setVisible(false);
     if (this.questPanelOpen) this.refreshQuestPanel();
+    if (this.invPanelOpen) this.refreshInventoryPanel();
     this.syncToSession();
     this.updateEnvironment();
   }
@@ -260,6 +272,17 @@ export class OverworldScene extends Phaser.Scene {
     this.questPanelOpen = !this.questPanelOpen;
     this.questPanel.setVisible(this.questPanelOpen);
     if (this.questPanelOpen) this.refreshQuestPanel();
+  }
+
+  private toggleInventoryPanel(): void {
+    this.invPanelOpen = !this.invPanelOpen;
+    this.invPanel.setVisible(this.invPanelOpen);
+    if (this.invPanelOpen) this.refreshInventoryPanel();
+  }
+
+  private refreshInventoryPanel(): void {
+    const lines = inventoryLines(this.world, [...this.itemNames].map(([id, name]) => ({ id, name })));
+    this.invPanel.setText(formatInventory(lines));
   }
 
   private refreshQuestPanel(): void {
