@@ -54,6 +54,7 @@ const dungeonFile = load('dungeon.json');
 const roomTemplatesFile = load('room-templates.json');
 const itemSetsFile = load('item-sets.json');
 const combosFile = load('combos.json');
+const keyChoicesFile = load('key-choices.json');
 
 if (!expectArray('items', itemsFile.items)) process.exit(1);
 
@@ -273,7 +274,35 @@ for (const f of factions) {
   }
 }
 
+// ---------- 阵营（敌对关系对称） ----------
+const factionDefs = new Map<string, any>(factions.map((f: any) => [f.id, f]));
+for (const f of factions) {
+  for (const r of f.rivals ?? []) {
+    const other = factionDefs.get(r);
+    if (other && !(other.rivals ?? []).includes(f.id)) {
+      fail(`factions.${f.id}: 敌对关系必须对称，"${r}" 没有反向记录`);
+    }
+  }
+}
+
 // ---------- 结局 ----------
+for (const e of endings) {
+  checkCondition(`endings.${e.id}`, e.conditions);
+  if (!e.conditions || typeof e.conditions !== 'object') fail(`endings.${e.id}: conditions 必须为对象`);
+}
+if (!endings.some((e: any) => e.id === 'ending_default')) fail('endings: 必须包含兜底结局 ending_default');
+
+// ---------- 关键抉择 ----------
+const keyChapters = keyChoicesFile.keyChoices.map((k: any) => k.chapter).sort((a: number, b: number) => a - b);
+if (JSON.stringify(keyChapters) !== JSON.stringify([4, 10, 16, 22])) {
+  fail(`key-choices: 关键抉择必须分布在第 4、10、16、22 章，当前为 ${JSON.stringify(keyChapters)}`);
+}
+checkUniqueIds('key-choices', keyChoicesFile.keyChoices);
+for (const k of keyChoicesFile.keyChoices) {
+  if (k.options.length < 2) fail(`key-choices.${k.id}: 至少需要两个选项`);
+}
+
+// ---------- 结局（优先级） ----------
 const priorities = endings.map((e: { priority: number }) => e.priority);
 if (new Set(priorities).size !== priorities.length) fail('endings: priority 必须唯一');
 

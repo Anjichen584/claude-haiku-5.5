@@ -1,9 +1,71 @@
 {
   "endings": [
     {
+      "id": "ending_guardian",
+      "name": "守望者",
+      "priority": 1,
+      "conditions": {
+        "flags": ["sealed_rift_core"],
+        "reputation": { "ashguard": { "gte": 80 } },
+        "stability": { "gte": 70 }
+      },
+      "text": "你以守望者之名封闭了裂隙核心，灰烬之地重新归于寂静。"
+    },
+    {
+      "id": "ending_scholar",
+      "name": "求知者",
+      "priority": 2,
+      "conditions": {
+        "flags": ["studied_rift_core"],
+        "reputation": { "rift_institute": { "gte": 80 } }
+      },
+      "text": "你将裂隙的秘密交给研究院。力量的代价，由下一代去承担。"
+    },
+    {
+      "id": "ending_merchant",
+      "name": "行商",
+      "priority": 3,
+      "conditions": {
+        "reputation": { "red_tide": { "gte": 80 } },
+        "items": { "rift_shard": { "gte": 20 } }
+      },
+      "text": "裂隙碎片被装上商队的马车，运往大陆的每一座城市。你的名字成了传说。"
+    },
+    {
+      "id": "ending_chieftain",
+      "name": "荒原之主",
+      "priority": 4,
+      "conditions": {
+        "reputation": { "wild_tribes": { "gte": 80 } },
+        "stability": { "lte": 40 }
+      },
+      "text": "部族在你的带领下撕开了帝国的边境。新的王座由风与火书写。"
+    },
+    {
+      "id": "ending_emperor",
+      "name": "帝国的归还",
+      "priority": 5,
+      "conditions": {
+        "reputation": { "remnant_empire": { "gte": 80 } },
+        "flags": ["sealed_rift_core"]
+      },
+      "text": "你替残余帝国重新收拢了裂隙。旗帜再次升起，代价是没人敢问它来自何处。"
+    },
+    {
+      "id": "ending_rift_born",
+      "name": "裂隙之子",
+      "priority": 6,
+      "conditions": {
+        "flags": ["hidden_whisper_heard"],
+        "stability": { "lte": 20 }
+      },
+      "text": "你听见了裂隙的低语，并决定回应它。世界的边界从此变得模糊。"
+    },
+    {
       "id": "ending_default",
       "name": "无名者",
       "priority": 99,
+      "conditions": {},
       "text": "你离开了这片大陆，没有人记得你的名字。"
     }
   ]
