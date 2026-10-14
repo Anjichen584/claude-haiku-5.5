@@ -1,6 +1,9 @@
 {
   "factions": [
     { "id": "ashguard", "name": "灰烬守望会", "rivals": ["rift_institute"] },
-    { "id": "rift_institute", "name": "裂隙研究院", "rivals": ["ashguard"] }
+    { "id": "rift_institute", "name": "裂隙研究院", "rivals": ["ashguard"] },
+    { "id": "red_tide", "name": "赤潮商盟", "rivals": [] },
+    { "id": "wild_tribes", "name": "荒原部族", "rivals": ["remnant_empire"] },
+    { "id": "remnant_empire", "name": "残余帝国", "rivals": ["wild_tribes"] }
   ]
 }
