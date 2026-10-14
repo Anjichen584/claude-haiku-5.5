@@ -7,6 +7,7 @@ import biomesJson from '../../data/biomes.json';
 import endingsJson from '../../data/endings.json';
 import factionsJson from '../../data/factions.json';
 import affixesJson from '../../data/affixes.json';
+import keyChoicesJson from '../../data/key-choices.json';
 import dungeonJson from '../../data/dungeon.json';
 import itemSetsJson from '../../data/item-sets.json';
 import combosJson from '../../data/combos.json';
@@ -14,6 +15,7 @@ import locationsJson from '../../data/locations.json';
 import npcsJson from '../../data/npcs.json';
 import type { ItemSetDef } from '../items/sets';
 import type { ComboDef } from '../skills/skillTree';
+import type { KeyChoiceDef } from '../narrative/keyChoices';
 import type { DungeonFloorFile } from '../dungeon/floors';
 import type {
   AffixDataFile,
@@ -50,6 +52,7 @@ export interface GameData {
   combos: ComboDef[];
   locations: LocationDef[];
   npcs: NpcDef[];
+  keyChoices: KeyChoiceDef[];
 }
 
 let cached: Readonly<GameData> | null = null;
@@ -71,6 +74,7 @@ export function loadGameData(): Readonly<GameData> {
     combos: (combosJson as { combos: ComboDef[] }).combos,
     locations: (locationsJson as unknown as LocationDataFile).locations,
     npcs: (npcsJson as unknown as NpcDataFile).npcs,
+    keyChoices: (keyChoicesJson as unknown as { keyChoices: KeyChoiceDef[] }).keyChoices,
   });
   return cached;
 }

@@ -22,6 +22,7 @@ import { getSession, persistSession, setSession } from '../state/sessionStore';
 import { newSession, type GameSession } from '../state/session';
 import type { AffixDef, EnemyDef, FactionDef, ItemDef, QuestDef } from '../data/schema';
 import { reputationLines } from '../factions/reputation';
+import { pendingKeyChoice, resolveKeyChoice, type KeyChoiceDef } from '../narrative/keyChoices';
 import type { ItemSetDef } from '../items/sets';
 import { grantQuestRewards } from '../state/rewards';
 import type { QuestCompletion } from '../narrative/QuestManager';
@@ -110,6 +111,10 @@ export class OverworldScene extends Phaser.Scene {
   private equipPanelOpen = false;
   private itemDefs: readonly ItemDef[] = [];
   private factionDefs: readonly FactionDef[] = [];
+  private keyChoiceDefs: readonly KeyChoiceDef[] = [];
+  private questList: readonly QuestDef[] = [];
+  private pendingChoice: KeyChoiceDef | undefined;
+  private choicePrompt!: Phaser.GameObjects.Text;
   private affixDefs: readonly AffixDef[] = [];
   private itemSetDefs: readonly ItemSetDef[] = [];
   /** 战败返回后的剩余保护时间 */
@@ -138,6 +143,8 @@ export class OverworldScene extends Phaser.Scene {
     this.itemNames = new Map(data.items.map((i) => [i.id, i.name]));
     this.itemDefs = data.items;
     this.factionDefs = data.factions;
+    this.keyChoiceDefs = data.keyChoices;
+    this.questList = data.quests;
     this.affixDefs = data.affixes;
     this.itemSetDefs = data.itemSets;
 
@@ -181,6 +188,11 @@ export class OverworldScene extends Phaser.Scene {
     this.keySpace = keyboard.addKey('SPACE');
     this.keyQ = keyboard.addKey('Q');
     this.keyR = keyboard.addKey('R');
+    this.choicePrompt = this.add.text(display.baseWidth / 2, 130, '', {
+      fontFamily: 'sans-serif', fontSize: '15px', color: '#fff3c4', align: 'center',
+      backgroundColor: '#2a1a4acc', padding: { x: 12, y: 8 },
+    }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(260).setVisible(false);
+    this.refreshKeyChoice();
     this.repPanel = this.add.text(16, 420, '', {
       fontFamily: 'sans-serif', fontSize: '14px', color: '#f4f0ff', lineSpacing: 4,
       backgroundColor: '#0b0a1acc', padding: { x: 10, y: 8 },
@@ -304,6 +316,18 @@ export class OverworldScene extends Phaser.Scene {
     this.questPanelOpen = !this.questPanelOpen;
     this.questPanel.setVisible(this.questPanelOpen);
     if (this.questPanelOpen) this.refreshQuestPanel();
+  }
+
+  /** 重新计算待选抉择并更新提示（任务完成、选择后、进入地表时调用）。 */
+  private refreshKeyChoice(): void {
+    this.pendingChoice = pendingKeyChoice(this.keyChoiceDefs, this.questList, this.world);
+    if (!this.pendingChoice) {
+      this.choicePrompt.setVisible(false);
+      return;
+    }
+    const c = this.pendingChoice;
+    const opts = c.options.map((o, i) => `[${i + 1}] ${o.text}`).join('   ');
+    this.choicePrompt.setText(`关键抉择：${c.question}\n${opts}`).setVisible(true);
   }
 
   private toggleRepPanel(): void {
@@ -508,6 +532,15 @@ export class OverworldScene extends Phaser.Scene {
   }
 
   private onDigitKey(e: KeyboardEvent): void {
+    // 有待选的关键抉择且不在对话中：数字键选择选项
+    const option = this.pendingChoice && !this.talk ? this.pendingChoice.options[Number(e.key) - 1] : undefined;
+    if (this.pendingChoice && option) {
+      resolveKeyChoice(this.pendingChoice, option.id, this.world);
+      this.showToast(`你选择了：${option.text}`);
+      this.syncToSession();
+      this.refreshKeyChoice();
+      return;
+    }
     // 装备面板打开且不在对话中：数字键 1–4 切换对应槽位
     if (!this.talk && this.equipPanelOpen && /^[1-4]$/.test(e.key)) {
       cycleSlot(this.session, EQUIP_SLOTS[Number(e.key) - 1], this.itemDefs);
@@ -552,12 +585,14 @@ export class OverworldScene extends Phaser.Scene {
 
   /** 发放任务奖励并返回提示文本行（含升级提示）。 */
   private rewardLines(done: QuestCompletion[]): string[] {
-    return grantQuestRewards(
+    const lines = grantQuestRewards(
       this.session,
       done,
       (id) => this.quests.def(id)?.title ?? id,
       (id) => this.itemNames.get(id) ?? id,
     );
+    this.refreshKeyChoice();
+    return lines;
   }
 
   private showToast(text: string): void {
