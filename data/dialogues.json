@@ -8,12 +8,44 @@
           "speaker": "守望队长 伊瑟",
           "text": "你就是那个从裂隙里爬出来的人？",
           "choices": [
-            { "text": "我需要帮助。", "next": "n2" },
-            { "text": "与你无关。", "next": "n3" }
+            {
+              "text": "我需要帮助。",
+              "next": "n2",
+              "effects": {
+                "setFlags": ["met_captain"],
+                "reputation": { "ashguard": 5 },
+                "startQuest": ["main_01_first_rift"]
+              }
+            },
+            {
+              "text": "与你无关。",
+              "next": "n3",
+              "condition": { "reputation": { "ashguard": { "gte": -20 } } },
+              "effects": { "reputation": { "ashguard": -5 } }
+            },
+            {
+              "text": "我想知道裂隙的事。",
+              "next": "n4",
+              "condition": { "quests": { "main_01_first_rift": "completed" } }
+            }
           ]
         },
-        "n2": { "speaker": "守望队长 伊瑟", "text": "好，跟我来。", "next": null },
-        "n3": { "speaker": "守望队长 伊瑟", "text": "那就别挡路。", "next": null }
+        "n2": {
+          "speaker": "守望队长 伊瑟",
+          "text": "好，先去清理营地外的灰烬狼，回来再说。",
+          "next": null
+        },
+        "n3": {
+          "speaker": "守望队长 伊瑟",
+          "text": "那就别挡路。",
+          "next": null
+        },
+        "n4": {
+          "speaker": "守望队长 伊瑟",
+          "text": "裂隙在吞噬土地。我们需要有人去看清它的根源。",
+          "effects": { "setFlags": ["knows_rift"] },
+          "next": null
+        }
       }
     }
   ]

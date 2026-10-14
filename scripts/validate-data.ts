@@ -194,6 +194,59 @@ for (const quest of quests) {
   }
 }
 
+// ---------- 任务依赖（无环）与对话条件 / 效果 ----------
+{
+  const reqOf = new Map<string, string[]>(quests.map((q: any) => [q.id, q.requires ?? []]));
+  const state = new Map<string, number>(); // 0 未访问，1 访问中，2 完成
+  const visit = (id: string): void => {
+    if (state.get(id) === 2) return;
+    if (state.get(id) === 1) {
+      fail(`quests.${id}: 任务依赖存在环`);
+      return;
+    }
+    state.set(id, 1);
+    for (const r of reqOf.get(id) ?? []) visit(r);
+    state.set(id, 2);
+  };
+  for (const q of quests) visit(q.id);
+
+  for (const q of quests) {
+    if (!['main', 'side', 'hidden'].includes(q.type)) fail(`quests.${q.id}: 未知任务类型 "${q.type}"`);
+    for (const obj of q.objectives ?? []) {
+      if (obj.type === 'collect' && !itemIds.has(obj.target)) {
+        fail(`quests.${q.id}: 收集目标物品 "${obj.target}" 不存在`);
+      }
+    }
+  }
+}
+
+const STATUSES = ['locked', 'available', 'active', 'completed', 'failed'];
+function checkCondition(label: string, cond: any): void {
+  if (!cond) return;
+  for (const f of cond.reputation ? Object.keys(cond.reputation) : []) {
+    if (!factionIds.has(f)) fail(`${label}: 声望阵营 "${f}" 不存在`);
+  }
+  for (const [qid, status] of Object.entries<any>(cond.quests ?? {})) {
+    if (!questIds.has(qid)) fail(`${label}: 任务 "${qid}" 不存在`);
+    if (!STATUSES.includes(status)) fail(`${label}: 任务状态 "${status}" 不合法`);
+  }
+  for (const iid of Object.keys(cond.items ?? {})) {
+    if (!itemIds.has(iid)) fail(`${label}: 物品 "${iid}" 不存在`);
+  }
+}
+function checkEffects(label: string, eff: any): void {
+  if (!eff) return;
+  for (const f of Object.keys(eff.reputation ?? {})) {
+    if (!factionIds.has(f)) fail(`${label}: 声望阵营 "${f}" 不存在`);
+  }
+  for (const iid of Object.keys(eff.items ?? {})) {
+    if (!itemIds.has(iid)) fail(`${label}: 物品 "${iid}" 不存在`);
+  }
+  for (const qid of eff.startQuest ?? []) {
+    if (!questIds.has(qid)) fail(`${label}: 启动任务 "${qid}" 不存在`);
+  }
+}
+
 // ---------- 对话 ----------
 for (const dlg of dialogues) {
   const nodeIds = new Set(Object.keys(dlg.nodes ?? {}));
@@ -202,10 +255,13 @@ for (const dlg of dialogues) {
     if (node.next && !nodeIds.has(node.next)) {
       fail(`dialogues.${dlg.id}.${nodeId}: next "${node.next}" 不存在`);
     }
+    checkEffects(`dialogues.${dlg.id}.${nodeId}`, node.effects);
     for (const choice of node.choices ?? []) {
       if (choice.next && !nodeIds.has(choice.next)) {
         fail(`dialogues.${dlg.id}.${nodeId}: 选项 next "${choice.next}" 不存在`);
       }
+      checkCondition(`dialogues.${dlg.id}.${nodeId}`, choice.condition);
+      checkEffects(`dialogues.${dlg.id}.${nodeId}`, choice.effects);
     }
   }
 }
