@@ -32,7 +32,7 @@ async def main():
 
         # 进入地牢
         await pg.evaluate(f"""(g) => {{ const s = {OVER};
-            s.tileX = g.x; s.tileY = g.y; s.player.setPosition(g.x*8, g.y*8); }}""", GATE)
+            s.tileX = g.x; s.tileY = g.y; s.player.setPosition(g.x*16, g.y*16); }}""", GATE)
         await pg.wait_for_timeout(300)
         await pg.keyboard.press("e")
         await active(pg, "DungeonScene")
@@ -44,9 +44,9 @@ async def main():
         await pg.keyboard.press("e")
         await pg.wait_for_timeout(300)
         opened = await pg.evaluate(f"() => {DUNGEON}.shopOpen")
-        msg = await pg.evaluate(f"() => {DUNGEON}.message.text")
+        msg = await pg.evaluate(f"() => {DUNGEON}.shop.note.text")
         print("shop opened:", opened, "|", msg.split("\n")[0])
-        assert opened and "商店" in msg, "shop did not open"
+        assert opened and await pg.evaluate(f"() => {DUNGEON}.shop.visible"), "shop did not open"
 
         # 购买第 1 件（铁剑 40 金币）
         await pg.keyboard.press("1")
@@ -59,7 +59,7 @@ async def main():
         # 金币不足：第 2 件（灰烬头盔 220 金币）
         await pg.keyboard.press("2")
         await pg.wait_for_timeout(300)
-        msg = await pg.evaluate(f"() => {DUNGEON}.message.text")
+        msg = await pg.evaluate(f"() => {DUNGEON}.shop.note.text")
         helm = await pg.evaluate(f"() => {DUNGEON}.session.world.getItemCount('ash_helm')")
         print("insufficient gold message:", "金币不足" in msg, "| helm", helm)
         assert "金币不足" in msg and helm == 0, "insufficient gold not handled"

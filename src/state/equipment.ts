@@ -10,7 +10,8 @@ import type { AffixDef, ItemDef, Rarity } from '../data/schema';
 import { Rng } from '../core/Rng';
 import { rollAffixes, type RolledAffix } from '../items/affixRoller';
 import { activeSetBonuses, type ItemSetDef } from '../items/sets';
-import { PLAYER_MAX_HP, type GameSession } from './session';
+import type { GameSession } from './session';
+import { PLAYER_MAX_HP } from './constants';
 
 export const EQUIP_SLOTS = ['main_hand', 'head', 'chest', 'feet'] as const;
 export type EquipSlot = (typeof EQUIP_SLOTS)[number];
@@ -41,7 +42,7 @@ export function equippableFor(slot: EquipSlot, items: readonly ItemDef[]): ItemD
  * 循环切换某个槽位：当前装备 → 背包里的下一件同槽位装备 → …… → 卸下 → 当前装备。
  * 返回切换后该槽位的物品 id（卸下时为 undefined）。
  */
-export function cycleSlot(session: GameSession, slot: EquipSlot, items: readonly ItemDef[]): string | undefined {
+export function cycleSlot(session: GameSession, slot: EquipSlot, items: readonly ItemDef[], affixes: readonly AffixDef[] = [], sets: readonly ItemSetDef[] = []): string | undefined {
   const equipment = session.player.equipment;
   const current = equipment[slot];
   // 固定顺序：所有拥有的同槽位装备（含当前装备），最后是“卸下”（undefined）
@@ -56,6 +57,7 @@ export function cycleSlot(session: GameSession, slot: EquipSlot, items: readonly
   if (next !== undefined && next !== current) session.world.addItem(next, -1);
   if (next === undefined) delete equipment[slot];
   else equipment[slot] = next;
+  session.player.hp = Math.min(session.player.hp, combatStats(equipment, items, affixes, sets).maxHp);
   return next;
 }
 

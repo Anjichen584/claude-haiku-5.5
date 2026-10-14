@@ -1,5 +1,7 @@
 import Phaser from 'phaser';
-import { display } from '../config/display';
+import { panel, text, UI, button } from '../ui/theme';
+import { ShopView } from '../ui/ShopView';
+import { combatStats } from '../state/equipment';
 import { loadGameData } from '../data/loader';
 import type { EnemyDef } from '../data/schema';
 import {
@@ -12,11 +14,10 @@ import {
   type DungeonRun,
 } from '../dungeon/run';
 import type { RoomKind } from '../dungeon/layout';
-import { applyGains, describeGains, grantQuestRewards, levelForExp, type Gains } from '../state/rewards';
+import { applyGains, describeGains, settleQuestRewards, levelForExp, type Gains } from '../state/rewards';
 import { getSession, persistSession, setRun, getRun } from '../state/sessionStore';
-import { buyItem, currentPriceMultiplier, shopLines, shopStock } from '../state/shop';
 import type { FactionDef, ItemDef } from '../data/schema';
-import { PLAYER_MAX_HP, type GameSession } from '../state/session';
+import { type GameSession } from '../state/session';
 
 /**
  * 地牢场景：房间图探索。
@@ -27,10 +28,7 @@ import { PLAYER_MAX_HP, type GameSession } from '../state/session';
  */
 
 const DUNGEON_SEED = 20261014;
-const CELL_X = 96;
-const CELL_Y = 84;
 const ROOM_RADIUS = 18;
-const MAP_CENTER_Y = 300;
 
 const KIND_LABEL: Record<RoomKind, string> = {
   entrance: '入口', combat: '战斗', chest: '宝箱', event: '事件', shop: '商店', rest: '休息点', boss: 'Boss',
@@ -48,8 +46,10 @@ export class DungeonScene extends Phaser.Scene {
   private factionDefs: readonly FactionDef[] = [];
   /** 商店状态：是否打开、当前库存与价格倍率 */
   private shopOpen = false;
-  private shopItems: ItemDef[] = [];
-  private shopMultiplier = 1;
+  private shop!: ShopView;
+  private portrait!: Phaser.GameObjects.Image;
+  private roomTitle!: Phaser.GameObjects.Text;
+  private escape!: Phaser.Input.Keyboard.Key;
   private graphics!: Phaser.GameObjects.Graphics;
   private dynamic: Phaser.GameObjects.GameObject[] = [];
   private hud!: Phaser.GameObjects.Text;
@@ -74,31 +74,33 @@ export class DungeonScene extends Phaser.Scene {
     this.itemDefs = data.items;
     this.factionDefs = data.factions;
     this.dynamic = [];
+    this.shopOpen = false;
 
     // 从战斗返回时沿用当前探索；否则开始新的探索
     const existing = init?.resume ? getRun() : null;
     this.run = existing ?? startRun(DUNGEON_SEED, session.dungeonFloor, data.dungeon);
     setRun(this.run);
 
-    this.add.rectangle(display.baseWidth / 2, display.baseHeight / 2, display.baseWidth, display.baseHeight, 0x0c0a16);
-    this.graphics = this.add.graphics();
-    this.hud = this.add.text(16, 12, '', {
-      fontFamily: 'monospace', fontSize: '14px', color: '#f4f0ff', lineSpacing: 4,
-      backgroundColor: '#00000066', padding: { x: 8, y: 6 },
-    }).setDepth(200);
-    this.message = this.add.text(display.baseWidth / 2, display.baseHeight - 150, '', {
-      fontFamily: 'sans-serif', fontSize: '16px', color: '#fff3c4', align: 'center',
-      backgroundColor: '#00000099', padding: { x: 12, y: 8 }, wordWrap: { width: display.baseWidth - 120 },
-    }).setOrigin(0.5, 0).setDepth(200);
-    this.add.text(16, display.baseHeight - 28, '数字键 移动到相邻房间 · E 互动 · L 离开地牢', {
-      fontFamily: 'sans-serif', fontSize: '14px', color: '#c9c3dd',
-      backgroundColor: '#00000066', padding: { x: 6, y: 3 },
-    }).setDepth(200);
+    this.cameras.main.setBackgroundColor('#0b2028');
+    const bg=this.add.graphics();bg.fillGradientStyle(0x132c35,0x132c35,0x16332f,0x16332f,1).fillRect(0,0,1280,720);
+    text(this,42,24,'裂隙地牢',28,'#e7dab5');text(this,44,67,'向更深处，寻找被遗忘的回响。',14,'#94b1a1');
+    panel(this,24,106,860,414,0);panel(this,904,106,352,414,0);panel(this,24,536,1232,100,0);
+    this.graphics=this.add.graphics().setDepth(1);
+    this.hud=this.add.text(1228,29,'',{fontFamily:UI.font,fontSize:14,color:'#bcd0b6',align:'right',lineSpacing:7}).setOrigin(1,0).setDepth(200);
+    this.message=this.add.text(48,552,'',{fontFamily:UI.font,fontSize:16,color:'#ded8b4',lineSpacing:7,wordWrap:{width:1160}}).setDepth(200);
+    this.portrait=this.add.image(1080,239,'portal').setDisplaySize(152,152).setDepth(20);
+    this.roomTitle=text(this,1080,337,'',22,'#e4ce99').setOrigin(.5);
+    text(this,1080,381,'数字键选择相邻房间\nE 与当前房间互动',14,'#9bb5a3').setOrigin(.5).setAlign('center').setLineSpacing(12);
+    button(this,1080,468,260,'E  探索当前房间',()=>{if(!this.shopOpen)this.interact();});
+    button(this,1120,674,260,'L  返回地表',()=>{if(!this.shopOpen)this.leave();});
+    text(this,42,661,'已获得的奖励将被保留。',14,'#8da996');
+    this.shop=new ShopView(this,this.session,this.itemDefs,this.factionDefs,()=>this.closeShop());
 
     const keyboard = this.input.keyboard;
     if (!keyboard) throw new Error('Keyboard input is not available');
     this.keyE = keyboard.addKey('E');
     this.keyL = keyboard.addKey('L');
+    this.escape=keyboard.addKey('ESC');
     keyboard.on('keydown', this.onDigit, this);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => keyboard.off('keydown', this.onDigit, this));
 
@@ -109,7 +111,8 @@ export class DungeonScene extends Phaser.Scene {
   }
 
   update(): void {
-    if (Phaser.Input.Keyboard.JustDown(this.keyL)) {
+    if(this.shopOpen && Phaser.Input.Keyboard.JustDown(this.escape)){this.closeShop();return;}
+    if (!this.shopOpen && Phaser.Input.Keyboard.JustDown(this.keyL)) {
       this.leave();
       return;
     }
@@ -125,11 +128,7 @@ export class DungeonScene extends Phaser.Scene {
     if (!/^[1-9]$/.test(e.key)) return;
     // 商店打开时，数字键用于购买，不移动
     if (this.shopOpen) {
-      const item = this.shopItems[Number(e.key) - 1];
-      if (!item) return;
-      const result = buyItem(this.session, item, this.shopMultiplier);
-      persistSession(this.session);
-      this.showShop(result.message);
+      this.shop.buy(Number(e.key)-1);
       return;
     }
     const next = neighbors(this.run, this.run.current)[Number(e.key) - 1];
@@ -171,7 +170,8 @@ export class DungeonScene extends Phaser.Scene {
         this.grant(out.gains, room.id, out.type === 'chest' ? '宝箱' : '残影事件');
         break;
       case 'rest': {
-        const max = PLAYER_MAX_HP;
+        const data = loadGameData();
+        const max = combatStats(this.session.player.equipment,data.items,data.affixes,data.itemSets).maxHp;
         const before = this.session.player.hp;
         this.session.player.hp = Math.min(max, before + Math.ceil(max * out.healFraction));
         markCleared(this.run, room.id);
@@ -192,21 +192,10 @@ export class DungeonScene extends Phaser.Scene {
   // ---------- 商店 ----------
 
   private openShop(): void {
-    this.shopItems = shopStock(this.itemDefs);
-    this.shopMultiplier = currentPriceMultiplier(this.session.world, this.factionDefs);
-    this.shopOpen = true;
-    this.showShop('欢迎光临。');
+    this.shopOpen=true;this.shop.show();
   }
 
-  private showShop(note: string): void {
-    const gold = this.session.player.gold;
-    this.say([`商店（数字键购买 · E 离开）  金币 ${gold}`, note, ...shopLines(this.shopItems, this.shopMultiplier)].join('\n'));
-  }
-
-  private closeShop(): void {
-    this.shopOpen = false;
-    this.say('离开了商店。');
-  }
+  private closeShop():void { this.shopOpen=false;this.shop.hide();this.say('交易结束，祝你一路平安。'); }
 
   private grant(gains: Gains, roomId: number, label: string): void {
     markCleared(this.run, roomId);
@@ -214,12 +203,12 @@ export class DungeonScene extends Phaser.Scene {
     const text = describeGains(gains, (id) => this.itemNames.get(id) ?? id);
     // 宝箱等获得的物品可能完成收集任务
     const done = this.session.quests.syncCollect();
-    const questLines = grantQuestRewards(
+    const questLines = settleQuestRewards(
       this.session,
       done,
       (id) => this.session.quests.def(id)?.title ?? id,
       (id) => this.itemNames.get(id) ?? id,
-    );
+    ).lines;
     this.say([`${label}：${text || '无'}`, ...levelUps, ...questLines].join('\n'));
   }
 
@@ -247,10 +236,8 @@ export class DungeonScene extends Phaser.Scene {
     const maxY = Math.max(...rooms.map((r) => r.y));
     const cx = (minX + maxX) / 2;
     const cy = (minY + maxY) / 2;
-    const toScreen = (x: number, y: number) => ({
-      x: display.baseWidth / 2 + (x - cx) * CELL_X,
-      y: MAP_CENTER_Y + (y - cy) * CELL_Y,
-    });
+    const sx=Math.min(96,740/Math.max(1,maxX-minX)),sy=Math.min(72,280/Math.max(1,maxY-minY));
+    const toScreen = (x: number, y: number) => ({x:454+(x-cx)*sx,y:300+(y-cy)*sy});
 
     // 连线
     this.graphics.lineStyle(2, 0x3a3560, 1);
@@ -266,10 +253,16 @@ export class DungeonScene extends Phaser.Scene {
       const p = toScreen(room.x, room.y);
       const cleared = this.run.cleared.has(room.id);
       this.graphics.fillStyle(KIND_COLOR[room.kind], cleared ? 0.3 : 0.95);
-      this.graphics.fillCircle(p.x, p.y, ROOM_RADIUS);
+      this.graphics.fillRoundedRect(p.x-19,p.y-19,38,38,9);
       if (room.id === this.run.current) {
         this.graphics.lineStyle(3, 0xffffff, 1);
-        this.graphics.strokeCircle(p.x, p.y, ROOM_RADIUS + 5);
+        this.graphics.strokeRoundedRect(p.x-24,p.y-24,48,48,12);
+      }
+      const icons:Record<RoomKind,string>={entrance:'◇',combat:'⚔',chest:'▣',event:'✧',shop:'¤',rest:'+',boss:'♜'};
+      this.dynamic.push(this.add.text(p.x,p.y,icons[room.kind],{fontSize:22,color:'#10292b'}).setOrigin(.5).setDepth(15));
+      if(reachable.has(room.id)){
+        const hit=this.add.rectangle(p.x,p.y,46,46,0xffffff,0).setDepth(25).setInteractive({useHandCursor:true});
+        hit.on('pointerdown',()=>{if(!this.shopOpen){moveTo(this.run,room.id);this.say(`进入：${KIND_LABEL[room.kind]}房间`);this.render();}});this.dynamic.push(hit);
       }
       const label = this.add.text(p.x, p.y + ROOM_RADIUS + 4, KIND_LABEL[room.kind], {
         fontFamily: 'sans-serif', fontSize: '12px', color: cleared ? '#6b7089' : '#e6d9ff',
@@ -287,9 +280,13 @@ export class DungeonScene extends Phaser.Scene {
     const { player } = this.session;
     const level = levelForExp(player.exp);
     const kind = KIND_LABEL[roomById(this.run, this.run.current).kind];
+    const data=loadGameData(),maxHp=combatStats(player.equipment,data.items,data.affixes,data.itemSets).maxHp;
+    const current=roomById(this.run,this.run.current);
+    const art=current.kind==='shop'?'actor-merchant':current.kind==='combat'?`enemy-${this.enemies[0].id}`:current.kind==='boss'?`enemy-${this.enemies.find(e=>e.boss)!.id}`:current.kind==='rest'?'actor-mage':'portal';
+    this.portrait.setTexture(art);this.roomTitle.setText(`${kind}房间`);
     this.hud.setText([
       `地牢 第 ${this.run.floor} 层 · 当前：${kind}房间`,
-      `生命 ${player.hp}/${PLAYER_MAX_HP}   金币 ${player.gold}   经验 ${player.exp}   等级 ${level}`,
+      `生命 ${player.hp}/${maxHp}   金币 ${player.gold}   经验 ${player.exp}   等级 ${level}`,
       `已清理 ${this.run.cleared.size}/${rooms.length} 个房间`,
     ]);
   }

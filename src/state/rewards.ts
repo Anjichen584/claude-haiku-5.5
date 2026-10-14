@@ -63,3 +63,22 @@ export function grantQuestRewards(
   }
   return lines;
 }
+
+/** Complete chained quests against durable world facts, then issue each reward once. */
+export function settleQuestRewards(
+  session: GameSession,
+  initial: readonly QuestCompletion[],
+  titleOf: (id: string) => string,
+  itemName: (id: string) => string,
+): { lines: string[]; completed: QuestCompletion[] } {
+  const completed = [...initial];
+  const lines = grantQuestRewards(session, initial, titleOf, itemName);
+  for (let pass = 0; pass < 200; pass++) {
+    session.quests.acceptAvailable((d) => d.type !== 'side');
+    const next = [...session.quests.syncVisited(session.visited), ...session.quests.syncCollect()];
+    if (!next.length) break;
+    completed.push(...next);
+    lines.push(...grantQuestRewards(session, next, titleOf, itemName));
+  }
+  return { lines, completed };
+}

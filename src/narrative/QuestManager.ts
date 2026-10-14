@@ -179,6 +179,13 @@ export class QuestManager {
     return completed;
   }
 
+  /** Reconcile durable discoveries whenever a quest is accepted, without replaying rewards. */
+  syncVisited(visited: ReadonlySet<string>): QuestCompletion[] {
+    const completed: QuestCompletion[] = [];
+    for (const target of visited) completed.push(...this.report({ type: 'reach', target }));
+    return completed;
+  }
+
   progressOf(id: string): QuestRecord | undefined {
     return this.world.getQuest(id);
   }

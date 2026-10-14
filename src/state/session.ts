@@ -7,14 +7,21 @@
  *
  * 本文件不依赖 Phaser，便于单元测试。存档的读写见 sessionStore.ts。
  */
-import type { QuestDef } from '../data/schema';
+import type { QuestDef, ItemDef, AffixDef } from '../data/schema';
+import { combatStats } from './equipment';
+import itemsData from '../../data/items.json';
+import affixesData from '../../data/affixes.json';
+import setsData from '../../data/item-sets.json';
+import type { ItemSetDef } from '../items/sets';
+import { PLAYER_MAX_HP, MAX_DUNGEON_FLOOR } from './constants';
+export { PLAYER_MAX_HP, MAX_DUNGEON_FLOOR } from './constants';
 import { QuestManager } from '../narrative/QuestManager';
 import { DAY_LENGTH_MS } from '../world/time';
 import { WorldState, type WorldSnapshot } from './WorldState';
 
-export const PLAYER_MAX_HP = 100;
+
 /** 地牢最深层数（dungeon.json 共 12 层） */
-export const MAX_DUNGEON_FLOOR = 12;
+
 
 export interface PlayerState {
   tileX: number;
@@ -106,7 +113,7 @@ export function parseSave(raw: string): SaveFile {
   if (!isRecord(player) || !isFiniteNumber(player.tileX) || !isFiniteNumber(player.tileY) || !isFiniteNumber(player.hp)) {
     throw new SaveError('玩家数据缺失');
   }
-  if (player.hp < 0 || player.hp > PLAYER_MAX_HP) throw new SaveError('玩家生命值越界');
+
   // 旧存档没有经验、金币与地牢层数，缺省为初始值
   const exp: unknown = player.exp === undefined ? 0 : player.exp;
   const gold: unknown = player.gold === undefined ? 0 : player.gold;
@@ -121,6 +128,8 @@ export function parseSave(raw: string): SaveFile {
     if (typeof id !== 'string') throw new SaveError('装备数据错误');
     equipment[slot] = id;
   }
+  const maxHp = combatStats(equipment, itemsData.items as ItemDef[], affixesData.affixes as AffixDef[], setsData.sets as ItemSetDef[]).maxHp;
+  if (player.hp < 0 || player.hp > maxHp) throw new SaveError('玩家生命值越界');
   // 旧存档没有技能，缺省为未解锁、0 点
   const skillsRaw: unknown = player.skills === undefined ? { unlocked: [], points: 0 } : player.skills;
   if (!isRecord(skillsRaw) || !Array.isArray(skillsRaw.unlocked) || !skillsRaw.unlocked.every((x) => typeof x === 'string')) {

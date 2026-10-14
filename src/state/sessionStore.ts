@@ -46,7 +46,9 @@ export function readSaveRaw(): string | null {
 /** 写入失败（配额满、隐私模式等）时返回 false，由界面提示玩家。 */
 export function writeSaveRaw(raw: string): boolean {
   try {
-    storage()?.setItem(SAVE_KEY, raw);
+    const target = storage();
+    if (!target) return false;
+    target.setItem(SAVE_KEY, raw);
     return true;
   } catch {
     return false;

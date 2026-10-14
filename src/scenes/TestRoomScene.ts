@@ -1,4 +1,6 @@
 import Phaser from 'phaser';
+import { landscape, panel, UI } from '../ui/theme';
+import { settleQuestRewards } from '../state/rewards';
 import { display } from '../config/display';
 import { Actor } from '../combat/Actor';
 import { calculateDamage, type Element } from '../combat/damage';
@@ -12,10 +14,10 @@ import { loadGameData } from '../data/loader';
 import type { EnemyDef } from '../data/schema';
 import type { QuestCompletion } from '../narrative/QuestManager';
 import { getRun, getSession, persistSession, setRun } from '../state/sessionStore';
-import { applyGains, grantQuestRewards } from '../state/rewards';
+import { applyGains } from '../state/rewards';
 import { killGains, rollDrops } from '../state/killRewards';
 import { combatStats } from '../state/equipment';
-import { MAX_DUNGEON_FLOOR, PLAYER_MAX_HP, type GameSession } from '../state/session';
+import { MAX_DUNGEON_FLOOR, type GameSession } from '../state/session';
 import { combatGains, markCleared } from '../dungeon/run';
 import type { EncounterRequest } from '../world/encounters';
 
@@ -62,14 +64,20 @@ interface EnemyUnit {
   brain: EnemyBrain;
   x: number;
   y: number;
-  body: Phaser.GameObjects.Arc;
+  body: Phaser.GameObjects.Image;
+  label: Phaser.GameObjects.Text;
+  windup: number;
+  face: number;
   hpBar: Phaser.GameObjects.Graphics;
   alive: boolean;
 }
 
 export class TestRoomScene extends Phaser.Scene {
   private keys!: Record<'W' | 'A' | 'S' | 'D' | 'SHIFT' | 'SPACE' | 'J' | 'R', Phaser.Input.Keyboard.Key>;
-  private playerBody!: Phaser.GameObjects.Arc;
+  private playerBody!: Phaser.GameObjects.Image;
+  private effects!: Phaser.GameObjects.Graphics;
+  private health!: Phaser.GameObjects.Graphics;
+  private exitKey!: Phaser.Input.Keyboard.Key;
   private playerActor!: Actor;
   private px = 0;
   private py = 0;
@@ -112,10 +120,13 @@ export class TestRoomScene extends Phaser.Scene {
       W: 'W', A: 'A', S: 'S', D: 'D',
       SHIFT: 'SHIFT', SPACE: 'SPACE', J: 'J', R: 'R',
     }) as typeof this.keys;
+    this.exitKey=kb.addKey("ESC");
     this.resetRoom();
   }
 
   update(_time: number, deltaMs: number): void {
+    deltaMs = Math.min(deltaMs,50);
+    if(!this.encounter && Phaser.Input.Keyboard.JustDown(this.exitKey)){this.scene.start('OverworldScene');return;}
     if (this.finished) {
       if (Phaser.Input.Keyboard.JustDown(this.keys.SPACE)) this.returnToOverworld();
       this.render();
@@ -126,6 +137,8 @@ export class TestRoomScene extends Phaser.Scene {
       this.resetRoom();
       return;
     }
+    this.effects.clear();
+    if(this.playerActor.isDead){this.render();return;}
     this.playerActor.tick(deltaMs);
     this.updatePlayer(deltaMs);
     this.updateEnemies(deltaMs);
@@ -157,12 +170,12 @@ export class TestRoomScene extends Phaser.Scene {
     if (session) {
       const items = loadGameData().items;
       lines.push(
-        ...grantQuestRewards(
+        ...settleQuestRewards(
           session,
           this.completions,
           (id) => session.quests.def(id)?.title ?? id,
           (id) => items.find((i) => i.id === id)?.name ?? id,
-        ),
+        ).lines,
       );
     }
     lines.push(won ? '按 Space 返回地表' : '按 Space 返回地表（生命恢复少量）');
@@ -198,7 +211,7 @@ export class TestRoomScene extends Phaser.Scene {
       // 胜利保留剩余生命；战败恢复到最大生命的 30%，且地表给予短暂的脱离保护
       this.session.player.hp = this.won
         ? Math.max(1, this.playerActor.hp)
-        : Math.max(1, Math.ceil(PLAYER_MAX_HP * 0.3));
+        : Math.max(1, Math.ceil(this.stats.maxHp * 0.3));
     }
     if (this.session) persistSession(this.session);
     if (this.encounter?.dungeon) {
@@ -214,18 +227,24 @@ export class TestRoomScene extends Phaser.Scene {
   // ---------- 初始化 ----------
 
   private resetRoom(): void {
+    this.tweens.killAll();
     this.children.removeAll(true);
     this.enemies = [];
     this.log = [];
 
-    this.add.rectangle(display.baseWidth / 2, display.baseHeight / 2, display.baseWidth, display.baseHeight, 0x14141c);
-    this.add.text(16, 12, this.encounter ? '遭遇战' : '测试房间', { fontFamily: 'sans-serif', fontSize: '18px', color: '#9aa0b4' });
-    this.add.text(16, display.baseHeight - 28,
-      this.encounter ? 'WASD 移动 · Shift 冲刺 · Space 闪避 · J 攻击' : 'WASD 移动 · Shift 冲刺 · Space 闪避 · J 攻击 · R 重置',
-      { fontFamily: 'sans-serif', fontSize: '14px', color: '#6b7089' });
-    this.hud = this.add.text(16, display.baseHeight - 110, '', {
-      fontFamily: 'monospace', fontSize: '14px', color: '#e6d9ff', lineSpacing: 4,
-    });
+    landscape(this,true);
+    const floor=this.add.graphics().setDepth(-2);
+    floor.fillStyle(0x324a40,.92).fillRoundedRect(76,138,1128,456,28);
+    floor.lineStyle(2,0xa6ac7b,.25).strokeRoundedRect(88,150,1104,432,24);
+    for(let i=0;i<30;i++){const x=110+(i*131)%1060,y=173+(i*79)%390;floor.lineStyle(1,0x9fb18b,.12).strokeCircle(x,y,12+(i%4)*5);}
+    panel(this,24,22,1232,90);
+    this.add.text(48,39,this.encounter?.dungeon?'裂隙深处  /  房间战斗':this.encounter?'荒野遭遇':'战斗试炼', {fontFamily:UI.font,fontSize:23,color:'#e7dbb6'}).setDepth(200);
+    this.add.text(48,79,'W A S D 移动   ·   J 挥剑   ·   Shift 冲刺   ·   Space 闪避', {fontFamily:UI.font,fontSize:13,color:'#a4bcaa'}).setDepth(200);
+    panel(this,24,618,1232,78);
+    this.hud = this.add.text(48,632,'',{fontFamily:UI.font,fontSize:15,color:'#d5dec2',lineSpacing:7}).setDepth(200);
+    if(!this.encounter)this.add.text(1125,44,'Esc 返回',{fontFamily:UI.font,fontSize:15,color:'#e3cb93'}).setDepth(200).setInteractive({useHandCursor:true}).on('pointerdown',()=>this.scene.start('OverworldScene'));
+    this.effects=this.add.graphics().setDepth(30);
+    this.health=this.add.graphics().setDepth(201);
 
     this.px = 320;
     this.py = display.baseHeight / 2;
@@ -237,7 +256,7 @@ export class TestRoomScene extends Phaser.Scene {
       // 生命从会话带入（已被击败的刷新点不会再次进入）
       this.playerActor.hp = Math.max(1, Math.min(this.stats.maxHp, this.session.player.hp));
     }
-    this.playerBody = this.add.circle(this.px, this.py, PLAYER.radius, 0x7aa2ff);
+    this.playerBody = this.add.image(this.px,this.py,'actor-hero').setDisplaySize(84,84).setOrigin(.5,.82).setDepth(10);
     this.attackCooldownMs = 0;
     this.dashCooldownMs = 0;
     this.dashLeftMs = 0;
@@ -250,14 +269,16 @@ export class TestRoomScene extends Phaser.Scene {
     for (const spawn of spawns) {
       const def = data.enemies.find((e) => e.id === spawn.id);
       if (!def) continue;
-      const actor = new Actor({ maxHp: def.hp, staggerMs: def.id === 'moss_golem' ? 0 : 200 });
+      const actor = new Actor({ maxHp: def.hp, staggerMs: def.staggerImmune || def.boss || def.elite || def.id === 'moss_golem' ? 0 : 200 });
       this.enemies.push({
         def,
         actor,
         brain: createEnemyBrain(),
         x: spawn.x,
         y: spawn.y,
-        body: this.add.circle(spawn.x, spawn.y, ENEMY_RADIUS, 0xe0584f),
+        body: this.add.image(spawn.x,spawn.y,`enemy-${def.id}`).setDisplaySize(def.boss?122:88,def.boss?122:88).setOrigin(.5,.82).setDepth(9),
+        label: this.add.text(spawn.x,spawn.y-88,`${def.boss?'◆ ':def.elite?'◇ ':''}${def.name}`,{fontFamily:UI.font,fontSize:14,color:def.boss?'#ecc18d':'#d8dfc1',backgroundColor:'#122b2b',padding:{x:6,y:3}}).setOrigin(.5),
+        windup:0, face:-1,
         hpBar: this.add.graphics(),
         alive: true,
       });
@@ -320,11 +341,15 @@ export class TestRoomScene extends Phaser.Scene {
   }
 
   private movePlayer(dx: number, dy: number): void {
-    this.px = Phaser.Math.Clamp(this.px + dx, PLAYER.radius, display.baseWidth - PLAYER.radius);
-    this.py = Phaser.Math.Clamp(this.py + dy, PLAYER.radius + 40, display.baseHeight - 130);
+    this.px = Phaser.Math.Clamp(this.px + dx, 110, display.baseWidth - 110);
+    this.py = Phaser.Math.Clamp(this.py + dy, 210, display.baseHeight - 150);
   }
 
   private performPlayerAttack(): void {
+    const angle=Math.atan2(this.facing.y,this.facing.x);
+    const slash=this.add.graphics().setDepth(25).setPosition(this.px,this.py-12);
+    slash.lineStyle(5,0xe5d4a4,.9);slash.beginPath();slash.arc(0,0,59,angle-.9,angle+.9);slash.strokePath();
+    this.tweens.add({targets:slash,alpha:0,scale:1.2,duration:180,onComplete:()=>slash.destroy()});
     const hits: string[] = [];
     for (const enemy of this.enemies) {
       if (!enemy.alive) continue;
@@ -349,9 +374,15 @@ export class TestRoomScene extends Phaser.Scene {
 
   private damageEnemy(enemy: EnemyUnit, amount: number): void {
     const applied = enemy.actor.receiveDamage(amount);
+    if(applied>0){
+      this.floatText(enemy.x,enemy.y-70,`−${applied}`,'#f2df9d');
+      enemy.body.setTintFill(0xf7dfb2);this.time.delayedCall(90,()=>{if(enemy.body.active)enemy.body.clearTint();});
+      if(enemy.actor.isStaggered)enemy.windup=0;
+    }
     if (applied > 0 && enemy.actor.isDead) {
       enemy.alive = false;
-      enemy.body.setFillStyle(0x3a3a44);
+      enemy.label.setVisible(false);
+      this.tweens.add({targets:enemy.body,alpha:0,angle:40,y:enemy.y+12,duration:400});
       this.pushLog(`${enemy.def.name} 被击败`);
       if (this.encounter && this.session) {
         // 遭遇战中的击杀计入 kill 任务
@@ -380,21 +411,29 @@ export class TestRoomScene extends Phaser.Scene {
       const dist = Math.hypot(this.px - enemy.x, this.py - enemy.y);
       const decision = decideEnemyAction(enemy.brain, ENEMY_AI, { distanceToPlayer: dist, deltaMs });
 
-      if (decision.moveTowardPlayer && !enemy.actor.isStaggered && dist > 0) {
+      if (decision.moveTowardPlayer && enemy.windup===0 && !enemy.actor.isStaggered && dist > 0) {
         const speed = enemy.def.speed * 0.5;
         enemy.x += ((this.px - enemy.x) / dist) * speed * dt;
         enemy.y += ((this.py - enemy.y) / dist) * speed * dt;
       }
 
-      if (decision.shouldAttack) {
-        const dmg = calculateDamage(
-          { attack: enemy.def.attack, multiplier: 1, element: (enemy.def.element as Element) ?? 'none', critical: false },
-          { defense: this.stats.defense },
-        );
-        const applied = this.playerActor.receiveDamage(dmg);
-        if (applied > 0) this.pushLog(`${enemy.def.name} 造成 ${applied} 点伤害`);
-        if (this.playerActor.isDead) this.pushLog('你已倒下，按 R 重新开始');
+      if (decision.shouldAttack && enemy.windup===0 && !enemy.actor.isStaggered) enemy.windup=450;
+      if(enemy.windup>0){
+        enemy.windup-=deltaMs;
+        this.effects.lineStyle(2,0xe8a273,.7).strokeCircle(enemy.x,enemy.y,50);
+        this.effects.fillStyle(0xdb845e,.12).fillCircle(enemy.x,enemy.y,50);
+        if(enemy.windup<=0){
+          enemy.windup=0;
+          if(dist<65 && !enemy.actor.isStaggered){
+            const dmg=calculateDamage({attack:enemy.def.attack,multiplier:1,element:(enemy.def.element as Element)??'none',critical:false},{defense:this.stats.defense});
+            const applied=this.playerActor.receiveDamage(dmg);
+            if(applied>0){this.floatText(this.px,this.py-62,`−${applied}`,'#f0aa8b');this.cameras.main.shake(90,.002);this.pushLog(`${enemy.def.name} 造成 ${applied} 点伤害`);}
+          }
+        }
       }
+      enemy.body.setFlipX(this.px < enemy.x);
+      if(decision.moveTowardPlayer && enemy.windup===0)enemy.body.setAngle(Math.sin(this.time.now/110+enemy.x)*4);
+      else enemy.body.setAngle(0);
 
       enemy.body.setPosition(enemy.x, enemy.y);
     }
@@ -404,26 +443,30 @@ export class TestRoomScene extends Phaser.Scene {
 
   private render(): void {
     this.playerBody.setPosition(this.px, this.py);
+    this.playerBody.setFlipX(this.facing.x<0);
+    this.playerBody.setAngle(this.dodgeLeftMs>0?(this.facing.x<0?-18:18):Math.sin(this.time.now/100)*(this.keys.W.isDown||this.keys.A.isDown||this.keys.S.isDown||this.keys.D.isDown?4:0));
     this.playerBody.setAlpha(this.playerActor.isInvulnerable ? 0.5 : 1);
 
     for (const enemy of this.enemies) {
       enemy.body.setPosition(enemy.x, enemy.y);
       enemy.hpBar.clear();
       if (!enemy.alive) continue;
+      enemy.label.setPosition(enemy.x,enemy.y-(enemy.def.boss?108:82));
       const ratio = enemy.actor.hp / enemy.actor.maxHp;
-      enemy.hpBar.fillStyle(0x222222, 1).fillRect(enemy.x - 20, enemy.y - 26, 40, 5);
-      enemy.hpBar.fillStyle(0x6fd96f, 1).fillRect(enemy.x - 20, enemy.y - 26, 40 * ratio, 5);
+      enemy.hpBar.fillStyle(0x222222, 1).fillRect(enemy.x - 20, enemy.y - (enemy.def.boss?82:58), 40, 5);
+      enemy.hpBar.fillStyle(0xc18b62, 1).fillRect(enemy.x - 20, enemy.y - (enemy.def.boss?82:58), 40 * ratio, 5);
     }
 
-    const state = this.enemies
-      .filter((e) => e.alive)
-      .map((e) => `${e.def.name}:${e.brain.state}`)
-      .join('  ');
+    this.health.clear().fillStyle(0x304b44).fillRoundedRect(790,52,300,12,6).fillStyle(0xa3c18c).fillRoundedRect(790,52,300*Math.max(0,this.playerActor.hp/this.playerActor.maxHp),12,6);
     this.hud.setText([
-      `生命 ${this.playerActor.hp}/${this.playerActor.maxHp}   冲刺 ${this.dashCooldownMs > 0 ? '冷却中' : '就绪'}`,
-      `敌人 ${state || '全部击败'}`,
-      ...this.log.slice(-3),
+      `生命 ${this.playerActor.hp}/${this.playerActor.maxHp}     冲刺 ${this.dashCooldownMs>0?'冷却中':'就绪'}     剩余敌人 ${this.enemies.filter(e=>e.alive).length}`,
+      this.log[this.log.length-1]??'靠近敌人，面向目标挥剑；橙色圆圈表示攻击预警。',
     ]);
+  }
+
+  private floatText(x:number,y:number,value:string,color:string):void{
+    const t=this.add.text(x,y,value,{fontFamily:UI.font,fontSize:24,color,stroke:'#10252b',strokeThickness:4}).setOrigin(.5).setDepth(60);
+    this.tweens.add({targets:t,y:y-40,alpha:0,duration:720,onComplete:()=>t.destroy()});
   }
 
   private pushLog(text: string): void {

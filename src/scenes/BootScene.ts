@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { preloadArt } from '../art/sprites';
 import { display } from '../config/display';
 import { loadGameData } from '../data/loader';
 
@@ -9,6 +10,10 @@ import { loadGameData } from '../data/loader';
 export class BootScene extends Phaser.Scene {
   constructor() {
     super('BootScene');
+  }
+
+  preload(): void {
+    preloadArt(this, loadGameData().enemies);
   }
 
   create(): void {
@@ -32,6 +37,6 @@ export class BootScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     // 短暂展示启动信息后进入标题菜单
-    this.time.delayedCall(800, () => this.scene.start('TitleScene'));
+    this.time.delayedCall(100, () => this.scene.start('TitleScene'));
   }
 }

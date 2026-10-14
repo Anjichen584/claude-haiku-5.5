@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { display } from '../config/display';
+import { landscape, panel, text, UI } from '../ui/theme';
 import { loadGameData } from '../data/loader';
 import { newSession, fromSaveFile, parseSave, SaveError } from '../state/session';
 import { readSaveRaw, setSession } from '../state/sessionStore';
@@ -26,17 +26,17 @@ export class TitleScene extends Phaser.Scene {
   create(): void {
     this.selected = 0;
     this.labels = [];
-    this.add.rectangle(display.baseWidth / 2, display.baseHeight / 2, display.baseWidth, display.baseHeight, 0x0b0a1a);
-    this.add
-      .text(display.baseWidth / 2, display.baseHeight / 2 - 120, '裂隙编年史', {
-        fontFamily: 'sans-serif', fontSize: '56px', color: '#e6d9ff',
-      })
-      .setOrigin(0.5);
-    this.add
-      .text(display.baseWidth / 2, display.baseHeight / 2 - 60, 'Rift Chronicles', {
-        fontFamily: 'sans-serif', fontSize: '20px', color: '#8f88aa',
-      })
-      .setOrigin(0.5);
+    landscape(this);
+    this.add.rectangle(300,360,650,720,0x0a2027,.65);
+    text(this, 92, 100, 'R I F T   C H R O N I C L E S', 15, '#cfbd8d');
+    text(this, 88, 158, '裂隙编年史', 66, '#eee8ce');
+    text(this, 94, 253, '在破碎的世界里，寻找归途。', 20, '#a9c2b4');
+    this.add.graphics().lineStyle(1,UI.gold,.5).lineBetween(95,305,450,305);
+    text(this, 94, 332, '第一卷   /   灰烬之路', 14, '#cfbd8d');
+    panel(this, 88, 382, 365, 156, 0);
+    text(this, 94, 590, '探索世界  ·  深入裂隙  ·  作出抉择', 14, '#b6c8b7');
+    text(this, 94, 663, '离线单人冒险', 12, '#87a496');
+    text(this, 1100, 663, '原型 · 0.1', 12, '#a7b6a1');
 
     const raw = readSaveRaw();
     this.choices = ['new'];
@@ -50,12 +50,13 @@ export class TitleScene extends Phaser.Scene {
       }
     }
 
+    if(raw===null)text(this,122,475,'尚无存档 · 从第一道裂隙开始',14,'#7f9a8b');
     this.choices.forEach((choice, i) => {
       const label = this.add
-        .text(display.baseWidth / 2, display.baseHeight / 2 + 10 + i * 56, choice === 'new' ? '新游戏' : '继续', {
-          fontFamily: 'sans-serif', fontSize: '28px', color: '#c9c3dd',
+        .text(122, 403 + i * 62, choice === 'new' ? '启程  /  新的旅途' : '继续  /  重返世界', {
+          fontFamily: UI.font, fontSize: '22px', color: '#c9c3dd',
         })
-        .setOrigin(0.5)
+        .setOrigin(0,0)
         .setInteractive({ useHandCursor: true });
       label.on('pointerover', () => this.select(i));
       label.on('pointerdown', () => this.activate(i));
@@ -63,16 +64,16 @@ export class TitleScene extends Phaser.Scene {
     });
 
     this.message = this.add
-      .text(display.baseWidth / 2, display.baseHeight - 90, this.continueError ? `无法继续：${this.continueError}` : '', {
+      .text(94, 553, this.continueError ? `无法继续：${this.continueError}` : '', {
         fontFamily: 'sans-serif', fontSize: '16px', color: '#ff9b9b',
       })
-      .setOrigin(0.5);
+      .setOrigin(0,0);
 
     this.add
-      .text(display.baseWidth / 2, display.baseHeight - 40, 'W/S 选择 · Enter 确认', {
-        fontFamily: 'sans-serif', fontSize: '14px', color: '#6b7089',
+      .text(94, 625, 'W / S 选择     ↵ 确认     或点击开始', {
+        fontFamily: 'sans-serif', fontSize: '14px', color: '#91ad9d',
       })
-      .setOrigin(0.5);
+      .setOrigin(0,0);
 
     const kb = this.input.keyboard;
     if (!kb) throw new Error('Keyboard input is not available');
@@ -102,7 +103,7 @@ export class TitleScene extends Phaser.Scene {
     this.selected = index;
     this.labels.forEach((label, i) => {
       const active = i === index;
-      label.setColor(active ? '#fff3c4' : '#c9c3dd').setScale(active ? 1.08 : 1);
+      label.setColor(active ? '#e7cb8c' : '#91aa9c').setScale(active ? 1.02 : 1);
     });
   }
 
