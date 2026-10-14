@@ -15,6 +15,8 @@ import { activeQuestLog, formatQuestLog } from '../narrative/questLog';
 import { getSession, persistSession, setSession } from '../state/sessionStore';
 import { newSession, type GameSession } from '../state/session';
 import type { EnemyDef, QuestDef } from '../data/schema';
+import { grantQuestRewards } from '../state/rewards';
+import type { QuestCompletion } from '../narrative/QuestManager';
 
 /**
  * 阶段 3 地表场景：无缝区块世界、群系配色、河流与道路、昼夜光照与天气。
@@ -84,6 +86,7 @@ export class OverworldScene extends Phaser.Scene {
   private session!: GameSession;
   private enemyDefs: readonly EnemyDef[] = [];
   private questDefs: readonly QuestDef[] = [];
+  private itemNames = new Map<string, string>();
   private questPanel!: Phaser.GameObjects.Text;
   private questPanelOpen = false;
   private keyQ!: Phaser.Input.Keyboard.Key;
@@ -111,6 +114,7 @@ export class OverworldScene extends Phaser.Scene {
     this.biomes = data.biomes;
     this.enemyDefs = data.enemies;
     this.questDefs = data.quests;
+    this.itemNames = new Map(data.items.map((i) => [i.id, i.name]));
 
     // 场景实例会被复用，所有运行时状态都要在这里重置
     this.chunks = new Map();
@@ -312,11 +316,7 @@ export class OverworldScene extends Phaser.Scene {
       this.session.visited.add(p.id);
       const done = arriveAt(this.locationRegistry, this.quests, p.id);
       this.quests.acceptAvailable((d) => d.type !== 'side');
-      const lines = [`抵达：${p.name}`];
-      for (const c of done) {
-        const title = this.quests.def(c.questId)?.title ?? c.questId;
-        lines.push(`任务完成：${title}`);
-      }
+      const lines = [`抵达：${p.name}`, ...this.rewardLines(done)];
       this.showToast(lines.join('\n'));
       // 抵达新地点时自动存档（写入失败不打断游戏）
       this.syncToSession();
@@ -405,9 +405,7 @@ export class OverworldScene extends Phaser.Scene {
     if (this.talk.runner.finished) {
       const done = this.talk.finish();
       this.quests.acceptAvailable((d) => d.type !== 'side');
-      const lines: string[] = [];
-      for (const c of done) lines.push(`任务完成：${this.quests.def(c.questId)?.title ?? c.questId}`);
-      this.closeTalk(lines.join('\n'));
+      this.closeTalk(this.rewardLines(done).join('\n'));
       return;
     }
     this.renderTalk();
@@ -428,6 +426,16 @@ export class OverworldScene extends Phaser.Scene {
     const optText = opts.length > 0 ? '\n' + opts.map((o, i) => `[${i + 1}] ${o.text}`).join('\n') : '\n[空格] 继续';
     this.dialogueText.setText(`${node.speaker}\n${node.text}${optText}`).setVisible(true);
     this.dialogueBox.setVisible(true);
+  }
+
+  /** 发放任务奖励并返回提示文本行（含升级提示）。 */
+  private rewardLines(done: QuestCompletion[]): string[] {
+    return grantQuestRewards(
+      this.session,
+      done,
+      (id) => this.quests.def(id)?.title ?? id,
+      (id) => this.itemNames.get(id) ?? id,
+    );
   }
 
   private showToast(text: string): void {

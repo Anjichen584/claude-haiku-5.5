@@ -12,6 +12,7 @@ import { loadGameData } from '../data/loader';
 import type { EnemyDef } from '../data/schema';
 import type { QuestCompletion } from '../narrative/QuestManager';
 import { getSession, persistSession } from '../state/sessionStore';
+import { grantQuestRewards } from '../state/rewards';
 import { PLAYER_MAX_HP, type GameSession } from '../state/session';
 import type { EncounterRequest } from '../world/encounters';
 
@@ -141,8 +142,17 @@ export class TestRoomScene extends Phaser.Scene {
     if (won && this.encounter && this.session) this.session.defeated.add(this.encounter.spawnKey);
 
     const lines = [won ? '胜利！' : '你倒下了……'];
-    for (const c of this.completions) {
-      lines.push(`任务完成：${this.session?.quests.def(c.questId)?.title ?? c.questId}`);
+    const session = this.session;
+    if (session) {
+      const items = loadGameData().items;
+      lines.push(
+        ...grantQuestRewards(
+          session,
+          this.completions,
+          (id) => session.quests.def(id)?.title ?? id,
+          (id) => items.find((i) => i.id === id)?.name ?? id,
+        ),
+      );
     }
     lines.push(won ? '按 Space 返回地表' : '按 Space 返回地表（生命恢复少量）');
     this.add
