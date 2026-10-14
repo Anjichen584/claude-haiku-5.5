@@ -80,3 +80,17 @@ describe('与 NPC 对话完成 talk 目标', () => {
     expect(() => startTalk(registry, 'nobody', captainDialogue, world, manager)).toThrow(NpcError);
   });
 });
+
+describe('NPC 数据一致性', () => {
+  it('NPC 名字与其对话的开场说话人一致', () => {
+    for (const npc of npcs) {
+      const d = dialogues.find((x) => x.id === npc.dialogueId)!;
+      expect(d.nodes[d.start].speaker).toBe(npc.name);
+    }
+  });
+
+  it('NPC id 唯一，且至少覆盖 20 个 NPC', () => {
+    expect(new Set(npcs.map((n) => n.id)).size).toBe(npcs.length);
+    expect(npcs.length).toBeGreaterThanOrEqual(20);
+  });
+});

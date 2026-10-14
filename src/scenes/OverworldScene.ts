@@ -207,12 +207,21 @@ export class OverworldScene extends Phaser.Scene {
     }
   }
 
+  /** NPC 在地表上的瓦片坐标：地点旁边按序号横向错开，避免重叠。 */
+  private npcTile(npcId: string): { x: number; y: number } | null {
+    const npc = this.npcRegistry.get(npcId);
+    const place = npc && this.places.find((p) => p.id === npc.location);
+    if (!npc || !place) return null;
+    const index = this.npcRegistry.atLocation(place.id).findIndex((n) => n.id === npcId);
+    return { x: place.x + 2 + index * 2, y: place.y };
+  }
+
   private drawNpcMarkers(): void {
     for (const npc of this.npcRegistry.list()) {
-      const place = this.places.find((p) => p.id === npc.location);
-      if (!place) continue;
-      const px = place.x * TILE_PX + TILE_PX * 2;
-      const py = place.y * TILE_PX;
+      const tile = this.npcTile(npc.id);
+      if (!tile) continue;
+      const px = tile.x * TILE_PX;
+      const py = tile.y * TILE_PX;
       this.add.rectangle(px, py, TILE_PX * 1.6, TILE_PX * 1.6, 0x7fd1ff).setDepth(7);
       this.add.text(px, py - TILE_PX * 2, npc.name, {
         fontFamily: 'sans-serif', fontSize: '12px', color: '#d8f2ff',
@@ -223,11 +232,11 @@ export class OverworldScene extends Phaser.Scene {
 
   private nearestNpcId(): string | null {
     let best: { id: string; d: number } | null = null;
-    for (const place of this.places) {
-      for (const npc of this.npcRegistry.atLocation(place.id)) {
-        const d = Math.hypot(this.tileX - (place.x + 2), this.tileY - place.y);
-        if (d <= TALK_RADIUS && (!best || d < best.d)) best = { id: npc.id, d };
-      }
+    for (const npc of this.npcRegistry.list()) {
+      const tile = this.npcTile(npc.id);
+      if (!tile) continue;
+      const d = Math.hypot(this.tileX - tile.x, this.tileY - tile.y);
+      if (d <= TALK_RADIUS && (!best || d < best.d)) best = { id: npc.id, d };
     }
     return best?.id ?? null;
   }

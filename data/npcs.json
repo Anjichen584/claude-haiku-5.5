@@ -2,9 +2,129 @@
   "npcs": [
     {
       "id": "ashguard_captain",
-      "name": "守望队长",
+      "name": "守望队长 伊瑟",
       "location": "ash_road_camp",
       "dialogueId": "ashguard_captain_intro"
+    },
+    {
+      "id": "npc_side_31_frost_pelt_trader",
+      "name": "毛皮商 奥莉",
+      "location": "frost_camp",
+      "dialogueId": "side_31_frost_pelt_trader"
+    },
+    {
+      "id": "npc_side_51_magma_crab_smith",
+      "name": "铁匠 巴顿",
+      "location": "lava_heart",
+      "dialogueId": "side_51_magma_crab_smith"
+    },
+    {
+      "id": "npc_side_52_witch_hermit",
+      "name": "林间隐士 罗兰",
+      "location": "thorn_grove",
+      "dialogueId": "side_52_witch_hermit"
+    },
+    {
+      "id": "npc_side_54_titan_dust_scholar",
+      "name": "学者 伊莎",
+      "location": "dune_pass",
+      "dialogueId": "side_54_titan_dust_scholar"
+    },
+    {
+      "id": "npc_side_55_matriarch_nest",
+      "name": "渔夫 杰克",
+      "location": "mire_village",
+      "dialogueId": "side_55_matriarch_nest"
+    },
+    {
+      "id": "npc_side_57_hound_keeper",
+      "name": "驯兽师 梅",
+      "location": "ember_hollow",
+      "dialogueId": "side_57_hound_keeper"
+    },
+    {
+      "id": "npc_side_60_archive_keeper",
+      "name": "档案员 柯南",
+      "location": "ash_archive",
+      "dialogueId": "side_60_archive_keeper"
+    },
+    {
+      "id": "npc_side_61_helm_smith",
+      "name": "铁匠 贝拉",
+      "location": "ash_road_camp",
+      "dialogueId": "side_61_helm_smith"
+    },
+    {
+      "id": "npc_side_63_blade_maker",
+      "name": "剑匠 卡恩",
+      "location": "ember_memorial",
+      "dialogueId": "side_63_blade_maker"
+    },
+    {
+      "id": "npc_side_65_caravan_guide",
+      "name": "商队向导 艾伦",
+      "location": "dune_outpost",
+      "dialogueId": "side_65_caravan_guide"
+    },
+    {
+      "id": "npc_side_66_lantern_keeper",
+      "name": "灯塔守 莫拉",
+      "location": "mire_shrine",
+      "dialogueId": "side_66_lantern_keeper"
+    },
+    {
+      "id": "npc_side_69_bridge_builder",
+      "name": "木匠 本",
+      "location": "bark_bridge",
+      "dialogueId": "side_69_bridge_builder"
+    },
+    {
+      "id": "npc_side_70_ferryman",
+      "name": "摆渡人 卡伦",
+      "location": "bog_edge",
+      "dialogueId": "side_70_ferryman"
+    },
+    {
+      "id": "npc_side_71_lantern_keeper",
+      "name": "守灯人 西蒙",
+      "location": "ember_hollow",
+      "dialogueId": "side_71_lantern_keeper"
+    },
+    {
+      "id": "npc_side_72_candle_monk",
+      "name": "僧人 艾纳",
+      "location": "frost_shrine",
+      "dialogueId": "side_72_candle_monk"
+    },
+    {
+      "id": "npc_side_74_patrol_captain",
+      "name": "巡逻队长 雷恩",
+      "location": "ash_road_camp",
+      "dialogueId": "side_74_patrol_captain"
+    },
+    {
+      "id": "npc_side_75_well_digger",
+      "name": "挖井人 欧文",
+      "location": "sand_wells",
+      "dialogueId": "side_75_well_digger"
+    },
+    {
+      "id": "npc_side_76_grove_singer",
+      "name": "歌者 露西",
+      "location": "moss_glade",
+      "dialogueId": "side_76_grove_singer"
+    },
+    {
+      "id": "npc_side_79_scout_leader",
+      "name": "斥候长 玛拉",
+      "location": "grass_ridge",
+      "dialogueId": "side_79_scout_leader"
+    },
+    {
+      "id": "npc_side_90_bridge_guard",
+      "name": "桥卫 托马斯",
+      "location": "frozen_bridge",
+      "dialogueId": "side_90_bridge_guard"
     }
   ]
 }
