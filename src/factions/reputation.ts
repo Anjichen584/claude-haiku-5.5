@@ -90,3 +90,16 @@ export function changeReputation(
   }
   return changes;
 }
+
+export const TIER_LABEL: Record<ReputationTier, string> = {
+  hostile: '敌对', cold: '冷淡', neutral: '中立', friendly: '友好', trusted: '信任',
+};
+
+/** 声望面板文本：每个阵营一行，显示档位与数值。 */
+export function reputationLines(world: WorldState, factions: readonly FactionDef[]): string[] {
+  return factions.map((f) => {
+    const value = world.getReputation(f.id);
+    const sign = value > 0 ? '+' : '';
+    return `${f.name}：${TIER_LABEL[tierOf(value)]}（${sign}${value}）`;
+  });
+}

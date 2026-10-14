@@ -20,7 +20,8 @@ import { formatInventory, inventoryLines } from '../state/inventory';
 import { combatStats, cycleSlot, EQUIP_SLOTS, equipmentDetailLines, SLOT_LABEL } from '../state/equipment';
 import { getSession, persistSession, setSession } from '../state/sessionStore';
 import { newSession, type GameSession } from '../state/session';
-import type { AffixDef, EnemyDef, ItemDef, QuestDef } from '../data/schema';
+import type { AffixDef, EnemyDef, FactionDef, ItemDef, QuestDef } from '../data/schema';
+import { reputationLines } from '../factions/reputation';
 import type { ItemSetDef } from '../items/sets';
 import { grantQuestRewards } from '../state/rewards';
 import type { QuestCompletion } from '../narrative/QuestManager';
@@ -97,6 +98,9 @@ export class OverworldScene extends Phaser.Scene {
   private questPanel!: Phaser.GameObjects.Text;
   private questPanelOpen = false;
   private keyQ!: Phaser.Input.Keyboard.Key;
+  private keyR!: Phaser.Input.Keyboard.Key;
+  private repPanel!: Phaser.GameObjects.Text;
+  private repPanelOpen = false;
   private keyK!: Phaser.Input.Keyboard.Key;
   private keyI!: Phaser.Input.Keyboard.Key;
   private invPanel!: Phaser.GameObjects.Text;
@@ -105,6 +109,7 @@ export class OverworldScene extends Phaser.Scene {
   private equipPanel!: Phaser.GameObjects.Text;
   private equipPanelOpen = false;
   private itemDefs: readonly ItemDef[] = [];
+  private factionDefs: readonly FactionDef[] = [];
   private affixDefs: readonly AffixDef[] = [];
   private itemSetDefs: readonly ItemSetDef[] = [];
   /** 战败返回后的剩余保护时间 */
@@ -132,6 +137,7 @@ export class OverworldScene extends Phaser.Scene {
     this.questDefs = data.quests;
     this.itemNames = new Map(data.items.map((i) => [i.id, i.name]));
     this.itemDefs = data.items;
+    this.factionDefs = data.factions;
     this.affixDefs = data.affixes;
     this.itemSetDefs = data.itemSets;
 
@@ -174,6 +180,11 @@ export class OverworldScene extends Phaser.Scene {
     this.keyE = keyboard.addKey('E');
     this.keySpace = keyboard.addKey('SPACE');
     this.keyQ = keyboard.addKey('Q');
+    this.keyR = keyboard.addKey('R');
+    this.repPanel = this.add.text(16, 420, '', {
+      fontFamily: 'sans-serif', fontSize: '14px', color: '#f4f0ff', lineSpacing: 4,
+      backgroundColor: '#0b0a1acc', padding: { x: 10, y: 8 },
+    }).setScrollFactor(0).setDepth(250).setVisible(false);
     this.keyK = keyboard.addKey('K');
     this.keyI = keyboard.addKey('I');
     this.keyC = keyboard.addKey('C');
@@ -239,6 +250,7 @@ export class OverworldScene extends Phaser.Scene {
       return;
     }
     if (Phaser.Input.Keyboard.JustDown(this.keyQ)) this.toggleQuestPanel();
+    if (Phaser.Input.Keyboard.JustDown(this.keyR)) this.toggleRepPanel();
     if (Phaser.Input.Keyboard.JustDown(this.keyK)) this.saveGame();
     if (Phaser.Input.Keyboard.JustDown(this.keyI)) this.toggleInventoryPanel();
     if (Phaser.Input.Keyboard.JustDown(this.keyC)) this.toggleEquipPanel();
@@ -264,6 +276,7 @@ export class OverworldScene extends Phaser.Scene {
     if (this.questPanelOpen) this.refreshQuestPanel();
     if (this.invPanelOpen) this.refreshInventoryPanel();
     if (this.equipPanelOpen) this.refreshEquipPanel();
+    if (this.repPanelOpen) this.refreshRepPanel();
     this.syncToSession();
     this.updateEnvironment();
   }
@@ -291,6 +304,16 @@ export class OverworldScene extends Phaser.Scene {
     this.questPanelOpen = !this.questPanelOpen;
     this.questPanel.setVisible(this.questPanelOpen);
     if (this.questPanelOpen) this.refreshQuestPanel();
+  }
+
+  private toggleRepPanel(): void {
+    this.repPanelOpen = !this.repPanelOpen;
+    this.repPanel.setVisible(this.repPanelOpen);
+    if (this.repPanelOpen) this.refreshRepPanel();
+  }
+
+  private refreshRepPanel(): void {
+    this.repPanel.setText(['阵营声望（R 关闭）', ...reputationLines(this.world, this.factionDefs)].join('\n'));
   }
 
   private toggleEquipPanel(): void {

@@ -109,6 +109,14 @@ async def main():
         assert head == "ash_helm" and count == 0, "equip via digit 2 failed"
         await pg.keyboard.press("c")
 
+        # ---- 声望 R 面板 ----
+        await pg.keyboard.press("r")
+        await pg.wait_for_timeout(300)
+        rep_text = await pg.evaluate(f"() => {OVER}.repPanel.text")
+        print("reputation panel:", rep_text.replace("\n", " / ")[:90])
+        assert await pg.evaluate(f"() => {OVER}.repPanel.visible") and "阵营声望" in rep_text, "reputation panel not shown"
+        await pg.keyboard.press("r")
+
         print("errors:", errs[:5])
         assert not errs, "page errors"
         print("ALL OK")
