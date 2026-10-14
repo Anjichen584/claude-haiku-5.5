@@ -1,0 +1,76 @@
+{
+  "sets": [
+    {
+      "id": "ash_warden",
+      "name": "灰烬守望者",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stat": "defense",
+          "value": 5,
+          "text": "防御 +5"
+        },
+        {
+          "pieces": 4,
+          "stat": "maxHp",
+          "value": 40,
+          "text": "生命上限 +40"
+        },
+        {
+          "pieces": 6,
+          "stat": "fireResist",
+          "value": 20,
+          "text": "火焰抵抗 +20%，受火焰伤害时反弹 10%"
+        }
+      ]
+    },
+    {
+      "id": "rift_scholar",
+      "name": "裂隙学者",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stat": "spellDamage",
+          "value": 5,
+          "text": "法术伤害 +5%"
+        },
+        {
+          "pieces": 4,
+          "stat": "cooldownReduction",
+          "value": 5,
+          "text": "冷却缩减 +5%"
+        },
+        {
+          "pieces": 6,
+          "stat": "spellDamage",
+          "value": 20,
+          "text": "法术伤害 +20%，释放法术后下一次攻击必定暴击"
+        }
+      ]
+    },
+    {
+      "id": "wild_stride",
+      "name": "荒原疾行者",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stat": "speed",
+          "value": 10,
+          "text": "移动速度 +10%"
+        },
+        {
+          "pieces": 4,
+          "stat": "critRate",
+          "value": 5,
+          "text": "暴击率 +5%"
+        },
+        {
+          "pieces": 6,
+          "stat": "dodgeChance",
+          "value": 10,
+          "text": "闪避率 +10%，冲刺后 2 秒内攻击力 +15%"
+        }
+      ]
+    }
+  ]
+}

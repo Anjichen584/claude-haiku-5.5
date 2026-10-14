@@ -1,0 +1,92 @@
+{
+  "combos": [
+    {
+      "id": "molten",
+      "name": "熔融",
+      "skills": [
+        "fireball",
+        "armor_break"
+      ],
+      "effect": {
+        "defenseShred": 10
+      }
+    },
+    {
+      "id": "shatter",
+      "name": "碎冰",
+      "skills": [
+        "frost_bolt",
+        "sundering"
+      ],
+      "effect": {
+        "bonusDamageMultiplier": 1.5
+      }
+    },
+    {
+      "id": "steam",
+      "name": "蒸汽爆",
+      "skills": [
+        "ignite",
+        "chill"
+      ],
+      "effect": {
+        "aoeDamage": 40
+      }
+    },
+    {
+      "id": "overload",
+      "name": "过载",
+      "skills": [
+        "spark_shot",
+        "arc_chain"
+      ],
+      "effect": {
+        "stunSeconds": 1
+      }
+    },
+    {
+      "id": "eclipse_strike",
+      "name": "日蚀斩",
+      "skills": [
+        "slash",
+        "dark_pulse"
+      ],
+      "effect": {
+        "bonusDamageMultiplier": 1.3
+      }
+    },
+    {
+      "id": "whirling_storm",
+      "name": "旋风雷",
+      "skills": [
+        "whirlwind",
+        "storm_call"
+      ],
+      "effect": {
+        "aoeDamage": 60
+      }
+    },
+    {
+      "id": "life_drain",
+      "name": "生命汲取",
+      "skills": [
+        "leech_touch",
+        "regen_aura"
+      ],
+      "effect": {
+        "healPerHit": 3
+      }
+    },
+    {
+      "id": "fortress_flame",
+      "name": "炽焰壁垒",
+      "skills": [
+        "fortify",
+        "meteor"
+      ],
+      "effect": {
+        "reflectFire": 15
+      }
+    }
+  ]
+}

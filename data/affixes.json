@@ -1,6 +1,644 @@
 {
   "affixes": [
-    { "id": "sharp", "name": "锋利", "stat": "attack", "min": 1, "max": 5, "weight": 10 },
-    { "id": "swift", "name": "迅捷", "stat": "speed", "min": 2, "max": 8, "weight": 6 }
+    {
+      "id": "sharp",
+      "name": "锋利",
+      "stat": "attack",
+      "min": 1,
+      "max": 5,
+      "weight": 10
+    },
+    {
+      "id": "heavy_blow",
+      "name": "重击",
+      "stat": "attack",
+      "min": 2,
+      "max": 7,
+      "weight": 8
+    },
+    {
+      "id": "keen_edge",
+      "name": "锐利",
+      "stat": "attack",
+      "min": 3,
+      "max": 9,
+      "weight": 6
+    },
+    {
+      "id": "sturdy",
+      "name": "坚韧",
+      "stat": "defense",
+      "min": 1,
+      "max": 4,
+      "weight": 10
+    },
+    {
+      "id": "bulwark",
+      "name": "壁垒",
+      "stat": "defense",
+      "min": 2,
+      "max": 6,
+      "weight": 8
+    },
+    {
+      "id": "iron_skin",
+      "name": "铁甲",
+      "stat": "defense",
+      "min": 3,
+      "max": 8,
+      "weight": 6
+    },
+    {
+      "id": "vitality",
+      "name": "活力",
+      "stat": "maxHp",
+      "min": 5,
+      "max": 20,
+      "weight": 10
+    },
+    {
+      "id": "life_surge",
+      "name": "生命涌动",
+      "stat": "maxHp",
+      "min": 10,
+      "max": 40,
+      "weight": 7
+    },
+    {
+      "id": "colossus",
+      "name": "巨像",
+      "stat": "maxHp",
+      "min": 20,
+      "max": 60,
+      "weight": 4
+    },
+    {
+      "id": "swift",
+      "name": "迅捷",
+      "stat": "speed",
+      "min": 2,
+      "max": 8,
+      "weight": 6
+    },
+    {
+      "id": "gale",
+      "name": "疾风",
+      "stat": "speed",
+      "min": 4,
+      "max": 12,
+      "weight": 4
+    },
+    {
+      "id": "lightfoot",
+      "name": "轻步",
+      "stat": "speed",
+      "min": 1,
+      "max": 5,
+      "weight": 8
+    },
+    {
+      "id": "precision",
+      "name": "精准",
+      "stat": "critRate",
+      "min": 1,
+      "max": 3,
+      "weight": 8
+    },
+    {
+      "id": "hawkeye",
+      "name": "鹰眼",
+      "stat": "critRate",
+      "min": 2,
+      "max": 5,
+      "weight": 6
+    },
+    {
+      "id": "assassin_eye",
+      "name": "刺客之眼",
+      "stat": "critRate",
+      "min": 3,
+      "max": 7,
+      "weight": 4
+    },
+    {
+      "id": "ruthless",
+      "name": "残酷",
+      "stat": "critDamage",
+      "min": 5,
+      "max": 12,
+      "weight": 8
+    },
+    {
+      "id": "executioner",
+      "name": "行刑者",
+      "stat": "critDamage",
+      "min": 10,
+      "max": 25,
+      "weight": 5
+    },
+    {
+      "id": "bloodlust",
+      "name": "嗜血",
+      "stat": "critDamage",
+      "min": 8,
+      "max": 18,
+      "weight": 6
+    },
+    {
+      "id": "mana_well",
+      "name": "魔力之泉",
+      "stat": "maxMana",
+      "min": 5,
+      "max": 15,
+      "weight": 8
+    },
+    {
+      "id": "arcane_flow",
+      "name": "奥术流",
+      "stat": "maxMana",
+      "min": 10,
+      "max": 30,
+      "weight": 5
+    },
+    {
+      "id": "mana_spring",
+      "name": "灵泉",
+      "stat": "maxMana",
+      "min": 15,
+      "max": 40,
+      "weight": 3
+    },
+    {
+      "id": "quick_recovery",
+      "name": "快速恢复",
+      "stat": "cooldownReduction",
+      "min": 1,
+      "max": 3,
+      "weight": 8
+    },
+    {
+      "id": "chrono",
+      "name": "时之流",
+      "stat": "cooldownReduction",
+      "min": 2,
+      "max": 5,
+      "weight": 6
+    },
+    {
+      "id": "temporal",
+      "name": "时序",
+      "stat": "cooldownReduction",
+      "min": 4,
+      "max": 8,
+      "weight": 4
+    },
+    {
+      "id": "fire_touch",
+      "name": "火焰之触",
+      "stat": "fireDamage",
+      "min": 2,
+      "max": 6,
+      "weight": 8
+    },
+    {
+      "id": "inferno",
+      "name": "烈焰",
+      "stat": "fireDamage",
+      "min": 4,
+      "max": 10,
+      "weight": 5
+    },
+    {
+      "id": "ember_heart",
+      "name": "余烬之心",
+      "stat": "fireDamage",
+      "min": 6,
+      "max": 14,
+      "weight": 3
+    },
+    {
+      "id": "frost_touch",
+      "name": "寒霜之触",
+      "stat": "iceDamage",
+      "min": 2,
+      "max": 6,
+      "weight": 8
+    },
+    {
+      "id": "glacier",
+      "name": "冰河",
+      "stat": "iceDamage",
+      "min": 4,
+      "max": 10,
+      "weight": 5
+    },
+    {
+      "id": "permafrost",
+      "name": "永冻",
+      "stat": "iceDamage",
+      "min": 6,
+      "max": 14,
+      "weight": 3
+    },
+    {
+      "id": "spark",
+      "name": "火花",
+      "stat": "lightningDamage",
+      "min": 2,
+      "max": 6,
+      "weight": 8
+    },
+    {
+      "id": "thunderclap",
+      "name": "雷鸣",
+      "stat": "lightningDamage",
+      "min": 4,
+      "max": 10,
+      "weight": 5
+    },
+    {
+      "id": "storm_core",
+      "name": "风暴核心",
+      "stat": "lightningDamage",
+      "min": 6,
+      "max": 14,
+      "weight": 3
+    },
+    {
+      "id": "shadow_touch",
+      "name": "暗影之触",
+      "stat": "darkDamage",
+      "min": 2,
+      "max": 6,
+      "weight": 7
+    },
+    {
+      "id": "eclipse",
+      "name": "蚀月",
+      "stat": "darkDamage",
+      "min": 4,
+      "max": 10,
+      "weight": 4
+    },
+    {
+      "id": "void_mark",
+      "name": "虚空印记",
+      "stat": "darkDamage",
+      "min": 6,
+      "max": 13,
+      "weight": 3
+    },
+    {
+      "id": "radiance",
+      "name": "辉光",
+      "stat": "holyDamage",
+      "min": 2,
+      "max": 6,
+      "weight": 7
+    },
+    {
+      "id": "sanctity",
+      "name": "圣洁",
+      "stat": "holyDamage",
+      "min": 4,
+      "max": 10,
+      "weight": 4
+    },
+    {
+      "id": "dawn_blessing",
+      "name": "晨曦祝福",
+      "stat": "holyDamage",
+      "min": 6,
+      "max": 13,
+      "weight": 3
+    },
+    {
+      "id": "fire_ward",
+      "name": "火焰抵抗",
+      "stat": "fireResist",
+      "min": 3,
+      "max": 8,
+      "weight": 6
+    },
+    {
+      "id": "ice_ward",
+      "name": "寒冰抵抗",
+      "stat": "iceResist",
+      "min": 3,
+      "max": 8,
+      "weight": 6
+    },
+    {
+      "id": "storm_ward",
+      "name": "雷电抵抗",
+      "stat": "lightningResist",
+      "min": 3,
+      "max": 8,
+      "weight": 6
+    },
+    {
+      "id": "shadow_ward",
+      "name": "暗影抵抗",
+      "stat": "darkResist",
+      "min": 3,
+      "max": 8,
+      "weight": 6
+    },
+    {
+      "id": "light_ward",
+      "name": "光明抵抗",
+      "stat": "holyResist",
+      "min": 3,
+      "max": 8,
+      "weight": 6
+    },
+    {
+      "id": "leech",
+      "name": "吸血",
+      "stat": "lifeSteal",
+      "min": 1,
+      "max": 3,
+      "weight": 6
+    },
+    {
+      "id": "vampiric",
+      "name": "吸血鬼之牙",
+      "stat": "lifeSteal",
+      "min": 2,
+      "max": 5,
+      "weight": 4
+    },
+    {
+      "id": "evasion",
+      "name": "闪避",
+      "stat": "dodgeChance",
+      "min": 1,
+      "max": 3,
+      "weight": 7
+    },
+    {
+      "id": "phantom_step",
+      "name": "幻影步",
+      "stat": "dodgeChance",
+      "min": 2,
+      "max": 5,
+      "weight": 5
+    },
+    {
+      "id": "stamina_flow",
+      "name": "耐力流",
+      "stat": "staminaRegen",
+      "min": 2,
+      "max": 6,
+      "weight": 6
+    },
+    {
+      "id": "mana_flow",
+      "name": "魔力流",
+      "stat": "manaRegen",
+      "min": 1,
+      "max": 4,
+      "weight": 6
+    },
+    {
+      "id": "magnet",
+      "name": "磁力",
+      "stat": "pickupRange",
+      "min": 10,
+      "max": 30,
+      "weight": 5
+    },
+    {
+      "id": "prospector",
+      "name": "淘金者",
+      "stat": "goldFind",
+      "min": 5,
+      "max": 15,
+      "weight": 6
+    },
+    {
+      "id": "scholar",
+      "name": "求知者",
+      "stat": "expGain",
+      "min": 3,
+      "max": 10,
+      "weight": 6
+    },
+    {
+      "id": "brawler",
+      "name": "格斗家",
+      "stat": "meleeDamage",
+      "min": 3,
+      "max": 9,
+      "weight": 7
+    },
+    {
+      "id": "sharpshooter",
+      "name": "神射手",
+      "stat": "rangedDamage",
+      "min": 3,
+      "max": 9,
+      "weight": 7
+    },
+    {
+      "id": "archmage",
+      "name": "大法师",
+      "stat": "spellDamage",
+      "min": 3,
+      "max": 9,
+      "weight": 7
+    },
+    {
+      "id": "guardian",
+      "name": "守护者",
+      "stat": "blockChance",
+      "min": 2,
+      "max": 5,
+      "weight": 5
+    },
+    {
+      "id": "thorned",
+      "name": "荆棘",
+      "stat": "thorns",
+      "min": 2,
+      "max": 6,
+      "weight": 5
+    },
+    {
+      "id": "boss_hunter",
+      "name": "猎首者",
+      "stat": "bossDamage",
+      "min": 4,
+      "max": 12,
+      "weight": 4
+    },
+    {
+      "id": "elite_hunter",
+      "name": "精英猎手",
+      "stat": "eliteDamage",
+      "min": 3,
+      "max": 10,
+      "weight": 5
+    },
+    {
+      "id": "burning_edge",
+      "name": "燃烧之刃",
+      "stat": "burnChance",
+      "min": 3,
+      "max": 8,
+      "weight": 4
+    },
+    {
+      "id": "frozen_edge",
+      "name": "冰封之刃",
+      "stat": "freezeChance",
+      "min": 3,
+      "max": 8,
+      "weight": 4
+    },
+    {
+      "id": "static_edge",
+      "name": "静电之刃",
+      "stat": "shockChance",
+      "min": 3,
+      "max": 8,
+      "weight": 4
+    },
+    {
+      "id": "bleeding_edge",
+      "name": "放血之刃",
+      "stat": "bleedChance",
+      "min": 3,
+      "max": 8,
+      "weight": 4
+    },
+    {
+      "id": "long_reach",
+      "name": "长距",
+      "stat": "weaponRange",
+      "min": 4,
+      "max": 12,
+      "weight": 5
+    },
+    {
+      "id": "rapid_strike",
+      "name": "急速",
+      "stat": "attackSpeed",
+      "min": 2,
+      "max": 6,
+      "weight": 6
+    },
+    {
+      "id": "mobile_guard",
+      "name": "机动防守",
+      "stat": "moveSpeedWhileAttacking",
+      "min": 3,
+      "max": 8,
+      "weight": 4
+    },
+    {
+      "id": "restorative",
+      "name": "恢复",
+      "stat": "healingReceived",
+      "min": 3,
+      "max": 10,
+      "weight": 5
+    },
+    {
+      "id": "potent_flask",
+      "name": "强效药剂",
+      "stat": "potionEfficiency",
+      "min": 5,
+      "max": 15,
+      "weight": 4
+    },
+    {
+      "id": "armor_breaker",
+      "name": "破甲者",
+      "stat": "armorShred",
+      "min": 2,
+      "max": 6,
+      "weight": 5
+    },
+    {
+      "id": "night_hunter",
+      "name": "夜猎",
+      "stat": "nightDamage",
+      "min": 5,
+      "max": 15,
+      "weight": 4
+    },
+    {
+      "id": "day_guard",
+      "name": "白昼守卫",
+      "stat": "dayDefense",
+      "min": 3,
+      "max": 9,
+      "weight": 4
+    },
+    {
+      "id": "storm_caller",
+      "name": "唤雨者",
+      "stat": "rainDamage",
+      "min": 5,
+      "max": 15,
+      "weight": 3
+    },
+    {
+      "id": "fog_seer",
+      "name": "雾中视",
+      "stat": "fogSight",
+      "min": 2,
+      "max": 6,
+      "weight": 3
+    },
+    {
+      "id": "fire_skill",
+      "name": "焰术",
+      "stat": "fireSkillDamage",
+      "min": 4,
+      "max": 12,
+      "weight": 4
+    },
+    {
+      "id": "ice_skill",
+      "name": "冰术",
+      "stat": "iceSkillDamage",
+      "min": 4,
+      "max": 12,
+      "weight": 4
+    },
+    {
+      "id": "invuln_extend",
+      "name": "坚守",
+      "stat": "invulnDuration",
+      "min": 40,
+      "max": 120,
+      "weight": 3
+    },
+    {
+      "id": "dash_charge",
+      "name": "冲刺充能",
+      "stat": "dashCharges",
+      "min": 1,
+      "max": 1,
+      "weight": 3
+    },
+    {
+      "id": "max_stamina",
+      "name": "持久",
+      "stat": "maxStamina",
+      "min": 5,
+      "max": 20,
+      "weight": 5
+    },
+    {
+      "id": "light_radius",
+      "name": "明灯",
+      "stat": "lightRadius",
+      "min": 1,
+      "max": 3,
+      "weight": 4
+    }
   ]
 }

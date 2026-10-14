@@ -17,6 +17,60 @@
       "maxStack": 99,
       "rarity": "uncommon",
       "price": 15
+    },
+    {
+      "id": "ash_helm",
+      "name": "灰烬头盔",
+      "type": "armor",
+      "slot": "head",
+      "baseDamage": 0,
+      "rarity": "epic",
+      "price": 220,
+      "setId": "ash_warden",
+      "itemLevel": 5
+    },
+    {
+      "id": "ash_plate",
+      "name": "灰烬胸甲",
+      "type": "armor",
+      "slot": "chest",
+      "baseDamage": 0,
+      "rarity": "epic",
+      "price": 300,
+      "setId": "ash_warden",
+      "itemLevel": 5
+    },
+    {
+      "id": "scholar_robe",
+      "name": "学者长袍",
+      "type": "armor",
+      "slot": "chest",
+      "baseDamage": 0,
+      "rarity": "epic",
+      "price": 280,
+      "setId": "rift_scholar",
+      "itemLevel": 6
+    },
+    {
+      "id": "stride_boots",
+      "name": "荒原靴",
+      "type": "armor",
+      "slot": "feet",
+      "baseDamage": 0,
+      "rarity": "rare",
+      "price": 160,
+      "setId": "wild_stride",
+      "itemLevel": 4
+    },
+    {
+      "id": "rift_blade",
+      "name": "裂隙之刃",
+      "type": "weapon",
+      "slot": "main_hand",
+      "baseDamage": 26,
+      "rarity": "rift",
+      "price": 900,
+      "itemLevel": 10
     }
   ]
 }

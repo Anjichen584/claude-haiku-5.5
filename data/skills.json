@@ -1,6 +1,245 @@
 {
   "skills": [
     {
+      "id": "slash",
+      "name": "斩击",
+      "branch": "martial",
+      "tier": 1,
+      "requires": [],
+      "element": "none",
+      "manaCost": 0,
+      "cooldown": 0,
+      "multiplier": 1.0,
+      "cost": {
+        "skillPoints": 1
+      }
+    },
+    {
+      "id": "guard_stance",
+      "name": "守势",
+      "branch": "martial",
+      "tier": 1,
+      "requires": [],
+      "element": "none",
+      "manaCost": 0,
+      "cooldown": 0,
+      "multiplier": 1.0,
+      "cost": {
+        "skillPoints": 1
+      }
+    },
+    {
+      "id": "lunge",
+      "name": "突刺",
+      "branch": "martial",
+      "tier": 1,
+      "requires": [],
+      "element": "none",
+      "manaCost": 0,
+      "cooldown": 0,
+      "multiplier": 1.1,
+      "cost": {
+        "skillPoints": 1
+      }
+    },
+    {
+      "id": "cleave",
+      "name": "劈砍",
+      "branch": "martial",
+      "tier": 2,
+      "requires": [
+        "slash"
+      ],
+      "element": "none",
+      "manaCost": 0,
+      "cooldown": 2,
+      "multiplier": 1.5,
+      "cost": {
+        "skillPoints": 2
+      }
+    },
+    {
+      "id": "armor_break",
+      "name": "破甲",
+      "branch": "martial",
+      "tier": 2,
+      "requires": [
+        "guard_stance"
+      ],
+      "element": "none",
+      "manaCost": 0,
+      "cooldown": 4,
+      "multiplier": 1.2,
+      "cost": {
+        "skillPoints": 2
+      }
+    },
+    {
+      "id": "whirlwind",
+      "name": "旋风斩",
+      "branch": "martial",
+      "tier": 2,
+      "requires": [
+        "slash",
+        "lunge"
+      ],
+      "element": "none",
+      "manaCost": 5,
+      "cooldown": 5,
+      "multiplier": 1.4,
+      "cost": {
+        "skillPoints": 2
+      }
+    },
+    {
+      "id": "bash",
+      "name": "猛击",
+      "branch": "martial",
+      "tier": 2,
+      "requires": [
+        "guard_stance"
+      ],
+      "element": "none",
+      "manaCost": 0,
+      "cooldown": 3,
+      "multiplier": 1.3,
+      "cost": {
+        "skillPoints": 2
+      }
+    },
+    {
+      "id": "counter_strike",
+      "name": "反击",
+      "branch": "martial",
+      "tier": 3,
+      "requires": [
+        "armor_break"
+      ],
+      "element": "none",
+      "manaCost": 0,
+      "cooldown": 6,
+      "multiplier": 2.0,
+      "cost": {
+        "skillPoints": 3
+      }
+    },
+    {
+      "id": "sundering",
+      "name": "断岳",
+      "branch": "martial",
+      "tier": 3,
+      "requires": [
+        "cleave"
+      ],
+      "element": "none",
+      "manaCost": 10,
+      "cooldown": 8,
+      "multiplier": 2.2,
+      "cost": {
+        "skillPoints": 3
+      }
+    },
+    {
+      "id": "rapid_thrust",
+      "name": "连刺",
+      "branch": "martial",
+      "tier": 3,
+      "requires": [
+        "lunge",
+        "bash"
+      ],
+      "element": "none",
+      "manaCost": 8,
+      "cooldown": 6,
+      "multiplier": 1.8,
+      "cost": {
+        "skillPoints": 3
+      }
+    },
+    {
+      "id": "iron_wall",
+      "name": "铁壁",
+      "branch": "martial",
+      "tier": 3,
+      "requires": [
+        "bash"
+      ],
+      "element": "none",
+      "manaCost": 0,
+      "cooldown": 10,
+      "multiplier": 0.0,
+      "cost": {
+        "skillPoints": 3
+      }
+    },
+    {
+      "id": "blade_dance",
+      "name": "剑舞",
+      "branch": "martial",
+      "tier": 4,
+      "requires": [
+        "whirlwind",
+        "rapid_thrust"
+      ],
+      "element": "none",
+      "manaCost": 15,
+      "cooldown": 12,
+      "multiplier": 2.4,
+      "cost": {
+        "skillPoints": 4
+      }
+    },
+    {
+      "id": "war_cry",
+      "name": "战吼",
+      "branch": "martial",
+      "tier": 4,
+      "requires": [
+        "counter_strike"
+      ],
+      "element": "none",
+      "manaCost": 12,
+      "cooldown": 15,
+      "multiplier": 0.0,
+      "cost": {
+        "skillPoints": 4
+      }
+    },
+    {
+      "id": "earthshaker",
+      "name": "震地",
+      "branch": "martial",
+      "tier": 4,
+      "requires": [
+        "sundering",
+        "iron_wall"
+      ],
+      "element": "none",
+      "manaCost": 18,
+      "cooldown": 14,
+      "multiplier": 2.6,
+      "cost": {
+        "skillPoints": 4
+      }
+    },
+    {
+      "id": "sword_saint",
+      "name": "剑圣",
+      "branch": "martial",
+      "tier": 5,
+      "requires": [
+        "blade_dance",
+        "earthshaker"
+      ],
+      "element": "none",
+      "manaCost": 25,
+      "cooldown": 20,
+      "multiplier": 3.5,
+      "cost": {
+        "skillPoints": 5
+      }
+    },
+    {
       "id": "fireball",
       "name": "火球术",
       "branch": "arcane",
@@ -9,15 +248,472 @@
       "element": "fire",
       "manaCost": 15,
       "cooldown": 3,
-      "multiplier": 1.8
+      "multiplier": 1.8,
+      "cost": {
+        "skillPoints": 1
+      }
     },
     {
-      "id": "armor_break",
-      "name": "破甲",
-      "branch": "martial",
+      "id": "frost_bolt",
+      "name": "冰锥",
+      "branch": "arcane",
       "tier": 1,
       "requires": [],
-      "multiplier": 1.2
+      "element": "ice",
+      "manaCost": 12,
+      "cooldown": 2,
+      "multiplier": 1.5,
+      "cost": {
+        "skillPoints": 1
+      }
+    },
+    {
+      "id": "spark_shot",
+      "name": "电弧",
+      "branch": "arcane",
+      "tier": 1,
+      "requires": [],
+      "element": "lightning",
+      "manaCost": 10,
+      "cooldown": 2,
+      "multiplier": 1.3,
+      "cost": {
+        "skillPoints": 1
+      }
+    },
+    {
+      "id": "ignite",
+      "name": "点燃",
+      "branch": "arcane",
+      "tier": 2,
+      "requires": [
+        "fireball"
+      ],
+      "element": "fire",
+      "manaCost": 10,
+      "cooldown": 4,
+      "multiplier": 1.2,
+      "cost": {
+        "skillPoints": 2
+      }
+    },
+    {
+      "id": "chill",
+      "name": "冰封",
+      "branch": "arcane",
+      "tier": 2,
+      "requires": [
+        "frost_bolt"
+      ],
+      "element": "ice",
+      "manaCost": 10,
+      "cooldown": 4,
+      "multiplier": 1.2,
+      "cost": {
+        "skillPoints": 2
+      }
+    },
+    {
+      "id": "arc_chain",
+      "name": "连锁电弧",
+      "branch": "arcane",
+      "tier": 2,
+      "requires": [
+        "spark_shot"
+      ],
+      "element": "lightning",
+      "manaCost": 14,
+      "cooldown": 5,
+      "multiplier": 1.6,
+      "cost": {
+        "skillPoints": 2
+      }
+    },
+    {
+      "id": "mana_shield",
+      "name": "魔力护盾",
+      "branch": "arcane",
+      "tier": 2,
+      "requires": [
+        "frost_bolt",
+        "spark_shot"
+      ],
+      "element": "none",
+      "manaCost": 20,
+      "cooldown": 12,
+      "multiplier": 0.0,
+      "cost": {
+        "skillPoints": 2
+      }
+    },
+    {
+      "id": "meteor",
+      "name": "流星",
+      "branch": "arcane",
+      "tier": 3,
+      "requires": [
+        "ignite"
+      ],
+      "element": "fire",
+      "manaCost": 30,
+      "cooldown": 10,
+      "multiplier": 3.0,
+      "cost": {
+        "skillPoints": 3
+      }
+    },
+    {
+      "id": "blizzard",
+      "name": "暴风雪术",
+      "branch": "arcane",
+      "tier": 3,
+      "requires": [
+        "chill"
+      ],
+      "element": "ice",
+      "manaCost": 28,
+      "cooldown": 10,
+      "multiplier": 2.6,
+      "cost": {
+        "skillPoints": 3
+      }
+    },
+    {
+      "id": "storm_call",
+      "name": "唤雷",
+      "branch": "arcane",
+      "tier": 3,
+      "requires": [
+        "arc_chain"
+      ],
+      "element": "lightning",
+      "manaCost": 26,
+      "cooldown": 9,
+      "multiplier": 2.8,
+      "cost": {
+        "skillPoints": 3
+      }
+    },
+    {
+      "id": "dark_pulse",
+      "name": "暗脉冲",
+      "branch": "arcane",
+      "tier": 3,
+      "requires": [
+        "mana_shield"
+      ],
+      "element": "dark",
+      "manaCost": 18,
+      "cooldown": 6,
+      "multiplier": 1.9,
+      "cost": {
+        "skillPoints": 3
+      }
+    },
+    {
+      "id": "molten_core",
+      "name": "熔核",
+      "branch": "arcane",
+      "tier": 4,
+      "requires": [
+        "meteor",
+        "blizzard"
+      ],
+      "element": "fire",
+      "manaCost": 35,
+      "cooldown": 14,
+      "multiplier": 3.4,
+      "cost": {
+        "skillPoints": 4
+      }
+    },
+    {
+      "id": "void_lance",
+      "name": "虚空枪",
+      "branch": "arcane",
+      "tier": 4,
+      "requires": [
+        "dark_pulse",
+        "storm_call"
+      ],
+      "element": "dark",
+      "manaCost": 32,
+      "cooldown": 12,
+      "multiplier": 3.2,
+      "cost": {
+        "skillPoints": 4
+      }
+    },
+    {
+      "id": "holy_nova",
+      "name": "圣光新星",
+      "branch": "arcane",
+      "tier": 4,
+      "requires": [
+        "mana_shield"
+      ],
+      "element": "holy",
+      "manaCost": 30,
+      "cooldown": 12,
+      "multiplier": 2.8,
+      "cost": {
+        "skillPoints": 4
+      }
+    },
+    {
+      "id": "arch_convergence",
+      "name": "魔导汇聚",
+      "branch": "arcane",
+      "tier": 5,
+      "requires": [
+        "molten_core",
+        "void_lance"
+      ],
+      "element": "none",
+      "manaCost": 45,
+      "cooldown": 25,
+      "multiplier": 4.0,
+      "cost": {
+        "skillPoints": 5
+      }
+    },
+    {
+      "id": "first_aid",
+      "name": "急救",
+      "branch": "survival",
+      "tier": 1,
+      "requires": [],
+      "element": "none",
+      "manaCost": 0,
+      "cooldown": 8,
+      "multiplier": 0.0,
+      "cost": {
+        "skillPoints": 1
+      }
+    },
+    {
+      "id": "endure",
+      "name": "坚持",
+      "branch": "survival",
+      "tier": 1,
+      "requires": [],
+      "element": "none",
+      "manaCost": 0,
+      "cooldown": 0,
+      "multiplier": 0.0,
+      "cost": {
+        "skillPoints": 1
+      }
+    },
+    {
+      "id": "scout",
+      "name": "侦查",
+      "branch": "survival",
+      "tier": 1,
+      "requires": [],
+      "element": "none",
+      "manaCost": 0,
+      "cooldown": 0,
+      "multiplier": 0.0,
+      "cost": {
+        "skillPoints": 1
+      }
+    },
+    {
+      "id": "regen_aura",
+      "name": "再生光环",
+      "branch": "survival",
+      "tier": 2,
+      "requires": [
+        "first_aid"
+      ],
+      "element": "holy",
+      "manaCost": 10,
+      "cooldown": 10,
+      "multiplier": 0.0,
+      "cost": {
+        "skillPoints": 2
+      }
+    },
+    {
+      "id": "hardening",
+      "name": "硬化",
+      "branch": "survival",
+      "tier": 2,
+      "requires": [
+        "endure"
+      ],
+      "element": "none",
+      "manaCost": 0,
+      "cooldown": 8,
+      "multiplier": 0.0,
+      "cost": {
+        "skillPoints": 2
+      }
+    },
+    {
+      "id": "swift_step",
+      "name": "迅捷步",
+      "branch": "survival",
+      "tier": 2,
+      "requires": [
+        "scout"
+      ],
+      "element": "none",
+      "manaCost": 5,
+      "cooldown": 6,
+      "multiplier": 0.0,
+      "cost": {
+        "skillPoints": 2
+      }
+    },
+    {
+      "id": "leech_touch",
+      "name": "吸取",
+      "branch": "survival",
+      "tier": 2,
+      "requires": [
+        "first_aid",
+        "endure"
+      ],
+      "element": "dark",
+      "manaCost": 8,
+      "cooldown": 6,
+      "multiplier": 1.0,
+      "cost": {
+        "skillPoints": 2
+      }
+    },
+    {
+      "id": "fortify",
+      "name": "城防",
+      "branch": "survival",
+      "tier": 3,
+      "requires": [
+        "hardening"
+      ],
+      "element": "none",
+      "manaCost": 0,
+      "cooldown": 15,
+      "multiplier": 0.0,
+      "cost": {
+        "skillPoints": 3
+      }
+    },
+    {
+      "id": "evade",
+      "name": "回避",
+      "branch": "survival",
+      "tier": 3,
+      "requires": [
+        "swift_step"
+      ],
+      "element": "none",
+      "manaCost": 8,
+      "cooldown": 8,
+      "multiplier": 0.0,
+      "cost": {
+        "skillPoints": 3
+      }
+    },
+    {
+      "id": "purify",
+      "name": "净化",
+      "branch": "survival",
+      "tier": 3,
+      "requires": [
+        "regen_aura"
+      ],
+      "element": "holy",
+      "manaCost": 15,
+      "cooldown": 12,
+      "multiplier": 0.0,
+      "cost": {
+        "skillPoints": 3
+      }
+    },
+    {
+      "id": "trap_set",
+      "name": "布陷",
+      "branch": "survival",
+      "tier": 3,
+      "requires": [
+        "leech_touch"
+      ],
+      "element": "none",
+      "manaCost": 10,
+      "cooldown": 10,
+      "multiplier": 1.5,
+      "cost": {
+        "skillPoints": 3
+      }
+    },
+    {
+      "id": "second_wind",
+      "name": "第二次呼吸",
+      "branch": "survival",
+      "tier": 4,
+      "requires": [
+        "fortify",
+        "purify"
+      ],
+      "element": "holy",
+      "manaCost": 20,
+      "cooldown": 30,
+      "multiplier": 0.0,
+      "cost": {
+        "skillPoints": 4
+      }
+    },
+    {
+      "id": "counter_stance",
+      "name": "反制姿态",
+      "branch": "survival",
+      "tier": 4,
+      "requires": [
+        "evade"
+      ],
+      "element": "none",
+      "manaCost": 12,
+      "cooldown": 12,
+      "multiplier": 1.8,
+      "cost": {
+        "skillPoints": 4
+      }
+    },
+    {
+      "id": "warding_field",
+      "name": "守御领域",
+      "branch": "survival",
+      "tier": 4,
+      "requires": [
+        "trap_set",
+        "fortify"
+      ],
+      "element": "none",
+      "manaCost": 25,
+      "cooldown": 18,
+      "multiplier": 0.0,
+      "cost": {
+        "skillPoints": 4
+      }
+    },
+    {
+      "id": "immortal_will",
+      "name": "不屈意志",
+      "branch": "survival",
+      "tier": 5,
+      "requires": [
+        "second_wind",
+        "counter_stance"
+      ],
+      "element": "holy",
+      "manaCost": 40,
+      "cooldown": 60,
+      "multiplier": 0.0,
+      "cost": {
+        "skillPoints": 5
+      }
     }
   ]
 }
