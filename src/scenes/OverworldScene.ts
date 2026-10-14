@@ -25,6 +25,7 @@ import type { AffixDef, EnemyDef, FactionDef, ItemDef, QuestDef } from '../data/
 import { reputationLines } from '../factions/reputation';
 import { pendingKeyChoice, resolveKeyChoice, type KeyChoiceDef } from '../narrative/keyChoices';
 import { resolveEnding } from '../endings/EndingResolver';
+import { blockReason, type RegionGate } from '../factions/regionAccess';
 import type { EndingDef } from '../data/schema';
 import type { ItemSetDef } from '../items/sets';
 import { grantQuestRewards } from '../state/rewards';
@@ -117,6 +118,9 @@ export class OverworldScene extends Phaser.Scene {
   private factionDefs: readonly FactionDef[] = [];
   private keyChoiceDefs: readonly KeyChoiceDef[] = [];
   private endingDefs: readonly EndingDef[] = [];
+  private regionGates: readonly RegionGate[] = [];
+  /** 当前在门槛提示范围内的地点（进入范围时只提示一次） */
+  private gateNoticed = new Set<string>();
   private endingPanel!: Phaser.GameObjects.Text;
   private questList: readonly QuestDef[] = [];
   private pendingChoice: KeyChoiceDef | undefined;
@@ -151,6 +155,7 @@ export class OverworldScene extends Phaser.Scene {
     this.factionDefs = data.factions;
     this.keyChoiceDefs = data.keyChoices;
     this.endingDefs = data.endings;
+    this.regionGates = data.regionGates;
     this.questList = data.quests;
     this.affixDefs = data.affixes;
     this.itemSetDefs = data.itemSets;
@@ -459,7 +464,20 @@ export class OverworldScene extends Phaser.Scene {
     for (const p of this.places) {
       if (this.session.visited.has(p.id)) continue;
       const d = Math.hypot(this.tileX - p.x, this.tileY - p.y);
-      if (d > ARRIVE_RADIUS) continue;
+      if (d > ARRIVE_RADIUS) {
+        this.gateNoticed.delete(p.id);
+        continue;
+      }
+      // 区域门槛：声望不足时不算抵达，离开后再回来会再次检查
+      const region = this.locationRegistry.get(p.id)?.region ?? '';
+      const reason = blockReason(this.world, region, this.regionGates, this.factionDefs);
+      if (reason) {
+        if (!this.gateNoticed.has(p.id)) {
+          this.gateNoticed.add(p.id);
+          this.showToast(`${p.name}：${reason}`);
+        }
+        continue;
+      }
       this.session.visited.add(p.id);
       const done = arriveAt(this.locationRegistry, this.quests, p.id);
       this.quests.acceptAvailable((d) => d.type !== 'side');

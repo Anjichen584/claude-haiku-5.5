@@ -1,0 +1,7 @@
+{
+  "gates": [
+    { "region": "裂隙核心", "faction": "rift_institute", "minTier": "friendly" },
+    { "region": "泥沼", "faction": "red_tide", "minTier": "friendly" },
+    { "region": "沙丘", "faction": "remnant_empire", "minTier": "friendly" }
+  ]
+}
