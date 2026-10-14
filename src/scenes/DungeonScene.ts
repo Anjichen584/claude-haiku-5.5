@@ -93,6 +93,7 @@ export class DungeonScene extends Phaser.Scene {
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => keyboard.off('keydown', this.onDigit, this));
 
     if (this.run.finished) this.say('本层 Boss 已击败，按 L 离开地牢');
+    else if (existing) this.say('返回地牢，继续探索。');
     else this.say(`第 ${this.run.floor} 层。按数字键前进，按 E 与房间互动。`);
     this.render();
   }
