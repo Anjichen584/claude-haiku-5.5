@@ -1,7 +1,8 @@
 import Phaser from 'phaser';
+import { bufferSceneKeys, pressed } from '../input/bufferedKeys';
 import { panel, text, UI, button } from '../ui/theme';
 import { ShopView } from '../ui/ShopView';
-import { combatStats } from '../state/equipment';
+import { combatProfile } from '../combat/profile';
 import { loadGameData } from '../data/loader';
 import type { EnemyDef } from '../data/schema';
 import {
@@ -101,6 +102,7 @@ export class DungeonScene extends Phaser.Scene {
     this.keyE = keyboard.addKey('E');
     this.keyL = keyboard.addKey('L');
     this.escape=keyboard.addKey('ESC');
+    bufferSceneKeys(this);
     keyboard.on('keydown', this.onDigit, this);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => keyboard.off('keydown', this.onDigit, this));
 
@@ -110,13 +112,14 @@ export class DungeonScene extends Phaser.Scene {
     this.render();
   }
 
-  update(): void {
-    if(this.shopOpen && Phaser.Input.Keyboard.JustDown(this.escape)){this.closeShop();return;}
-    if (!this.shopOpen && Phaser.Input.Keyboard.JustDown(this.keyL)) {
+  update(_time:number,deltaMs:number): void {
+    if(this.session.player.mana!==undefined){const d=loadGameData(),p=combatProfile(this.session.player.equipment,d.items,d.affixes,d.itemSets);this.session.player.mana=Math.min(p.maxMana,this.session.player.mana+p.manaRegen*Math.min(100,Math.max(0,deltaMs))/1000);}
+    if(this.shopOpen && pressed(this.escape)){this.closeShop();return;}
+    if (!this.shopOpen && pressed(this.keyL)) {
       this.leave();
       return;
     }
-    if (Phaser.Input.Keyboard.JustDown(this.keyE)) {
+    if (pressed(this.keyE)) {
       if (this.shopOpen) this.closeShop();
       else this.interact();
     }
@@ -171,11 +174,13 @@ export class DungeonScene extends Phaser.Scene {
         break;
       case 'rest': {
         const data = loadGameData();
-        const max = combatStats(this.session.player.equipment,data.items,data.affixes,data.itemSets).maxHp;
+        const stats=combatProfile(this.session.player.equipment,data.items,data.affixes,data.itemSets),max=stats.maxHp;
         const before = this.session.player.hp;
         this.session.player.hp = Math.min(max, before + Math.ceil(max * out.healFraction));
+        const manaBefore=this.session.player.mana??stats.maxMana;
+        this.session.player.mana=Math.min(stats.maxMana,manaBefore+Math.ceil(stats.maxMana*out.healFraction));
         markCleared(this.run, room.id);
-        this.say(`休息：恢复 ${this.session.player.hp - before} 点生命`);
+        this.say(`休息：恢复 ${Math.ceil(this.session.player.hp-before)} 生命、${Math.ceil(this.session.player.mana-manaBefore)} 魔力`);
         break;
       }
       case 'shop':
@@ -280,13 +285,13 @@ export class DungeonScene extends Phaser.Scene {
     const { player } = this.session;
     const level = levelForExp(player.exp);
     const kind = KIND_LABEL[roomById(this.run, this.run.current).kind];
-    const data=loadGameData(),maxHp=combatStats(player.equipment,data.items,data.affixes,data.itemSets).maxHp;
+    const data=loadGameData(),stats=combatProfile(player.equipment,data.items,data.affixes,data.itemSets),maxHp=stats.maxHp;
     const current=roomById(this.run,this.run.current);
     const art=current.kind==='shop'?'actor-merchant':current.kind==='combat'?`enemy-${this.enemies[0].id}`:current.kind==='boss'?`enemy-${this.enemies.find(e=>e.boss)!.id}`:current.kind==='rest'?'actor-mage':'portal';
     this.portrait.setTexture(art);this.roomTitle.setText(`${kind}房间`);
     this.hud.setText([
       `地牢 第 ${this.run.floor} 层 · 当前：${kind}房间`,
-      `生命 ${player.hp}/${maxHp}   金币 ${player.gold}   经验 ${player.exp}   等级 ${level}`,
+      `生命 ${Math.ceil(player.hp)}/${maxHp}   魔力 ${Math.floor(player.mana??stats.maxMana)}/${stats.maxMana}   金币 ${player.gold}   经验 ${player.exp}   等级 ${level}`,
       `已清理 ${this.run.cleared.size}/${rooms.length} 个房间`,
     ]);
   }

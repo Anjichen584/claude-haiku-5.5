@@ -11,7 +11,7 @@ import { Rng } from '../core/Rng';
 import { rollAffixes, type RolledAffix } from '../items/affixRoller';
 import { activeSetBonuses, type ItemSetDef } from '../items/sets';
 import type { GameSession } from './session';
-import { PLAYER_MAX_HP } from './constants';
+import { PLAYER_MAX_HP, PLAYER_MAX_MANA } from './constants';
 
 export const EQUIP_SLOTS = ['main_hand', 'head', 'chest', 'feet'] as const;
 export type EquipSlot = (typeof EQUIP_SLOTS)[number];
@@ -58,6 +58,7 @@ export function cycleSlot(session: GameSession, slot: EquipSlot, items: readonly
   if (next === undefined) delete equipment[slot];
   else equipment[slot] = next;
   session.player.hp = Math.min(session.player.hp, combatStats(equipment, items, affixes, sets).maxHp);
+  if(session.player.mana!==undefined)session.player.mana=Math.min(session.player.mana,Math.max(1,PLAYER_MAX_MANA+(equipmentBonuses(equipment,items,affixes,sets).maxMana??0)));
   return next;
 }
 
@@ -77,6 +78,15 @@ export function itemAffixes(item: ItemDef, pool: readonly AffixDef[]): RolledAff
   return rollAffixes(new Rng(hashId(item.id)), item.rarity as Rarity, pool, item.itemLevel);
 }
 
+/** Sum all modifiers from valid equipped slots, shared by the combat profile and resource clamping. */
+export function equipmentBonuses(equipment:Partial<Record<string,string>>,items:readonly ItemDef[],affixes:readonly AffixDef[]=[],sets:readonly ItemSetDef[]=[]):Record<string,number>{
+  const worn=EQUIP_SLOTS.map(slot=>items.find(i=>i.id===equipment[slot]&&i.slot===slot)).filter((i):i is ItemDef=>!!i);
+  const result:Record<string,number>={};
+  for(const item of worn)for(const a of itemAffixes(item,affixes))result[a.stat]=(result[a.stat]??0)+a.value;
+  for(const b of activeSetBonuses(sets,worn))result[b.stat]=(result[b.stat]??0)+b.value;
+  return result;
+}
+
 /** 参与战斗计算的属性名 */
 const COMBAT_STATS = ['attack', 'defense', 'maxHp'] as const;
 type CombatStatName = (typeof COMBAT_STATS)[number];
@@ -94,10 +104,11 @@ export function combatStats(
 ): CombatStats {
   const byId = new Map(items.map((i) => [i.id, i]));
   const worn: ItemDef[] = [];
-  for (const id of Object.values(equipment)) {
+  for (const slot of EQUIP_SLOTS) {
+    const id=equipment[slot];
     if (id === undefined) continue;
     const item = byId.get(id);
-    if (item) worn.push(item);
+    if (item && item.slot === slot) worn.push(item);
   }
 
   const totals: Record<CombatStatName, number> = {

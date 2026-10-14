@@ -8,10 +8,16 @@
       "requires": [],
       "element": "none",
       "manaCost": 0,
-      "cooldown": 0,
+      "cooldown": 1,
       "multiplier": 1.0,
       "cost": {
         "skillPoints": 1
+      },
+      "combat": {
+        "kind": "strike",
+        "description": "前方斩击，消耗 6 耐力。",
+        "range": 85,
+        "staminaCost": 6
       }
     },
     {
@@ -22,10 +28,16 @@
       "requires": [],
       "element": "none",
       "manaCost": 0,
-      "cooldown": 0,
+      "cooldown": 6,
       "multiplier": 1.0,
       "cost": {
         "skillPoints": 1
+      },
+      "combat": {
+        "kind": "buff",
+        "description": "4 秒内受到的伤害降低 30%。",
+        "durationMs": 4000,
+        "damageReduction": 0.3
       }
     },
     {
@@ -36,10 +48,17 @@
       "requires": [],
       "element": "none",
       "manaCost": 0,
-      "cooldown": 0,
+      "cooldown": 2,
       "multiplier": 1.1,
       "cost": {
         "skillPoints": 1
+      },
+      "combat": {
+        "kind": "strike",
+        "description": "长距离突刺，可命中前方一名敌人。",
+        "range": 155,
+        "targets": 1,
+        "staminaCost": 8
       }
     },
     {
@@ -56,6 +75,12 @@
       "multiplier": 1.5,
       "cost": {
         "skillPoints": 2
+      },
+      "combat": {
+        "kind": "strike",
+        "description": "宽幅劈砍，命中前方多个目标。",
+        "range": 110,
+        "staminaCost": 14
       }
     },
     {
@@ -72,6 +97,14 @@
       "multiplier": 1.2,
       "cost": {
         "skillPoints": 2
+      },
+      "combat": {
+        "kind": "strike",
+        "description": "命中后削减 8 点防御，持续 5 秒。",
+        "range": 95,
+        "staminaCost": 12,
+        "armorShred": 8,
+        "durationMs": 5000
       }
     },
     {
@@ -89,6 +122,12 @@
       "multiplier": 1.4,
       "cost": {
         "skillPoints": 2
+      },
+      "combat": {
+        "kind": "nova",
+        "description": "周身旋风，命中 135 像素内所有敌人。",
+        "radius": 135,
+        "staminaCost": 18
       }
     },
     {
@@ -105,6 +144,13 @@
       "multiplier": 1.3,
       "cost": {
         "skillPoints": 2
+      },
+      "combat": {
+        "kind": "strike",
+        "description": "猛击并眩晕普通敌人 0.9 秒。",
+        "range": 90,
+        "staminaCost": 12,
+        "stunMs": 900
       }
     },
     {
@@ -121,6 +167,13 @@
       "multiplier": 2.0,
       "cost": {
         "skillPoints": 3
+      },
+      "combat": {
+        "kind": "buff",
+        "description": "5 秒内格挡反击一次：减伤 45% 并反击。",
+        "durationMs": 5000,
+        "damageReduction": 0.45,
+        "retaliate": 2
       }
     },
     {
@@ -137,6 +190,14 @@
       "multiplier": 2.2,
       "cost": {
         "skillPoints": 3
+      },
+      "combat": {
+        "kind": "strike",
+        "description": "重斩并削减 12 点防御，持续 6 秒。",
+        "range": 140,
+        "staminaCost": 24,
+        "armorShred": 12,
+        "durationMs": 6000
       }
     },
     {
@@ -154,6 +215,13 @@
       "multiplier": 1.8,
       "cost": {
         "skillPoints": 3
+      },
+      "combat": {
+        "kind": "strike",
+        "description": "集中突刺前方一个目标。",
+        "range": 155,
+        "targets": 1,
+        "staminaCost": 16
       }
     },
     {
@@ -170,6 +238,12 @@
       "multiplier": 0.0,
       "cost": {
         "skillPoints": 3
+      },
+      "combat": {
+        "kind": "buff",
+        "description": "6 秒内受到的伤害降低 65%。",
+        "durationMs": 6000,
+        "damageReduction": 0.65
       }
     },
     {
@@ -187,6 +261,13 @@
       "multiplier": 2.4,
       "cost": {
         "skillPoints": 4
+      },
+      "combat": {
+        "kind": "nova",
+        "description": "剑舞攻击周身敌人并获得 0.6 秒无敌。",
+        "radius": 160,
+        "staminaCost": 25,
+        "invulnerabilityMs": 600
       }
     },
     {
@@ -203,6 +284,13 @@
       "multiplier": 0.0,
       "cost": {
         "skillPoints": 4
+      },
+      "combat": {
+        "kind": "buff",
+        "description": "8 秒内攻击提高 35%，恢复 25 耐力。",
+        "durationMs": 8000,
+        "attackBoost": 0.35,
+        "staminaCost": -25
       }
     },
     {
@@ -220,6 +308,13 @@
       "multiplier": 2.6,
       "cost": {
         "skillPoints": 4
+      },
+      "combat": {
+        "kind": "nova",
+        "description": "震地命中周围敌人并眩晕普通敌人。",
+        "radius": 190,
+        "staminaCost": 28,
+        "stunMs": 1500
       }
     },
     {
@@ -237,6 +332,13 @@
       "multiplier": 3.5,
       "cost": {
         "skillPoints": 5
+      },
+      "combat": {
+        "kind": "nova",
+        "description": "剑圣斩击周围目标并获得 1 秒无敌。",
+        "radius": 220,
+        "staminaCost": 35,
+        "invulnerabilityMs": 1000
       }
     },
     {
@@ -251,6 +353,12 @@
       "multiplier": 1.8,
       "cost": {
         "skillPoints": 1
+      },
+      "combat": {
+        "kind": "bolt",
+        "description": "远程火球；命中一个前方目标。",
+        "range": 540,
+        "targets": 1
       }
     },
     {
@@ -265,6 +373,14 @@
       "multiplier": 1.5,
       "cost": {
         "skillPoints": 1
+      },
+      "combat": {
+        "kind": "bolt",
+        "description": "远程冰锥，降低目标速度 35%，持续 3 秒。",
+        "range": 540,
+        "targets": 1,
+        "slow": 0.35,
+        "durationMs": 3000
       }
     },
     {
@@ -279,6 +395,12 @@
       "multiplier": 1.3,
       "cost": {
         "skillPoints": 1
+      },
+      "combat": {
+        "kind": "bolt",
+        "description": "远程电击；命中一个前方目标。",
+        "range": 500,
+        "targets": 1
       }
     },
     {
@@ -295,6 +417,14 @@
       "multiplier": 1.2,
       "cost": {
         "skillPoints": 2
+      },
+      "combat": {
+        "kind": "bolt",
+        "description": "点燃目标 4 秒，每秒造成攻击力 25% 伤害。",
+        "range": 500,
+        "targets": 1,
+        "burnFraction": 0.25,
+        "durationMs": 4000
       }
     },
     {
@@ -311,6 +441,15 @@
       "multiplier": 1.2,
       "cost": {
         "skillPoints": 2
+      },
+      "combat": {
+        "kind": "blast",
+        "description": "冻结区域，普通敌人眩晕 1.2 秒并减速。",
+        "range": 500,
+        "radius": 100,
+        "slow": 0.5,
+        "stunMs": 1200,
+        "durationMs": 4000
       }
     },
     {
@@ -327,6 +466,13 @@
       "multiplier": 1.6,
       "cost": {
         "skillPoints": 2
+      },
+      "combat": {
+        "kind": "bolt",
+        "description": "电弧最多连锁三个相邻敌人。",
+        "range": 520,
+        "radius": 220,
+        "targets": 3
       }
     },
     {
@@ -344,6 +490,12 @@
       "multiplier": 0.0,
       "cost": {
         "skillPoints": 2
+      },
+      "combat": {
+        "kind": "buff",
+        "description": "获得相当于最大生命 35% 的护盾，持续 8 秒。",
+        "durationMs": 8000,
+        "shieldFraction": 0.35
       }
     },
     {
@@ -360,6 +512,12 @@
       "multiplier": 3.0,
       "cost": {
         "skillPoints": 3
+      },
+      "combat": {
+        "kind": "blast",
+        "description": "远程陨石冲击目标周围 145 像素区域。",
+        "range": 580,
+        "radius": 145
       }
     },
     {
@@ -376,6 +534,14 @@
       "multiplier": 2.6,
       "cost": {
         "skillPoints": 3
+      },
+      "combat": {
+        "kind": "blast",
+        "description": "范围冰雪伤害并减速 50%，持续 5 秒。",
+        "range": 560,
+        "radius": 170,
+        "slow": 0.5,
+        "durationMs": 5000
       }
     },
     {
@@ -392,6 +558,13 @@
       "multiplier": 2.8,
       "cost": {
         "skillPoints": 3
+      },
+      "combat": {
+        "kind": "blast",
+        "description": "雷击区域，眩晕普通敌人 1 秒。",
+        "range": 560,
+        "radius": 150,
+        "stunMs": 1000
       }
     },
     {
@@ -408,6 +581,11 @@
       "multiplier": 1.9,
       "cost": {
         "skillPoints": 3
+      },
+      "combat": {
+        "kind": "nova",
+        "description": "暗能量脉冲命中周围敌人。",
+        "radius": 220
       }
     },
     {
@@ -425,6 +603,14 @@
       "multiplier": 3.4,
       "cost": {
         "skillPoints": 4
+      },
+      "combat": {
+        "kind": "blast",
+        "description": "熔核爆发并点燃区域内敌人。",
+        "range": 580,
+        "radius": 185,
+        "burnFraction": 0.3,
+        "durationMs": 5000
       }
     },
     {
@@ -442,6 +628,12 @@
       "multiplier": 3.2,
       "cost": {
         "skillPoints": 4
+      },
+      "combat": {
+        "kind": "bolt",
+        "description": "虚空穿刺可命中前方三个敌人。",
+        "range": 650,
+        "targets": 3
       }
     },
     {
@@ -458,6 +650,12 @@
       "multiplier": 2.8,
       "cost": {
         "skillPoints": 4
+      },
+      "combat": {
+        "kind": "nova",
+        "description": "圣光命中周围敌人，并治疗自身 15% 生命。",
+        "radius": 210,
+        "healFraction": 0.15
       }
     },
     {
@@ -475,6 +673,11 @@
       "multiplier": 4.0,
       "cost": {
         "skillPoints": 5
+      },
+      "combat": {
+        "kind": "nova",
+        "description": "奥术汇聚，命中周身 320 像素内所有敌人。",
+        "radius": 320
       }
     },
     {
@@ -489,6 +692,11 @@
       "multiplier": 0.0,
       "cost": {
         "skillPoints": 1
+      },
+      "combat": {
+        "kind": "heal",
+        "description": "急救恢复最大生命的 25%。",
+        "healFraction": 0.25
       }
     },
     {
@@ -503,6 +711,12 @@
       "multiplier": 0.0,
       "cost": {
         "skillPoints": 1
+      },
+      "combat": {
+        "kind": "passive",
+        "description": "被动：耐力恢复 +3/秒，受到伤害降低 5%。",
+        "damageReduction": 0.05,
+        "staminaRegen": 3
       }
     },
     {
@@ -517,6 +731,12 @@
       "multiplier": 0.0,
       "cost": {
         "skillPoints": 1
+      },
+      "combat": {
+        "kind": "passive",
+        "description": "被动：暴击率 +5%，地表视野 +4 格。",
+        "critChanceBonus": 0.05,
+        "sightBonus": 4
       }
     },
     {
@@ -533,6 +753,12 @@
       "multiplier": 0.0,
       "cost": {
         "skillPoints": 2
+      },
+      "combat": {
+        "kind": "buff",
+        "description": "6 秒内每秒恢复最大生命 4%。",
+        "durationMs": 6000,
+        "regenFraction": 0.04
       }
     },
     {
@@ -549,6 +775,12 @@
       "multiplier": 0.0,
       "cost": {
         "skillPoints": 2
+      },
+      "combat": {
+        "kind": "buff",
+        "description": "5 秒内受到的伤害降低 35%。",
+        "durationMs": 5000,
+        "damageReduction": 0.35
       }
     },
     {
@@ -565,6 +797,12 @@
       "multiplier": 0.0,
       "cost": {
         "skillPoints": 2
+      },
+      "combat": {
+        "kind": "buff",
+        "description": "5 秒内移动速度提高 45%。",
+        "durationMs": 5000,
+        "speedBoost": 0.45
       }
     },
     {
@@ -582,6 +820,12 @@
       "multiplier": 1.0,
       "cost": {
         "skillPoints": 2
+      },
+      "combat": {
+        "kind": "strike",
+        "description": "近身吸取：实际伤害的 50% 转为治疗。",
+        "range": 110,
+        "lifeSteal": 0.5
       }
     },
     {
@@ -598,6 +842,13 @@
       "multiplier": 0.0,
       "cost": {
         "skillPoints": 3
+      },
+      "combat": {
+        "kind": "buff",
+        "description": "8 秒内减伤 40%，并获得 20% 生命护盾。",
+        "durationMs": 8000,
+        "damageReduction": 0.4,
+        "shieldFraction": 0.2
       }
     },
     {
@@ -614,6 +865,13 @@
       "multiplier": 0.0,
       "cost": {
         "skillPoints": 3
+      },
+      "combat": {
+        "kind": "buff",
+        "description": "获得 0.8 秒无敌，随后 5 秒内回避率 +25%。",
+        "durationMs": 5000,
+        "invulnerabilityMs": 800,
+        "dodgeBonus": 0.25
       }
     },
     {
@@ -630,6 +888,12 @@
       "multiplier": 0.0,
       "cost": {
         "skillPoints": 3
+      },
+      "combat": {
+        "kind": "heal",
+        "description": "治疗最大生命 20%，清除硬直并获得 0.4 秒无敌。",
+        "healFraction": 0.2,
+        "invulnerabilityMs": 400
       }
     },
     {
@@ -646,6 +910,14 @@
       "multiplier": 1.5,
       "cost": {
         "skillPoints": 3
+      },
+      "combat": {
+        "kind": "trap",
+        "description": "前方布置陷阱；8 秒内敌人靠近触发并定身。",
+        "range": 70,
+        "radius": 95,
+        "durationMs": 8000,
+        "stunMs": 1800
       }
     },
     {
@@ -663,6 +935,12 @@
       "multiplier": 0.0,
       "cost": {
         "skillPoints": 4
+      },
+      "combat": {
+        "kind": "heal",
+        "description": "恢复最大生命 50%，并恢复 30 耐力。",
+        "healFraction": 0.5,
+        "staminaCost": -30
       }
     },
     {
@@ -679,6 +957,13 @@
       "multiplier": 1.8,
       "cost": {
         "skillPoints": 4
+      },
+      "combat": {
+        "kind": "buff",
+        "description": "6 秒内减伤 35%，受到攻击时反击一次。",
+        "durationMs": 6000,
+        "damageReduction": 0.35,
+        "retaliate": 1.8
       }
     },
     {
@@ -696,6 +981,13 @@
       "multiplier": 0.0,
       "cost": {
         "skillPoints": 4
+      },
+      "combat": {
+        "kind": "buff",
+        "description": "8 秒内减伤 50%，每秒恢复最大生命 2%。",
+        "durationMs": 8000,
+        "damageReduction": 0.5,
+        "regenFraction": 0.02
       }
     },
     {
@@ -713,6 +1005,13 @@
       "multiplier": 0.0,
       "cost": {
         "skillPoints": 5
+      },
+      "combat": {
+        "kind": "buff",
+        "description": "10 秒内减伤 25%，并抵御一次致命伤害至 1 生命。",
+        "durationMs": 10000,
+        "damageReduction": 0.25,
+        "preventDeath": true
       }
     }
   ]

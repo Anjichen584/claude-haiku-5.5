@@ -14,7 +14,7 @@ export class ShopView {
   private rows: Phaser.GameObjects.Container[] = [];
   private gold: Phaser.GameObjects.Text;
   private note: Phaser.GameObjects.Text;
-  constructor(private scene: Phaser.Scene, session:GameSession, items:readonly ItemDef[], factions:readonly FactionDef[], private onClose:()=>void) {
+  constructor(private scene: Phaser.Scene, session:GameSession, items:readonly ItemDef[], private factions:readonly FactionDef[], private onClose:()=>void) {
     this.session=session;this.stock=shopStock(items);this.multiplier=currentPriceMultiplier(session.world,factions);
     this.root=scene.add.container(0,0).setScrollFactor(0).setDepth(500).setVisible(false);
     const dim=scene.add.rectangle(640,360,1280,720,0x031215,.82).setInteractive();this.root.add(dim);
@@ -45,7 +45,7 @@ export class ShopView {
     });
     this.root.setScrollFactor(0,0,true);
   }
-  show():void{this.root.setVisible(true);this.refresh();}
+  show():void{this.multiplier=currentPriceMultiplier(this.session.world,this.factions);this.note.setText('选择一件物品，整备后再出发。');this.root.setVisible(true);this.refresh();}
   hide():void{this.root.setVisible(false);}
   get visible():boolean{return this.root.visible;}
   buy(index:number):void{

@@ -17,7 +17,7 @@ export class CardPanel {
    const bg=this.scene.add.rectangle(x,y,w,h,0x1b3638).setOrigin(0).setStrokeStyle(1,0x3b5850);this.root.add(bg);
    this.root.add(this.scene.add.rectangle(x,y+6,3,h-12,accent).setOrigin(0));
    this.label(x+15,y+12,`${card.key?card.key+'  ':''}${card.title}`,16,'#e2dfbf');
-   this.label(x+15,y+39,card.subtitle,12,'#9fb8a1').setWordWrapWidth(w-26);
+   this.label(x+15,y+35,card.subtitle,11,'#9fb8a1').setWordWrapWidth(w-26);
    if(card.onClick){bg.setInteractive({useHandCursor:true});bg.on('pointerover',()=>bg.setFillStyle(0x2b4944));bg.on('pointerout',()=>bg.setFillStyle(0x1b3638));bg.on('pointerdown',card.onClick);}
   });
   this.label(306,548,footer,13,'#a5bea6').setWordWrapWidth(660).setLineSpacing(5);

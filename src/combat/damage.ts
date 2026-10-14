@@ -16,6 +16,8 @@ export interface DamageInput {
   element: Element;
   /** 是否暴击（由调用方根据暴击率掷骰得出） */
   critical: boolean;
+  /** Optional equipment-derived multiplier, defaults to 1.5. */
+  criticalMultiplier?: number;
 }
 
 export interface DefenseProfile {
@@ -47,7 +49,7 @@ export function hasElementAdvantage(attacker: Element, defender?: Element): bool
 export function calculateDamage(input: DamageInput, target: DefenseProfile): number {
   const base = input.attack * input.multiplier - target.defense * 0.5;
   const elementMod = hasElementAdvantage(input.element, target.element) ? ELEMENT_ADVANTAGE_BONUS : 1;
-  const critMod = input.critical ? CRIT_MULTIPLIER : 1;
+  const critMod = input.critical ? Math.max(1, input.criticalMultiplier ?? CRIT_MULTIPLIER) : 1;
   const resistance = target.resistances?.[input.element] ?? 0;
   const clampedResist = Math.min(1, Math.max(0, resistance));
 

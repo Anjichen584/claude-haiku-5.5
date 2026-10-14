@@ -1,3 +1,4 @@
+import { validateSkillCombat } from '../src/skills/validateCombat';
 /**
  * 数据校验脚本：npm run validate:data
  *
@@ -110,6 +111,7 @@ for (const item of items) {
 const skillById = new Map<string, any>(skills.map((s: any) => [s.id, s]));
 const branchCounts: Record<string, number> = {};
 for (const skill of skills) {
+  for(const error of validateSkillCombat(skill))fail(error);
   branchCounts[skill.branch] = (branchCounts[skill.branch] ?? 0) + 1;
   if (!['martial', 'arcane', 'survival'].includes(skill.branch)) fail(`skills.${skill.id}: 未知分支 "${skill.branch}"`);
   if (skill.multiplier !== undefined && skill.multiplier < 0) fail(`skills.${skill.id}: multiplier 不能为负`);

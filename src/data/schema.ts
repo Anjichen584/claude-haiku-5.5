@@ -24,6 +24,7 @@ export interface ItemDef {
 }
 
 export interface SkillDef {
+  combat?: import('../skills/combatTypes').SkillCombatDef;
   id: string;
   name: string;
   branch: 'martial' | 'arcane' | 'survival';

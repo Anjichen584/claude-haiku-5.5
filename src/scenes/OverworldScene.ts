@@ -1,8 +1,11 @@
 import Phaser from 'phaser';
+import { bufferSceneKeys, pressed } from '../input/bufferedKeys';
 import { npcRole } from '../art/sprites';
 import { UI, panel, text, button, styleModal } from '../ui/theme';
 import { ShopView } from '../ui/ShopView';
 import { CardPanel } from '../ui/CardPanel';
+import { skillLoadout, bindSkill } from '../combat/loadout';
+import { combatProfile } from '../combat/profile';
 import { settleQuestRewards } from '../state/rewards';
 import { display } from '../config/display';
 import { CHUNK_SIZE, FLAG_RIVER, FLAG_ROAD, chunkOf, generateChunk, type Chunk } from '../world/chunk';
@@ -132,6 +135,9 @@ export class OverworldScene extends Phaser.Scene {
   private keyB!: Phaser.Input.Keyboard.Key;
   private keyN!: Phaser.Input.Keyboard.Key;
   private keyX!: Phaser.Input.Keyboard.Key;
+  private keyF!: Phaser.Input.Keyboard.Key;
+  private bindSlot=0;
+  private loadoutUI!:Phaser.GameObjects.Container;
   private skillPanel!: Phaser.GameObjects.Text;
   private skillPanelOpen = false;
   private skillBranchIdx = 0;
@@ -248,6 +254,8 @@ export class OverworldScene extends Phaser.Scene {
     this.keyB = keyboard.addKey('B');
     this.keyN = keyboard.addKey('N');
     this.keyX = keyboard.addKey('X');
+    this.keyF = keyboard.addKey('F');
+    this.bindSlot=0;
     this.skillPanel = this.add.text(16, 300, '', {
       fontFamily: 'sans-serif', fontSize: '14px', color: '#f4f0ff', lineSpacing: 4,
       backgroundColor: '#0b0a1acc', padding: { x: 10, y: 8 },
@@ -315,54 +323,59 @@ export class OverworldScene extends Phaser.Scene {
     this.syncChunks();
     this.events.once('shutdown',()=>{for(const c of this.chunks.values())if(this.textures.exists(c.textureKey))this.textures.remove(c.textureKey);});
     this.createInterface();
+    bufferSceneKeys(this);
     this.updateEnvironment();
   }
 
   update(_time: number, deltaMs: number): void {
     if (this.transitioning) return;
     if (this.shop.visible) {
-      if (Phaser.Input.Keyboard.JustDown(this.keyE) || Phaser.Input.Keyboard.JustDown(this.esc)) this.shop.hide();
+      if (pressed(this.keyE) || pressed(this.esc)) this.shop.hide();
       return;
     }
-    if (Phaser.Input.Keyboard.JustDown(this.esc)) this.closePanels();
-    if (Phaser.Input.Keyboard.JustDown(this.keys.T) && !this.talk) {
+    if (pressed(this.esc)) this.closePanels();
+    if (pressed(this.keys.T) && !this.talk) {
       this.syncToSession();
       this.scene.start('TestRoomScene');
       return;
     }
+    deltaMs=Math.min(Math.max(0,deltaMs),100);
+    const profile=combatProfile(this.session.player.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs);
+    if(this.session.player.mana!==undefined)this.session.player.mana=Math.min(profile.maxMana,this.session.player.mana+profile.manaRegen*deltaMs/1000);
     this.elapsedMs += deltaMs;
     this.graceMs = Math.max(0, this.graceMs - deltaMs);
     const dt = deltaMs / 1000;
 
     if (this.talk) {
-      if (Phaser.Input.Keyboard.JustDown(this.keySpace)) this.advanceTalk();
+      if (pressed(this.keySpace)) this.advanceTalk();
       this.updateEnvironment();
       return;
     }
-    if (Phaser.Input.Keyboard.JustDown(this.keyQ)) this.toggleQuestPanel();
-    if (Phaser.Input.Keyboard.JustDown(this.keyR)) this.toggleRepPanel();
-    if (Phaser.Input.Keyboard.JustDown(this.keyG)) this.toggleSkillPanel();
+    if (pressed(this.keyQ)) this.toggleQuestPanel();
+    if (pressed(this.keyR)) this.toggleRepPanel();
+    if (pressed(this.keyG)) this.toggleSkillPanel();
     if (this.skillPanelOpen && !this.talk) {
-      if (Phaser.Input.Keyboard.JustDown(this.keyB)) {
+      if (pressed(this.keyB)) {
         this.skillBranchIdx = (this.skillBranchIdx + 1) % this.branches.length;
         this.skillPage = 0;
         this.refreshSkillPanel();
       }
-      if (Phaser.Input.Keyboard.JustDown(this.keyN)) {
+      if (pressed(this.keyN)) {
         this.skillPage += 1;
         this.refreshSkillPanel();
       }
-      if (Phaser.Input.Keyboard.JustDown(this.keyX)) this.resetSkillBranch();
+      if (pressed(this.keyX)) this.resetSkillBranch();
+      if (pressed(this.keyF)) {this.bindSlot=(this.bindSlot+1)%4;this.refreshSkillPanel();}
     }
-    if (Phaser.Input.Keyboard.JustDown(this.keyK)) this.saveGame();
+    if (pressed(this.keyK)) this.saveGame();
     // 结局面板打开时，E 只用于关闭它（先于对话处理消费这次按键）
-    if (this.endingPanel.visible && Phaser.Input.Keyboard.JustDown(this.keyE)) {
+    if (this.endingPanel.visible && pressed(this.keyE)) {
       this.endingPanel.setVisible(false);
       return;
     }
-    if (Phaser.Input.Keyboard.JustDown(this.keyI)) this.toggleInventoryPanel();
-    if (Phaser.Input.Keyboard.JustDown(this.keyC)) this.toggleEquipPanel();
-    if (Phaser.Input.Keyboard.JustDown(this.keyE) && !this.anyPanel()) this.tryStartTalk();
+    if (pressed(this.keyI)) this.toggleInventoryPanel();
+    if (pressed(this.keyC)) this.toggleEquipPanel();
+    if (pressed(this.keyE) && !this.anyPanel()) this.tryStartTalk();
     if (this.talk || this.transitioning) return;
     if (this.anyPanel() || this.endingPanel.visible || this.pendingChoice) {
       this.syncToSession();this.updateEnvironment();return;
@@ -376,8 +389,8 @@ export class OverworldScene extends Phaser.Scene {
     if (this.keys.S.isDown) my += 1;
     const len = Math.hypot(mx, my);
     if (len > 0) {
-      this.tileX += (mx / len) * MOVE_TILES_PER_SEC * dt;
-      this.tileY += (my / len) * MOVE_TILES_PER_SEC * dt;
+      this.tileX += (mx / len) * MOVE_TILES_PER_SEC * profile.speedMultiplier * dt;
+      this.tileY += (my / len) * MOVE_TILES_PER_SEC * profile.speedMultiplier * dt;
       this.player.setPosition(this.tileX * TILE_PX, this.tileY * TILE_PX);
       this.player.setFlipX(mx < 0 || (mx === 0 && this.player.flipX));
       this.player.setAngle(Math.sin(this.time.now / 90) * 4);
@@ -489,7 +502,7 @@ export class OverworldScene extends Phaser.Scene {
       '技能树    G 关闭 · B 分支 · N 翻页 · X 重置 · 数字键学习',
       `技能点 ${state.points}   分支：${BRANCH_LABEL[branch]}（第 ${this.skillPage + 1}/${pages} 页）`,
       ...rows,
-      `组合技：${combos.length > 0 ? combos.join('、') : '无'}（效果待接入）`,
+      `组合技：${combos.length > 0 ? combos.join('、') : '无'}（4 秒内连用对应技能触发）`,
       `重置本分支费用：${resetCost(level)} 金币`,
     ].join('\n'));
     this.renderCards();
@@ -500,13 +513,21 @@ export class OverworldScene extends Phaser.Scene {
     if (!target) return;
     const state = treeOf(this.session.player);
     const reason = unlockBlockReason(state, target);
+    if (reason === 'already') {
+      if(target.combat?.kind==='passive'){this.showToast(`${target.name}：被动已生效 · ${target.combat.description}`);return;}
+      bindSkill(this.session.player.skills,this.skillDefs,target.id,this.bindSlot);
+      persistSession(this.session);this.refreshSkillPanel();this.showToast(`技能栏 ${this.bindSlot+1}：${target.name}`);return;
+    }
     if (reason !== null) {
       const text = { already: '已经学会了', 'missing-prereq': '需要先学习前置技能', 'no-points': '技能点不足', unknown: '未知技能' }[reason];
       this.showToast(`${target.name}：${text}`);
       return;
     }
+    const before=skillLoadout(this.session.player.skills,this.skillDefs);
+    this.session.player.skills.equipped=before;
     unlockSkill(state, target);
     storeTree(this.session.player, state);
+    if(before.length<4 && target.combat?.kind!=='passive')bindSkill(this.session.player.skills,this.skillDefs,target.id,before.length);
     this.showToast(`学会了 ${target.name}`);
     this.syncToSession();
     persistSession(this.session);
@@ -939,30 +960,43 @@ export class OverworldScene extends Phaser.Scene {
 
   private closePanels(): void {
     this.questPanelOpen = this.invPanelOpen = this.equipPanelOpen = this.repPanelOpen = this.skillPanelOpen = false;
-    this.modalBackdrop?.setVisible(false);this.modalFrame?.setVisible(false);this.cards?.hide();
+    this.modalBackdrop?.setVisible(false);this.modalFrame?.setVisible(false);this.cards?.hide();this.loadoutUI?.setVisible(false);
     for (const p of [this.questPanel,this.invPanel,this.equipPanel,this.repPanel,this.skillPanel]) {p?.setVisible(false);p?.setData('full',null);p?.setData('offset',0);}
+  }
+
+  private renderLoadout():void{
+    if(!this.loadoutUI)return;this.loadoutUI.removeAll(true);this.loadoutUI.setVisible(true);
+    const slots=skillLoadout(this.session.player.skills,this.skillDefs);
+    for(let i=0;i<4;i++){
+      const x=365+i*182,y=631,chosen=i===this.bindSlot;
+      const bg=this.add.rectangle(x,y,172,30,chosen?0x385347:0x172e32).setStrokeStyle(1,chosen?0xd6bf88:0x4e6c60).setInteractive({useHandCursor:true});
+      const name=this.skillDefs.find(s=>s.id===slots[i])?.name??'空';
+      const t=this.add.text(x,y,`${i+1}  ${name}`,{fontFamily:UI.font,fontSize:13,color:'#dfd3b2'}).setOrigin(.5);
+      this.loadoutUI.add([bg,t]);bg.on('pointerdown',()=>{this.bindSlot=i;this.refreshSkillPanel();});
+    }
+    this.loadoutUI.setScrollFactor(0,0,true);
   }
 
   private renderCards():void {
     if(!this.cards)return;
-    const close='Esc 关闭 · 点击卡片操作';
     if(this.skillPanelOpen){
       const state=treeOf(this.session.player),branch=this.currentBranch(),pages=Math.ceil(branchSkills(this.skillDefs,branch).length/9);
       const cards=this.skillPageItems().map((skill,i)=>{
         const reason=unlockBlockReason(state,skill),learned=state.unlocked.has(skill.id);
-        const status=learned?'已学会':reason==='missing-prereq'?'需要前置技能':reason==='no-points'?'技能点不足':`消耗 ${skill.cost.skillPoints} 点`;
-        return {title:skill.name,key:`${i+1}`,subtitle:`第 ${skill.tier} 层 · ${status}`,accent:learned?0xd6bb7c:reason?0x4e6861:0x99b88b,onClick:()=>this.learnSkill(i)};
+        const equipped=skillLoadout(this.session.player.skills,this.skillDefs).indexOf(skill.id);
+        const status=learned?(skill.combat?.kind==='passive'?'被动已生效':equipped>=0?`已装配 ${equipped+1}`:'点击装配'):reason==='missing-prereq'?'需要前置技能':reason==='no-points'?'技能点不足':`消耗 ${skill.cost.skillPoints} 点`;
+        return {title:skill.name,key:`${i+1}`,subtitle:`${status} · ${skill.manaCost??0} 魔力\n${skill.combat?.description??''}`,accent:learned?0xd6bb7c:reason?0x4e6861:0x99b88b,onClick:()=>this.learnSkill(i)};
       });
-      this.cards.show(`技能树 / ${BRANCH_LABEL[branch]}`,`可用技能点 ${state.points}    ·    第 ${this.skillPage+1}/${pages} 页    ·    ${close}`,cards,3,'当前仅学习与保存；技能和组合技的战斗效果尚未接入。',[
+      this.cards.show(`技能树 / ${BRANCH_LABEL[branch]}`,`技能点 ${state.points} · ${this.skillPage+1}/${pages} 页 · 再次点击已学技能装配到栏 ${this.bindSlot+1}`,cards,3,'战斗按 1–4 施放 · 下方选槽位（F 切换） · 4 秒内连用组合技能触发额外效果',[
         {label:'B  切换分支',run:()=>{this.skillBranchIdx=(this.skillBranchIdx+1)%3;this.skillPage=0;this.refreshSkillPanel();}},
         {label:'N  下一页',run:()=>{this.skillPage++;this.refreshSkillPanel();}},
         {label:`X  重置 / ${resetCost(levelForExp(this.session.player.exp))} 金`,run:()=>this.resetSkillBranch()},
-      ]);return;
+      ]);this.renderLoadout();return;
     }
     if(this.equipPanelOpen){
-      const p=this.session.player,stats=combatStats(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs);
+      const p=this.session.player,stats=combatProfile(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs);
       const cards=EQUIP_SLOTS.map((slot,i)=>{const item=this.itemDefs.find(t=>t.id===p.equipment[slot]);return {title:`${SLOT_LABEL[slot]}  /  ${item?.name??'未装备'}`,key:`${i+1}`,subtitle:item?`基础攻击 +${item.baseDamage??0}   防御 +${item.defense??0}`:'点击从背包中切换装备',accent:item?0xd6bb7c:0x536b62,onClick:()=>{cycleSlot(this.session,slot,this.itemDefs,this.affixDefs,this.itemSetDefs);persistSession(this.session);this.refreshEquipPanel();}};});
-      this.cards.show('旅人装备',`攻击 ${stats.attack}    防御 ${stats.defense}    生命上限 ${stats.maxHp}    ·    ${close}`,cards,2,equipmentDetailLines(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs).slice(0,2).join('  ')||'装备来自商人购买与掉落。数字键 1–4 也可切换各槽位。');return;
+      this.cards.show('旅人装备',`攻击 ${stats.attack} · 防御 ${stats.defense} · 生命 ${stats.maxHp} · 魔力 ${stats.maxMana} · 暴击 ${Math.round(stats.critChance*100)}%`,cards,2,equipmentDetailLines(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs).slice(0,2).join('  ')||'装备来自商人购买与掉落。数字键 1–4 也可切换各槽位。');return;
     }
     if(this.invPanelOpen){
       const items=this.itemDefs.filter(i=>this.world.getItemCount(i.id)>0);
@@ -1024,6 +1058,7 @@ export class OverworldScene extends Phaser.Scene {
     styleModal(this.endingPanel,800,400);this.endingPanel.setDepth(400);
     this.choicePrompt.setPosition(640,250).setStyle({fontFamily:UI.font,fontSize:18,backgroundColor:'#183832',padding:{x:28,y:28},lineSpacing:16,wordWrap:{width:650}}).setDepth(390);
     this.cards=new CardPanel(this);
+    this.loadoutUI=this.add.container(0,0).setScrollFactor(0).setDepth(295).setVisible(false);
     for(const p of [this.skillPanel,this.invPanel,this.equipPanel,this.repPanel])p.setAlpha(0);
     this.updateInterface();
   }
@@ -1034,7 +1069,7 @@ export class OverworldScene extends Phaser.Scene {
     this.children.getByName("scrollHint")?.setActive(this.anyPanel());
     const hint=this.children.getByName("scrollHint") as Phaser.GameObjects.Text|undefined;hint?.setVisible(this.questPanelOpen);
     const p=this.session.player,stats=combatStats(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs);
-    this.status.setText(`Lv.${levelForExp(p.exp)}   生命 ${p.hp}/${stats.maxHp}    金币 ${p.gold}`);
+    this.status.setText(`Lv.${levelForExp(p.exp)}  生命 ${Math.ceil(p.hp)}/${stats.maxHp}  金币 ${p.gold}${p.mana!==undefined?`  魔力 ${Math.floor(p.mana)}`:''}`);
     this.hpBar.clear().fillStyle(0x294343).fillRoundedRect(111,61,300,4,2).fillStyle(0x91b78c).fillRoundedRect(111,61,300*Math.max(0,Math.min(1,p.hp/stats.maxHp)),4,2);
     const active=this.questList.find(q=>q.type==='main' && this.world.questStatus(q.id)==='active');
     const record=active?this.quests.progressOf(active.id):undefined;
@@ -1086,7 +1121,7 @@ export class OverworldScene extends Phaser.Scene {
     this.weatherOverlay.setFillStyle(w.color, w.alpha);
 
     // 视野：只显示视野内的敌人刷新点；夜晚侦测距离变大
-    this.sightTiles = sightRadius(time.phase, weather);
+    this.sightTiles = sightRadius(time.phase, weather)+this.skillDefs.filter(s=>s.combat?.kind==='passive'&&this.session.player.skills.unlocked.includes(s.id)).reduce((n,s)=>n+(s.combat?.sightBonus??0),0);
     this.detectMult = detectMultiplier(time.phase);
     for (const loaded of this.chunks.values()) {
       for (const m of loaded.markers) {

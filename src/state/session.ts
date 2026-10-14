@@ -8,7 +8,8 @@
  * 本文件不依赖 Phaser，便于单元测试。存档的读写见 sessionStore.ts。
  */
 import type { QuestDef, ItemDef, AffixDef } from '../data/schema';
-import { combatStats } from './equipment';
+import { combatStats, isEquipSlot } from './equipment';
+import { combatProfile } from '../combat/profile';
 import itemsData from '../../data/items.json';
 import affixesData from '../../data/affixes.json';
 import setsData from '../../data/item-sets.json';
@@ -33,7 +34,9 @@ export interface PlayerState {
   /** 已装备的物品，键为槽位（main_hand / head / chest / feet） */
   equipment: Partial<Record<string, string>>;
   /** 技能：已解锁的技能 id 与尚未使用的技能点（技能点由升级获得） */
-  skills: { unlocked: string[]; points: number };
+  skills: { unlocked: string[]; points: number; equipped?: string[] };
+  /** Optional for backwards-compatible version-1 saves. */
+  mana?: number;
 }
 
 export interface GameSession {
@@ -86,7 +89,7 @@ export function toSaveFile(session: GameSession, savedAt: Date = new Date()): Sa
     version: SAVE_VERSION,
     savedAt: savedAt.toISOString(),
     world: session.world.snapshot(),
-    player: { ...session.player },
+    player: { ...session.player, equipment:{...session.player.equipment}, skills:{...session.player.skills,unlocked:[...session.player.skills.unlocked],...(session.player.skills.equipped?{equipped:[...session.player.skills.equipped]}:{})} },
     elapsedMs: session.elapsedMs,
     visited: [...session.visited].sort(),
     defeated: [...session.defeated].sort(),
@@ -125,7 +128,7 @@ export function parseSave(raw: string): SaveFile {
   const equipmentRaw: unknown = player.equipment === undefined ? {} : player.equipment;
   if (!isRecord(equipmentRaw)) throw new SaveError('装备数据错误');
   for (const [slot, id] of Object.entries(equipmentRaw)) {
-    if (typeof id !== 'string') throw new SaveError('装备数据错误');
+    if (typeof id !== 'string' || !isEquipSlot(slot) || !itemsData.items.some(i=>i.id===id && 'slot' in i && i.slot===slot)) throw new SaveError('装备数据错误');
     equipment[slot] = id;
   }
   const maxHp = combatStats(equipment, itemsData.items as ItemDef[], affixesData.affixes as AffixDef[], setsData.sets as ItemSetDef[]).maxHp;
@@ -136,8 +139,15 @@ export function parseSave(raw: string): SaveFile {
     throw new SaveError('技能数据错误');
   }
   const skillPoints: unknown = skillsRaw.points === undefined ? 0 : skillsRaw.points;
-  if (!isFiniteNumber(skillPoints) || skillPoints < 0) throw new SaveError('技能点数据错误');
-  const skills = { unlocked: [...(skillsRaw.unlocked as string[])], points: skillPoints };
+  if (!isFiniteNumber(skillPoints) || !Number.isInteger(skillPoints) || skillPoints < 0) throw new SaveError('技能点数据错误');
+  const skills: PlayerState['skills'] = { unlocked: [...new Set(skillsRaw.unlocked as string[])], points: skillPoints };
+  if(skillsRaw.equipped!==undefined){
+    if(!isStringArray(skillsRaw.equipped) || skillsRaw.equipped.length>4 || new Set(skillsRaw.equipped).size!==skillsRaw.equipped.length || skillsRaw.equipped.some(id=>!skills.unlocked.includes(id)))throw new SaveError('技能栏数据错误');
+    skills.equipped=[...skillsRaw.equipped];
+  }
+  const mana=player.mana;
+  const maxMana=combatProfile(equipment,itemsData.items as ItemDef[],affixesData.affixes as AffixDef[],setsData.sets as ItemSetDef[]).maxMana;
+  if(mana!==undefined && (!isFiniteNumber(mana) || mana<0 || mana>maxMana))throw new SaveError('魔力数据错误');
   const rawFloor: unknown = data.dungeonFloor === undefined ? 1 : data.dungeonFloor;
   if (typeof rawFloor !== 'number' || !Number.isInteger(rawFloor) || rawFloor < 1 || rawFloor > MAX_DUNGEON_FLOOR) {
     throw new SaveError('地牢层数越界');
@@ -153,11 +163,18 @@ export function parseSave(raw: string): SaveFile {
     throw new SaveError('世界状态结构错误');
   }
 
+  for(const value of Object.values(world.reputation))if(!isFiniteNumber(value)||value < -100||value>100)throw new SaveError('声望数据错误');
+  for(const value of Object.values(world.inventory))if(!isFiniteNumber(value)||!Number.isInteger(value)||value<0)throw new SaveError('背包数据错误');
+  for(const value of Object.values(world.quests)){
+    if(!isRecord(value)||!['locked','available','active','completed','failed'].includes(String(value.status))||!Array.isArray(value.progress)||value.progress.some(p=>!isFiniteNumber(p)||!Number.isInteger(p)||p<0))throw new SaveError('任务数据错误');
+  }
+  if(world.stability!==undefined&&(!isFiniteNumber(world.stability)||world.stability<0||world.stability>100))throw new SaveError('稳定度数据错误');
+
   return {
     version: SAVE_VERSION,
     savedAt: typeof data.savedAt === 'string' ? data.savedAt : '',
     world: world as unknown as WorldSnapshot,
-    player: { tileX: player.tileX, tileY: player.tileY, hp: player.hp, exp, gold, equipment, skills },
+    player: { tileX: player.tileX, tileY: player.tileY, hp: player.hp, exp, gold, equipment, skills, ...(mana===undefined?{}:{mana:mana as number}) },
     elapsedMs: data.elapsedMs,
     visited: data.visited,
     defeated: data.defeated,
@@ -171,7 +188,7 @@ export function fromSaveFile(file: SaveFile, quests: readonly QuestDef[]): GameS
   return {
     world,
     quests: new QuestManager(quests, world),
-    player: { ...file.player, equipment: { ...file.player.equipment }, skills: { unlocked: [...file.player.skills.unlocked], points: file.player.skills.points } },
+    player: { ...file.player, equipment: { ...file.player.equipment }, skills: { ...file.player.skills, unlocked: [...file.player.skills.unlocked], ...(file.player.skills.equipped?{equipped:[...file.player.skills.equipped]}:{}) } },
     elapsedMs: file.elapsedMs,
     visited: new Set(file.visited),
     defeated: new Set(file.defeated),

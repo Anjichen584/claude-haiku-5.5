@@ -84,7 +84,7 @@ export class WorldState {
     return {
       flags: [...this.flags].sort(),
       reputation: Object.fromEntries([...this.reputation].sort()),
-      quests: Object.fromEntries([...this.quests].sort(([a], [b]) => a.localeCompare(b))),
+      quests: Object.fromEntries([...this.quests].sort(([a], [b]) => a.localeCompare(b)).map(([id,r])=>[id,{status:r.status,progress:[...r.progress]}])),
       inventory: Object.fromEntries([...this.inventory].sort()),
       stability: this._stability,
     };
@@ -94,7 +94,7 @@ export class WorldState {
     const world = new WorldState();
     snapshot.flags.forEach((f) => world.flags.add(f));
     Object.entries(snapshot.reputation).forEach(([k, v]) => world.reputation.set(k, v));
-    Object.entries(snapshot.quests).forEach(([k, v]) => world.quests.set(k, v));
+    Object.entries(snapshot.quests).forEach(([k, v]) => world.quests.set(k, {status:v.status,progress:[...v.progress]}));
     Object.entries(snapshot.inventory).forEach(([k, v]) => world.inventory.set(k, v));
     world._stability = snapshot.stability ?? 50;
     return world;
