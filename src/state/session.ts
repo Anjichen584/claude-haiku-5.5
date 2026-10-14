@@ -23,6 +23,8 @@ export interface PlayerState {
   /** 累计经验，等级由它推导（见 rewards.ts） */
   exp: number;
   gold: number;
+  /** 已装备的物品，键为槽位（main_hand / head / chest / feet） */
+  equipment: Partial<Record<string, string>>;
 }
 
 export interface GameSession {
@@ -61,7 +63,7 @@ export function newSession(quests: readonly QuestDef[]): GameSession {
   return {
     world,
     quests: manager,
-    player: { tileX: 0, tileY: 0, hp: PLAYER_MAX_HP, exp: 0, gold: 0 },
+    player: { tileX: 0, tileY: 0, hp: PLAYER_MAX_HP, exp: 0, gold: 0, equipment: {} },
     // 从黎明前开始（与地表场景的初始时间一致）
     elapsedMs: DAY_LENGTH_MS * 0.3,
     visited: new Set(),
@@ -109,6 +111,14 @@ export function parseSave(raw: string): SaveFile {
   if (!isFiniteNumber(exp) || exp < 0 || !isFiniteNumber(gold) || gold < 0) {
     throw new SaveError('经验或金币数据错误');
   }
+  // 旧存档没有装备，缺省为空
+  const equipment: Partial<Record<string, string>> = {};
+  const equipmentRaw: unknown = player.equipment === undefined ? {} : player.equipment;
+  if (!isRecord(equipmentRaw)) throw new SaveError('装备数据错误');
+  for (const [slot, id] of Object.entries(equipmentRaw)) {
+    if (typeof id !== 'string') throw new SaveError('装备数据错误');
+    equipment[slot] = id;
+  }
   const rawFloor: unknown = data.dungeonFloor === undefined ? 1 : data.dungeonFloor;
   if (typeof rawFloor !== 'number' || !Number.isInteger(rawFloor) || rawFloor < 1 || rawFloor > MAX_DUNGEON_FLOOR) {
     throw new SaveError('地牢层数越界');
@@ -128,7 +138,7 @@ export function parseSave(raw: string): SaveFile {
     version: SAVE_VERSION,
     savedAt: typeof data.savedAt === 'string' ? data.savedAt : '',
     world: world as unknown as WorldSnapshot,
-    player: { tileX: player.tileX, tileY: player.tileY, hp: player.hp, exp, gold },
+    player: { tileX: player.tileX, tileY: player.tileY, hp: player.hp, exp, gold, equipment },
     elapsedMs: data.elapsedMs,
     visited: data.visited,
     defeated: data.defeated,
@@ -142,7 +152,7 @@ export function fromSaveFile(file: SaveFile, quests: readonly QuestDef[]): GameS
   return {
     world,
     quests: new QuestManager(quests, world),
-    player: { ...file.player },
+    player: { ...file.player, equipment: { ...file.player.equipment } },
     elapsedMs: file.elapsedMs,
     visited: new Set(file.visited),
     defeated: new Set(file.defeated),

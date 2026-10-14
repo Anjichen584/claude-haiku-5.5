@@ -27,7 +27,8 @@
       "rarity": "epic",
       "price": 220,
       "setId": "ash_warden",
-      "itemLevel": 5
+      "itemLevel": 5,
+      "defense": 3
     },
     {
       "id": "ash_plate",
@@ -38,7 +39,8 @@
       "rarity": "epic",
       "price": 300,
       "setId": "ash_warden",
-      "itemLevel": 5
+      "itemLevel": 5,
+      "defense": 6
     },
     {
       "id": "scholar_robe",
@@ -49,7 +51,8 @@
       "rarity": "epic",
       "price": 280,
       "setId": "rift_scholar",
-      "itemLevel": 6
+      "itemLevel": 6,
+      "defense": 5
     },
     {
       "id": "stride_boots",
@@ -60,7 +63,8 @@
       "rarity": "rare",
       "price": 160,
       "setId": "wild_stride",
-      "itemLevel": 4
+      "itemLevel": 4,
+      "defense": 2
     },
     {
       "id": "rift_blade",

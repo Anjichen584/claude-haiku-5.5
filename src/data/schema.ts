@@ -11,6 +11,8 @@ export interface ItemDef {
   type: 'weapon' | 'armor' | 'accessory' | 'material' | 'consumable';
   slot?: string;
   baseDamage?: number;
+  /** 护甲防御值（仅护甲使用） */
+  defense?: number;
   rarity?: Rarity;
   stackable?: boolean;
   maxStack?: number;
