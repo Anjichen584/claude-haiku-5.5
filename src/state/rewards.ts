@@ -25,7 +25,9 @@ export function applyGains(session: GameSession, gains: Gains): string[] {
   session.player.gold += gains.gold;
   for (const id of gains.items) session.world.addItem(id, 1);
   const after = levelForExp(session.player.exp);
-  return after > before ? [`升级！当前等级 ${after}`] : [];
+  // 每升一级获得 1 点技能点
+  if (after > before) session.player.skills.points += after - before;
+  return after > before ? [`升级！当前等级 ${after}（+${after - before} 技能点）`] : [];
 }
 
 /** 把一组奖励写成一行文字，例如 “+300 经验、+120 金币、裂隙碎片”。 */

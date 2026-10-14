@@ -28,7 +28,13 @@ import { resolveEnding } from '../endings/EndingResolver';
 import { blockReason, type RegionGate } from '../factions/regionAccess';
 import type { EndingDef } from '../data/schema';
 import type { ItemSetDef } from '../items/sets';
-import { grantQuestRewards } from '../state/rewards';
+import { grantQuestRewards, levelForExp } from '../state/rewards';
+import {
+  activeCombos, BRANCH_LABEL, branchSkills, indexSkills, resetBranch, resetCost, storeTree, treeOf,
+  unlockBlockReason, unlockSkill, type Branch,
+} from '../skills/skillTree';
+import type { SkillDef } from '../data/schema';
+import type { ComboDef } from '../skills/skillTree';
 import type { QuestCompletion } from '../narrative/QuestManager';
 
 /**
@@ -105,6 +111,17 @@ export class OverworldScene extends Phaser.Scene {
   private questPanelOpen = false;
   private keyQ!: Phaser.Input.Keyboard.Key;
   private keyR!: Phaser.Input.Keyboard.Key;
+  private keyG!: Phaser.Input.Keyboard.Key;
+  private keyB!: Phaser.Input.Keyboard.Key;
+  private keyN!: Phaser.Input.Keyboard.Key;
+  private keyX!: Phaser.Input.Keyboard.Key;
+  private skillPanel!: Phaser.GameObjects.Text;
+  private skillPanelOpen = false;
+  private skillBranchIdx = 0;
+  private skillPage = 0;
+  private skillDefs: readonly SkillDef[] = [];
+  private comboDefs: readonly ComboDef[] = [];
+  private readonly branches: Branch[] = ['martial', 'arcane', 'survival'];
   private repPanel!: Phaser.GameObjects.Text;
   private repPanelOpen = false;
   private keyK!: Phaser.Input.Keyboard.Key;
@@ -155,6 +172,8 @@ export class OverworldScene extends Phaser.Scene {
     this.factionDefs = data.factions;
     this.keyChoiceDefs = data.keyChoices;
     this.endingDefs = data.endings;
+    this.skillDefs = data.skills;
+    this.comboDefs = data.combos;
     this.regionGates = data.regionGates;
     this.questList = data.quests;
     this.affixDefs = data.affixes;
@@ -200,6 +219,14 @@ export class OverworldScene extends Phaser.Scene {
     this.keySpace = keyboard.addKey('SPACE');
     this.keyQ = keyboard.addKey('Q');
     this.keyR = keyboard.addKey('R');
+    this.keyG = keyboard.addKey('G');
+    this.keyB = keyboard.addKey('B');
+    this.keyN = keyboard.addKey('N');
+    this.keyX = keyboard.addKey('X');
+    this.skillPanel = this.add.text(16, 300, '', {
+      fontFamily: 'sans-serif', fontSize: '14px', color: '#f4f0ff', lineSpacing: 4,
+      backgroundColor: '#0b0a1acc', padding: { x: 10, y: 8 },
+    }).setScrollFactor(0).setDepth(250).setVisible(false);
     this.choicePrompt = this.add.text(display.baseWidth / 2, 130, '', {
       fontFamily: 'sans-serif', fontSize: '15px', color: '#fff3c4', align: 'center',
       backgroundColor: '#2a1a4acc', padding: { x: 12, y: 8 },
@@ -281,6 +308,19 @@ export class OverworldScene extends Phaser.Scene {
     }
     if (Phaser.Input.Keyboard.JustDown(this.keyQ)) this.toggleQuestPanel();
     if (Phaser.Input.Keyboard.JustDown(this.keyR)) this.toggleRepPanel();
+    if (Phaser.Input.Keyboard.JustDown(this.keyG)) this.toggleSkillPanel();
+    if (this.skillPanelOpen && !this.talk) {
+      if (Phaser.Input.Keyboard.JustDown(this.keyB)) {
+        this.skillBranchIdx = (this.skillBranchIdx + 1) % this.branches.length;
+        this.skillPage = 0;
+        this.refreshSkillPanel();
+      }
+      if (Phaser.Input.Keyboard.JustDown(this.keyN)) {
+        this.skillPage += 1;
+        this.refreshSkillPanel();
+      }
+      if (Phaser.Input.Keyboard.JustDown(this.keyX)) this.resetSkillBranch();
+    }
     if (Phaser.Input.Keyboard.JustDown(this.keyK)) this.saveGame();
     // 结局面板打开时，E 只用于关闭它（先于对话处理消费这次按键）
     if (this.endingPanel.visible && Phaser.Input.Keyboard.JustDown(this.keyE)) {
@@ -312,6 +352,7 @@ export class OverworldScene extends Phaser.Scene {
     if (this.invPanelOpen) this.refreshInventoryPanel();
     if (this.equipPanelOpen) this.refreshEquipPanel();
     if (this.repPanelOpen) this.refreshRepPanel();
+    if (this.skillPanelOpen) this.refreshSkillPanel();
     this.syncToSession();
     this.updateEnvironment();
   }
@@ -365,6 +406,90 @@ export class OverworldScene extends Phaser.Scene {
   private detectMult = 1;
   /** 当前视野（格），由时段和天气决定 */
   private sightTiles = BASE_SIGHT_TILES;
+
+  private toggleSkillPanel(): void {
+    this.skillPanelOpen = !this.skillPanelOpen;
+    this.skillPanel.setVisible(this.skillPanelOpen);
+    if (this.skillPanelOpen) this.refreshSkillPanel();
+  }
+
+  private currentBranch(): Branch {
+    return this.branches[this.skillBranchIdx];
+  }
+
+  /** 当前分支、当前页的技能列表（最多 9 个，对应数字键 1–9） */
+  private skillPageItems(): SkillDef[] {
+    const list = branchSkills(this.skillDefs, this.currentBranch());
+    const pages = Math.max(1, Math.ceil(list.length / 9));
+    this.skillPage = ((this.skillPage % pages) + pages) % pages;
+    return list.slice(this.skillPage * 9, this.skillPage * 9 + 9);
+  }
+
+  private refreshSkillPanel(): void {
+    const branch = this.currentBranch();
+    const pages = Math.max(1, Math.ceil(branchSkills(this.skillDefs, branch).length / 9));
+    const items = this.skillPageItems();
+    const state = treeOf(this.session.player);
+    const rows = items.map((skill, i) => {
+      const reason = unlockBlockReason(state, skill);
+      const mark = state.unlocked.has(skill.id)
+        ? '已学会'
+        : reason === 'missing-prereq' ? '需要前置'
+        : reason === 'no-points' ? '点数不足'
+        : '可学习';
+      return `[${i + 1}] ${skill.name}（层 ${skill.tier}）  ${mark}`;
+    });
+    const combos = activeCombos(state, this.comboDefs).map((c) => c.name);
+    const level = levelForExp(this.session.player.exp);
+    this.skillPanel.setText([
+      '技能（G 关闭 · B 切换分支 · 数字键学习 · N 翻页 · X 重置分支）',
+      `技能点 ${state.points}   分支：${BRANCH_LABEL[branch]}（第 ${this.skillPage + 1}/${pages} 页）`,
+      ...rows,
+      `已激活组合技：${combos.length > 0 ? combos.join('、') : '无'}`,
+      `重置本分支费用：${resetCost(level)} 金币`,
+    ].join('\n'));
+  }
+
+  private learnSkill(index: number): void {
+    const target = this.skillPageItems()[index];
+    if (!target) return;
+    const state = treeOf(this.session.player);
+    const reason = unlockBlockReason(state, target);
+    if (reason !== null) {
+      const text = { already: '已经学会了', 'missing-prereq': '需要先学习前置技能', 'no-points': '技能点不足', unknown: '未知技能' }[reason];
+      this.showToast(`${target.name}：${text}`);
+      return;
+    }
+    unlockSkill(state, target);
+    storeTree(this.session.player, state);
+    this.showToast(`学会了 ${target.name}`);
+    this.syncToSession();
+    persistSession(this.session);
+    this.refreshSkillPanel();
+  }
+
+  /** 重置当前分支：返还技能点，需要支付金币。分支内没有已学技能时不收费。 */
+  private resetSkillBranch(): void {
+    const branch = this.currentBranch();
+    const state = treeOf(this.session.player);
+    const inBranch = branchSkills(this.skillDefs, branch).some((s) => state.unlocked.has(s.id));
+    if (!inBranch) {
+      this.showToast(`${BRANCH_LABEL[branch]} 分支没有已学技能`);
+      return;
+    }
+    const cost = resetCost(levelForExp(this.session.player.exp));
+    if (this.session.player.gold < cost) {
+      this.showToast(`金币不足：重置需要 ${cost}`);
+      return;
+    }
+    this.session.player.gold -= cost;
+    const refunded = resetBranch(state, branch, indexSkills(this.skillDefs));
+    storeTree(this.session.player, state);
+    this.showToast(`已重置${BRANCH_LABEL[branch]}分支，返还 ${refunded} 点技能点（-${cost} 金币）`);
+    this.syncToSession();
+    persistSession(this.session);
+    this.refreshSkillPanel();
+  }
 
   private toggleRepPanel(): void {
     this.repPanelOpen = !this.repPanelOpen;
@@ -588,6 +713,11 @@ export class OverworldScene extends Phaser.Scene {
       this.showToast(`你选择了：${option.text}`);
       this.syncToSession();
       this.refreshKeyChoice();
+      return;
+    }
+    // 技能面板打开且不在对话中：数字键学习列表中的技能
+    if (this.skillPanelOpen && !this.talk && /^[1-9]$/.test(e.key)) {
+      this.learnSkill(Number(e.key) - 1);
       return;
     }
     // 装备面板打开且不在对话中：数字键 1–4 切换对应槽位

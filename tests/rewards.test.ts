@@ -29,7 +29,7 @@ describe('发放奖励', () => {
   it('跨过等级门槛时返回升级提示', () => {
     const s = newSession(quests);
     expect(applyGains(s, { exp: 99, gold: 0, items: [] })).toEqual([]);
-    expect(applyGains(s, { exp: 1, gold: 0, items: [] })).toEqual(['升级！当前等级 2']);
+    expect(applyGains(s, { exp: 1, gold: 0, items: [] })).toEqual(['升级！当前等级 2（+1 技能点）']);
   });
 
   it('空奖励不改变任何数值', () => {

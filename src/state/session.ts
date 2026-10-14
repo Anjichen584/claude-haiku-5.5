@@ -25,6 +25,8 @@ export interface PlayerState {
   gold: number;
   /** 已装备的物品，键为槽位（main_hand / head / chest / feet） */
   equipment: Partial<Record<string, string>>;
+  /** 技能：已解锁的技能 id 与尚未使用的技能点（技能点由升级获得） */
+  skills: { unlocked: string[]; points: number };
 }
 
 export interface GameSession {
@@ -63,7 +65,7 @@ export function newSession(quests: readonly QuestDef[]): GameSession {
   return {
     world,
     quests: manager,
-    player: { tileX: 0, tileY: 0, hp: PLAYER_MAX_HP, exp: 0, gold: 0, equipment: {} },
+    player: { tileX: 0, tileY: 0, hp: PLAYER_MAX_HP, exp: 0, gold: 0, equipment: {}, skills: { unlocked: [], points: 0 } },
     // 从黎明前开始（与地表场景的初始时间一致）
     elapsedMs: DAY_LENGTH_MS * 0.3,
     visited: new Set(),
@@ -119,6 +121,14 @@ export function parseSave(raw: string): SaveFile {
     if (typeof id !== 'string') throw new SaveError('装备数据错误');
     equipment[slot] = id;
   }
+  // 旧存档没有技能，缺省为未解锁、0 点
+  const skillsRaw: unknown = player.skills === undefined ? { unlocked: [], points: 0 } : player.skills;
+  if (!isRecord(skillsRaw) || !Array.isArray(skillsRaw.unlocked) || !skillsRaw.unlocked.every((x) => typeof x === 'string')) {
+    throw new SaveError('技能数据错误');
+  }
+  const skillPoints: unknown = skillsRaw.points === undefined ? 0 : skillsRaw.points;
+  if (!isFiniteNumber(skillPoints) || skillPoints < 0) throw new SaveError('技能点数据错误');
+  const skills = { unlocked: [...(skillsRaw.unlocked as string[])], points: skillPoints };
   const rawFloor: unknown = data.dungeonFloor === undefined ? 1 : data.dungeonFloor;
   if (typeof rawFloor !== 'number' || !Number.isInteger(rawFloor) || rawFloor < 1 || rawFloor > MAX_DUNGEON_FLOOR) {
     throw new SaveError('地牢层数越界');
@@ -138,7 +148,7 @@ export function parseSave(raw: string): SaveFile {
     version: SAVE_VERSION,
     savedAt: typeof data.savedAt === 'string' ? data.savedAt : '',
     world: world as unknown as WorldSnapshot,
-    player: { tileX: player.tileX, tileY: player.tileY, hp: player.hp, exp, gold, equipment },
+    player: { tileX: player.tileX, tileY: player.tileY, hp: player.hp, exp, gold, equipment, skills },
     elapsedMs: data.elapsedMs,
     visited: data.visited,
     defeated: data.defeated,
@@ -152,7 +162,7 @@ export function fromSaveFile(file: SaveFile, quests: readonly QuestDef[]): GameS
   return {
     world,
     quests: new QuestManager(quests, world),
-    player: { ...file.player, equipment: { ...file.player.equipment } },
+    player: { ...file.player, equipment: { ...file.player.equipment }, skills: { unlocked: [...file.player.skills.unlocked], points: file.player.skills.points } },
     elapsedMs: file.elapsedMs,
     visited: new Set(file.visited),
     defeated: new Set(file.defeated),

@@ -17,7 +17,7 @@ const quests = (questsJson as unknown as { quests: QuestDef[] }).quests;
 describe('新会话', () => {
   it('出生在原点、满血，可接取的任务开局即自动接取，有前置的保持锁定', () => {
     const s = newSession(quests);
-    expect(s.player).toEqual({ tileX: 0, tileY: 0, hp: PLAYER_MAX_HP, exp: 0, gold: 0, equipment: {} });
+    expect(s.player).toEqual({ tileX: 0, tileY: 0, hp: PLAYER_MAX_HP, exp: 0, gold: 0, equipment: {}, skills: { unlocked: [], points: 0 } });
     expect(s.world.questStatus('main_01_first_rift')).toBe('active');
     expect(s.world.questStatus('main_02_ash_road')).toBe('locked');
   });
@@ -30,7 +30,7 @@ describe('存档往返', () => {
     s.world.setFlag('met_guide');
     s.world.addReputation('ashguard', 15);
     s.world.addStability(-7);
-    s.player = { tileX: 120, tileY: -33, hp: 64, exp: 240, gold: 75, equipment: { main_hand: 'iron_sword' } };
+    s.player = { tileX: 120, tileY: -33, hp: 64, exp: 240, gold: 75, equipment: { main_hand: 'iron_sword' }, skills: { unlocked: ['slash'], points: 2 } };
     s.dungeonFloor = 3;
     s.elapsedMs = 98765;
     s.visited.add('ash_road');

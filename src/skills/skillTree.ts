@@ -102,3 +102,32 @@ export function resetCost(playerLevel: number): number {
 export function activeCombos(state: SkillTreeState, combos: readonly ComboDef[]): ComboDef[] {
   return combos.filter((c) => c.skills.length === 2 && c.skills.every((id) => state.unlocked.has(id)));
 }
+
+export const BRANCH_LABEL: Record<Branch, string> = {
+  martial: '武艺',
+  arcane: '奥术',
+  survival: '生存',
+};
+
+/** 玩家存档中的技能字段 */
+export interface PlayerSkillFields {
+  skills: { unlocked: string[]; points: number };
+}
+
+/** 从玩家存档读取技能树状态 */
+export function treeOf(player: PlayerSkillFields): SkillTreeState {
+  return { unlocked: new Set(player.skills.unlocked), points: player.skills.points };
+}
+
+/** 把技能树状态写回玩家存档字段 */
+export function storeTree(player: PlayerSkillFields, state: SkillTreeState): void {
+  player.skills.unlocked = [...state.unlocked];
+  player.skills.points = state.points;
+}
+
+/** 某个分支的技能，按层级、再按 id 排序（界面显示顺序）。 */
+export function branchSkills(skills: readonly SkillDef[], branch: Branch): SkillDef[] {
+  return skills
+    .filter((s) => s.branch === branch)
+    .sort((a, b) => a.tier - b.tier || a.id.localeCompare(b.id));
+}
