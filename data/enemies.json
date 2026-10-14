@@ -12,6 +12,32 @@
       "drops": [
         { "item": "rift_shard", "chance": 0.1 }
       ]
+    },
+    {
+      "id": "moss_golem",
+      "name": "苔藓傀儡",
+      "biomes": ["forest"],
+      "hp": 120,
+      "attack": 14,
+      "defense": 10,
+      "speed": 60,
+      "element": "none",
+      "drops": [
+        { "item": "rift_shard", "chance": 0.2 }
+      ]
+    },
+    {
+      "id": "ember_hound",
+      "name": "余烬猎犬",
+      "biomes": ["forest"],
+      "hp": 40,
+      "attack": 8,
+      "defense": 1,
+      "speed": 180,
+      "element": "fire",
+      "drops": [
+        { "item": "rift_shard", "chance": 0.05 }
+      ]
     }
   ]
 }
