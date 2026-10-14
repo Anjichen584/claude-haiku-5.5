@@ -7,6 +7,8 @@ import biomesJson from '../../data/biomes.json';
 import endingsJson from '../../data/endings.json';
 import factionsJson from '../../data/factions.json';
 import affixesJson from '../../data/affixes.json';
+import dungeonJson from '../../data/dungeon.json';
+import type { DungeonFloorFile } from '../dungeon/floors';
 import type {
   AffixDataFile,
   BiomeDataFile,
@@ -33,6 +35,7 @@ export interface GameData {
   endings: EndingDataFile['endings'];
   factions: FactionDataFile['factions'];
   affixes: AffixDataFile['affixes'];
+  dungeon: DungeonFloorFile;
 }
 
 let cached: Readonly<GameData> | null = null;
@@ -49,6 +52,7 @@ export function loadGameData(): Readonly<GameData> {
     endings: (endingsJson as EndingDataFile).endings,
     factions: (factionsJson as FactionDataFile).factions,
     affixes: (affixesJson as AffixDataFile).affixes,
+    dungeon: dungeonJson as DungeonFloorFile,
   });
   return cached;
 }

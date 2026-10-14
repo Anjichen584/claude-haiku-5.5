@@ -1,0 +1,17 @@
+{
+  "maxAttempts": 5,
+  "floors": [
+    { "floor": 1,  "roomMin": 8,  "roomMax": 9,  "loopChance": 0.15, "enemyTier": 1, "bossId": null },
+    { "floor": 2,  "roomMin": 8,  "roomMax": 10, "loopChance": 0.15, "enemyTier": 1, "bossId": null },
+    { "floor": 3,  "roomMin": 9,  "roomMax": 11, "loopChance": 0.20, "enemyTier": 2, "bossId": null },
+    { "floor": 4,  "roomMin": 9,  "roomMax": 11, "loopChance": 0.20, "enemyTier": 2, "bossId": null },
+    { "floor": 5,  "roomMin": 10, "roomMax": 12, "loopChance": 0.25, "enemyTier": 3, "bossId": null },
+    { "floor": 6,  "roomMin": 10, "roomMax": 12, "loopChance": 0.25, "enemyTier": 3, "bossId": null },
+    { "floor": 7,  "roomMin": 11, "roomMax": 13, "loopChance": 0.25, "enemyTier": 4, "bossId": null },
+    { "floor": 8,  "roomMin": 11, "roomMax": 14, "loopChance": 0.30, "enemyTier": 4, "bossId": null },
+    { "floor": 9,  "roomMin": 12, "roomMax": 14, "loopChance": 0.30, "enemyTier": 5, "bossId": null },
+    { "floor": 10, "roomMin": 12, "roomMax": 15, "loopChance": 0.30, "enemyTier": 5, "bossId": null },
+    { "floor": 11, "roomMin": 13, "roomMax": 15, "loopChance": 0.35, "enemyTier": 6, "bossId": null },
+    { "floor": 12, "roomMin": 14, "roomMax": 18, "loopChance": 0.35, "enemyTier": 6, "bossId": null }
+  ]
+}
