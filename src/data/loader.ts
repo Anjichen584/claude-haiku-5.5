@@ -8,6 +8,10 @@ import endingsJson from '../../data/endings.json';
 import factionsJson from '../../data/factions.json';
 import affixesJson from '../../data/affixes.json';
 import dungeonJson from '../../data/dungeon.json';
+import itemSetsJson from '../../data/item-sets.json';
+import combosJson from '../../data/combos.json';
+import type { ItemSetDef } from '../items/sets';
+import type { ComboDef } from '../skills/skillTree';
 import type { DungeonFloorFile } from '../dungeon/floors';
 import type {
   AffixDataFile,
@@ -36,6 +40,8 @@ export interface GameData {
   factions: FactionDataFile['factions'];
   affixes: AffixDataFile['affixes'];
   dungeon: DungeonFloorFile;
+  itemSets: ItemSetDef[];
+  combos: ComboDef[];
 }
 
 let cached: Readonly<GameData> | null = null;
@@ -53,6 +59,8 @@ export function loadGameData(): Readonly<GameData> {
     factions: (factionsJson as FactionDataFile).factions,
     affixes: (affixesJson as AffixDataFile).affixes,
     dungeon: dungeonJson as DungeonFloorFile,
+    itemSets: (itemSetsJson as { sets: ItemSetDef[] }).sets,
+    combos: (combosJson as { combos: ComboDef[] }).combos,
   });
   return cached;
 }

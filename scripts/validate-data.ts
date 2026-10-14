@@ -52,6 +52,8 @@ const factionsFile = load('factions.json');
 const affixesFile = load('affixes.json');
 const dungeonFile = load('dungeon.json');
 const roomTemplatesFile = load('room-templates.json');
+const itemSetsFile = load('item-sets.json');
+const combosFile = load('combos.json');
 
 if (!expectArray('items', itemsFile.items)) process.exit(1);
 
@@ -76,6 +78,7 @@ const biomeIds = checkUniqueIds('biomes', biomes);
 checkUniqueIds('endings', endings);
 const factionIds = checkUniqueIds('factions', factions);
 checkUniqueIds('affixes', affixes);
+if (affixes.length < 60) fail(`affixes: 词条至少需要 60 种，目前 ${affixes.length} 种`);
 
 // ---------- 物品 ----------
 for (const item of items) {
@@ -86,13 +89,49 @@ for (const item of items) {
 }
 
 // ---------- 技能 ----------
+const skillById = new Map<string, any>(skills.map((s: any) => [s.id, s]));
+const branchCounts: Record<string, number> = {};
 for (const skill of skills) {
+  branchCounts[skill.branch] = (branchCounts[skill.branch] ?? 0) + 1;
+  if (!['martial', 'arcane', 'survival'].includes(skill.branch)) fail(`skills.${skill.id}: 未知分支 "${skill.branch}"`);
+  if (skill.multiplier !== undefined && skill.multiplier < 0) fail(`skills.${skill.id}: multiplier 不能为负`);
+  if (!skill.cost || skill.cost.skillPoints !== skill.tier) {
+    fail(`skills.${skill.id}: cost.skillPoints 必须等于 tier`);
+  }
   for (const req of skill.requires ?? []) {
-    if (!skillIds.has(req)) fail(`skills.${skill.id}: 前置技能 "${req}" 不存在`);
+    const parent = skillById.get(req);
+    if (!parent) {
+      fail(`skills.${skill.id}: 前置技能 "${req}" 不存在`);
+      continue;
+    }
+    if (parent.branch !== skill.branch) fail(`skills.${skill.id}: 前置技能 "${req}" 不在同一分支`);
+    if (parent.tier >= skill.tier) fail(`skills.${skill.id}: 前置技能 "${req}" 的层级必须更低`);
   }
-  if (skill.multiplier !== undefined && skill.multiplier <= 0) {
-    fail(`skills.${skill.id}: multiplier 必须大于 0`);
+}
+for (const branch of ['martial', 'arcane', 'survival']) {
+  if ((branchCounts[branch] ?? 0) < 15) fail(`skills: 分支 "${branch}" 至少需要 15 个技能`);
+}
+
+// ---------- 组合技 ----------
+for (const combo of combosFile.combos) {
+  if (!Array.isArray(combo.skills) || combo.skills.length !== 2 || combo.skills[0] === combo.skills[1]) {
+    fail(`combos.${combo.id}: 必须由两个不同的技能组成`);
+    continue;
   }
+  for (const s of combo.skills) {
+    if (!skillIds.has(s)) fail(`combos.${combo.id}: 技能 "${s}" 不存在`);
+  }
+}
+
+// ---------- 套装 ----------
+const setIds = checkUniqueIds('item-sets', itemSetsFile.sets);
+for (const set of itemSetsFile.sets) {
+  for (const b of set.bonuses) {
+    if (![2, 4, 6].includes(b.pieces)) fail(`item-sets.${set.id}: 套装件数必须为 2、4 或 6`);
+  }
+}
+for (const item of items) {
+  if (item.setId && !setIds.has(item.setId)) fail(`items.${item.id}: 套装 "${item.setId}" 不存在`);
 }
 
 // ---------- 敌人 ----------

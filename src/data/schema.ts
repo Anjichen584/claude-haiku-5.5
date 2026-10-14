@@ -15,6 +15,10 @@ export interface ItemDef {
   stackable?: boolean;
   maxStack?: number;
   price: number;
+  /** 所属套装 id（可选） */
+  setId?: string;
+  /** 装备等级（可选，用于词条缩放） */
+  itemLevel?: number;
 }
 
 export interface SkillDef {
@@ -27,6 +31,7 @@ export interface SkillDef {
   manaCost?: number;
   cooldown?: number;
   multiplier?: number;
+  cost: { skillPoints: number };
 }
 
 export interface EnemyDef {
