@@ -10,6 +10,8 @@ import affixesJson from '../../data/affixes.json';
 import dungeonJson from '../../data/dungeon.json';
 import itemSetsJson from '../../data/item-sets.json';
 import combosJson from '../../data/combos.json';
+import locationsJson from '../../data/locations.json';
+import npcsJson from '../../data/npcs.json';
 import type { ItemSetDef } from '../items/sets';
 import type { ComboDef } from '../skills/skillTree';
 import type { DungeonFloorFile } from '../dungeon/floors';
@@ -21,6 +23,8 @@ import type {
   EnemyDataFile,
   FactionDataFile,
   ItemDataFile,
+  LocationDataFile,
+  NpcDataFile,
   QuestDataFile,
   SkillDataFile,
 } from './schema';
@@ -61,6 +65,8 @@ export function loadGameData(): Readonly<GameData> {
     dungeon: dungeonJson as DungeonFloorFile,
     itemSets: (itemSetsJson as { sets: ItemSetDef[] }).sets,
     combos: (combosJson as { combos: ComboDef[] }).combos,
+    locations: (locationsJson as unknown as LocationDataFile).locations,
+    npcs: (npcsJson as unknown as NpcDataFile).npcs,
   });
   return cached;
 }

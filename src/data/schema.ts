@@ -124,3 +124,10 @@ export interface BiomeDataFile { biomes: BiomeDef[] }
 export interface EndingDataFile { endings: EndingDef[] }
 export interface FactionDataFile { factions: FactionDef[] }
 export interface AffixDataFile { affixes: AffixDef[] }
+
+/** 地点（任务 reach 目标） */
+export interface LocationDef { id: string; name: string; region: string }
+/** 对话 NPC（任务 talk 目标） */
+export interface NpcDef { id: string; name: string }
+export interface LocationDataFile { locations: LocationDef[] }
+export interface NpcDataFile { npcs: NpcDef[] }

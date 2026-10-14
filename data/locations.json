@@ -1,0 +1,204 @@
+{
+  "locations": [
+    {
+      "id": "ash_road_camp",
+      "name": "灰烬之路营地",
+      "region": "灰烬之路"
+    },
+    {
+      "id": "rift_core_whisper",
+      "name": "裂隙核心的低语",
+      "region": "裂隙核心"
+    },
+    {
+      "id": "snow_gate",
+      "name": "雪门",
+      "region": "霜原"
+    },
+    {
+      "id": "core_chamber",
+      "name": "核心密室",
+      "region": "裂隙核心"
+    },
+    {
+      "id": "dune_outpost",
+      "name": "沙丘哨站",
+      "region": "沙丘"
+    },
+    {
+      "id": "mire_village",
+      "name": "泥沼村",
+      "region": "泥沼"
+    },
+    {
+      "id": "ninth_gate",
+      "name": "第九道门",
+      "region": "裂隙核心"
+    },
+    {
+      "id": "red_tide_camp",
+      "name": "赤潮营地",
+      "region": "裂隙"
+    },
+    {
+      "id": "frozen_bell",
+      "name": "冰封的钟",
+      "region": "冰川"
+    },
+    {
+      "id": "lava_heart",
+      "name": "熔岩之心",
+      "region": "灰烬之路"
+    },
+    {
+      "id": "tribe_camp",
+      "name": "部落营地",
+      "region": "草原"
+    },
+    {
+      "id": "tribe_throne",
+      "name": "部落王座",
+      "region": "草原"
+    },
+    {
+      "id": "moth_cave",
+      "name": "飞蛾洞",
+      "region": "泥沼"
+    },
+    {
+      "id": "queen_lair",
+      "name": "女王巢穴",
+      "region": "冰川"
+    },
+    {
+      "id": "titan_gate",
+      "name": "泰坦之门",
+      "region": "沙丘"
+    },
+    {
+      "id": "mother_nest",
+      "name": "母亲巢穴",
+      "region": "泥沼"
+    },
+    {
+      "id": "regent_palace",
+      "name": "摄政者宫殿",
+      "region": "沙丘"
+    },
+    {
+      "id": "whisper_gate",
+      "name": "低语之门",
+      "region": "裂隙核心"
+    },
+    {
+      "id": "core_heart",
+      "name": "核心之心",
+      "region": "裂隙核心"
+    },
+    {
+      "id": "final_chamber",
+      "name": "最终密室",
+      "region": "裂隙核心"
+    },
+    {
+      "id": "ember_hollow",
+      "name": "余烬洞",
+      "region": "灰烬之路"
+    },
+    {
+      "id": "thorn_grove",
+      "name": "荆棘林",
+      "region": "林地"
+    },
+    {
+      "id": "mire_shrine",
+      "name": "泥沼神龛",
+      "region": "泥沼"
+    },
+    {
+      "id": "frozen_archive",
+      "name": "冰封档案馆",
+      "region": "冰川"
+    },
+    {
+      "id": "ember_memorial",
+      "name": "余烬纪念碑",
+      "region": "灰烬之路"
+    },
+    {
+      "id": "ash_archive",
+      "name": "灰烬档案馆",
+      "region": "灰烬之路"
+    },
+    {
+      "id": "frost_camp",
+      "name": "霜原营地",
+      "region": "霜原"
+    },
+    {
+      "id": "bark_bridge",
+      "name": "树皮桥",
+      "region": "林地"
+    },
+    {
+      "id": "frost_shrine",
+      "name": "霜神龛",
+      "region": "霜原"
+    },
+    {
+      "id": "sand_wells",
+      "name": "砂岩水井",
+      "region": "沙丘"
+    },
+    {
+      "id": "bog_edge",
+      "name": "泥沼边缘",
+      "region": "泥沼"
+    },
+    {
+      "id": "frozen_bridge",
+      "name": "冻桥",
+      "region": "霜原"
+    },
+    {
+      "id": "hidden_archive_vault",
+      "name": "档案馆密室",
+      "region": "灰烬之路"
+    },
+    {
+      "id": "hyena_den",
+      "name": "鬣狗巢穴",
+      "region": "草原"
+    },
+    {
+      "id": "moss_glade",
+      "name": "苔藓林地",
+      "region": "林地"
+    },
+    {
+      "id": "grass_ridge",
+      "name": "草原山脊",
+      "region": "草原"
+    },
+    {
+      "id": "rot_pits",
+      "name": "腐化坑",
+      "region": "裂隙"
+    },
+    {
+      "id": "glacier_watch",
+      "name": "冰川守望台",
+      "region": "冰川"
+    },
+    {
+      "id": "grove_library",
+      "name": "林中图书馆",
+      "region": "林地"
+    },
+    {
+      "id": "dune_pass",
+      "name": "沙丘隘口",
+      "region": "沙丘"
+    }
+  ]
+}

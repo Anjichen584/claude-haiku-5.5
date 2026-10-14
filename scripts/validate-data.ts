@@ -55,6 +55,8 @@ const roomTemplatesFile = load('room-templates.json');
 const itemSetsFile = load('item-sets.json');
 const combosFile = load('combos.json');
 const keyChoicesFile = load('key-choices.json');
+const locationsFile = load('locations.json');
+const npcsFile = load('npcs.json');
 
 if (!expectArray('items', itemsFile.items)) process.exit(1);
 
@@ -67,6 +69,8 @@ const biomes = biomesFile.biomes;
 const endings = endingsFile.endings;
 const factions = factionsFile.factions;
 const affixes = affixesFile.affixes;
+const locations = locationsFile.locations;
+const npcs = npcsFile.npcs;
 
 
 // ---------- id 集合 ----------
@@ -78,6 +82,8 @@ checkUniqueIds('dialogues', dialogues);
 const biomeIds = checkUniqueIds('biomes', biomes);
 checkUniqueIds('endings', endings);
 const factionIds = checkUniqueIds('factions', factions);
+const locationIds = checkUniqueIds('locations', locations);
+const npcIds = checkUniqueIds('npcs', npcs);
 checkUniqueIds('affixes', affixes);
 if (affixes.length < 60) fail(`affixes: 词条至少需要 60 种，目前 ${affixes.length} 种`);
 
@@ -185,6 +191,12 @@ for (const quest of quests) {
   for (const obj of quest.objectives ?? []) {
     if (obj.type === 'kill' && !enemyIds.has(obj.target)) {
       fail(`quests.${quest.id}: 击杀目标敌人 "${obj.target}" 不存在`);
+    }
+    if (obj.type === 'reach' && !locationIds.has(obj.target)) {
+      fail(`quests.${quest.id}: 抵达地点 \"${obj.target}\" 不存在（请加入 data/locations.json）`);
+    }
+    if (obj.type === 'talk' && !npcIds.has(obj.target)) {
+      fail(`quests.${quest.id}: 对话 NPC \"${obj.target}\" 不存在（请加入 data/npcs.json）`);
     }
     if (obj.type === 'kill' && (obj.count ?? 1) < 1) {
       fail(`quests.${quest.id}: 击杀数量必须 >= 1`);
