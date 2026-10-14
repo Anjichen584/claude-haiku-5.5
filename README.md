@@ -32,7 +32,7 @@
 
 | 阶段 | 状态 |
 |---|---|
-| 阶段 0：工程搭建 | 进行中（文档与仓库规范已完成） |
+| 阶段 0：工程搭建 | 已完成（骨架、数据加载、校验脚本、测试均可运行） |
 | 阶段 1–8 | 未开始 |
 
 详细排期见 [开发路线图](docs/roadmap.md)。
@@ -56,16 +56,25 @@ claude-haiku-5.5/
 
 ---
 
-## 开发环境（计划）
+## 开发环境
+
+环境要求：Node.js 20 LTS 或更高版本。
 
 ```bash
-npm install        # 安装依赖
-npm run dev        # 启动浏览器开发服务器
-npm run build      # 生成生产构建
-npm run tauri build  # 打包桌面应用（可选）
+npm install            # 安装依赖
+npm run dev            # 启动浏览器开发服务器（http://localhost:5173）
+npm run typecheck      # TypeScript 类型检查
+npm run validate:data  # 校验 data/ 中的 JSON 引用与字段
+npm test               # 运行单元测试
+npm run build          # 类型检查 + 生产构建，输出到 dist/
+npm run preview        # 预览生产构建（http://localhost:4173）
 ```
 
-> 以上命令在阶段 0 完成后可用。
+> 打包桌面应用（`npm run tauri build`）计划在阶段 8 加入。
+
+**内存较小的机器**：如果 `npm run build` 被系统终止（Killed / OOM），可以用
+`npx vite build` 配合 `sourcemap: false`（当前配置已默认关闭）。Phaser 体积较大，
+构建时需要约 1.5 GB 可用内存。
 
 克隆仓库前请先安装 Git LFS：
 
