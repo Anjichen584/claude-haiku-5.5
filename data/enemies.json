@@ -3,41 +3,916 @@
     {
       "id": "ash_wolf",
       "name": "灰烬狼",
-      "biomes": ["forest"],
+      "biomes": [
+        "forest"
+      ],
       "hp": 60,
       "attack": 10,
       "defense": 3,
       "speed": 140,
       "element": "fire",
       "drops": [
-        { "item": "rift_shard", "chance": 0.1 }
+        {
+          "item": "rift_shard",
+          "chance": 0.1
+        }
       ]
     },
     {
       "id": "moss_golem",
       "name": "苔藓傀儡",
-      "biomes": ["forest"],
+      "biomes": [
+        "forest"
+      ],
       "hp": 120,
       "attack": 14,
       "defense": 10,
       "speed": 60,
       "element": "none",
       "drops": [
-        { "item": "rift_shard", "chance": 0.2 }
+        {
+          "item": "rift_shard",
+          "chance": 0.2
+        }
       ]
     },
     {
       "id": "ember_hound",
       "name": "余烬猎犬",
-      "biomes": ["forest"],
+      "biomes": [
+        "forest"
+      ],
       "hp": 40,
       "attack": 8,
       "defense": 1,
       "speed": 180,
       "element": "fire",
       "drops": [
-        { "item": "rift_shard", "chance": 0.05 }
+        {
+          "item": "rift_shard",
+          "chance": 0.05
+        }
       ]
+    },
+    {
+      "id": "frost_rat",
+      "name": "霜鼠",
+      "biomes": [
+        "snow"
+      ],
+      "hp": 34,
+      "attack": 7,
+      "defense": 1,
+      "speed": 170,
+      "element": "ice",
+      "level": 1,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.08
+        }
+      ]
+    },
+    {
+      "id": "snow_hare",
+      "name": "雪兔",
+      "biomes": [
+        "snow"
+      ],
+      "hp": 30,
+      "attack": 6,
+      "defense": 1,
+      "speed": 190,
+      "element": "none",
+      "level": 1,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.05
+        }
+      ]
+    },
+    {
+      "id": "icicle_slime",
+      "name": "冰晶软泥",
+      "biomes": [
+        "snow",
+        "marsh"
+      ],
+      "hp": 52,
+      "attack": 9,
+      "defense": 4,
+      "speed": 70,
+      "element": "ice",
+      "level": 2,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "frost_wolf",
+      "name": "霜狼",
+      "biomes": [
+        "snow"
+      ],
+      "hp": 70,
+      "attack": 12,
+      "defense": 4,
+      "speed": 160,
+      "element": "ice",
+      "level": 3,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.12
+        }
+      ]
+    },
+    {
+      "id": "ash_crow",
+      "name": "灰烬乌鸦",
+      "biomes": [
+        "ashland"
+      ],
+      "hp": 28,
+      "attack": 8,
+      "defense": 1,
+      "speed": 200,
+      "element": "fire",
+      "level": 1,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.06
+        }
+      ]
+    },
+    {
+      "id": "ember_lizard",
+      "name": "余烬蜥蜴",
+      "biomes": [
+        "ashland"
+      ],
+      "hp": 58,
+      "attack": 11,
+      "defense": 5,
+      "speed": 110,
+      "element": "fire",
+      "level": 2,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "sand_scorpion",
+      "name": "沙蝎",
+      "biomes": [
+        "ashland"
+      ],
+      "hp": 66,
+      "attack": 13,
+      "defense": 7,
+      "speed": 90,
+      "element": "none",
+      "level": 3,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.12
+        }
+      ]
+    },
+    {
+      "id": "cinder_golem",
+      "name": "煤渣傀儡",
+      "biomes": [
+        "ashland"
+      ],
+      "hp": 110,
+      "attack": 15,
+      "defense": 10,
+      "speed": 50,
+      "element": "fire",
+      "level": 4,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.15
+        }
+      ]
+    },
+    {
+      "id": "moss_boar",
+      "name": "苔野猪",
+      "biomes": [
+        "forest"
+      ],
+      "hp": 48,
+      "attack": 10,
+      "defense": 4,
+      "speed": 130,
+      "element": "none",
+      "level": 2,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.08
+        }
+      ]
+    },
+    {
+      "id": "thorn_sprite",
+      "name": "荆棘精灵",
+      "biomes": [
+        "forest"
+      ],
+      "hp": 40,
+      "attack": 9,
+      "defense": 2,
+      "speed": 150,
+      "element": "dark",
+      "level": 2,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "bark_stag",
+      "name": "树皮鹿",
+      "biomes": [
+        "forest"
+      ],
+      "hp": 76,
+      "attack": 12,
+      "defense": 6,
+      "speed": 140,
+      "element": "none",
+      "level": 3,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.12
+        }
+      ]
+    },
+    {
+      "id": "hollow_owl",
+      "name": "空洞猫头鹰",
+      "biomes": [
+        "forest"
+      ],
+      "hp": 54,
+      "attack": 11,
+      "defense": 3,
+      "speed": 175,
+      "element": "dark",
+      "level": 3,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "grass_stalker",
+      "name": "草丛潜伏者",
+      "biomes": [
+        "plains"
+      ],
+      "hp": 44,
+      "attack": 10,
+      "defense": 2,
+      "speed": 185,
+      "element": "none",
+      "level": 2,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.09
+        }
+      ]
+    },
+    {
+      "id": "dust_hyena",
+      "name": "尘鬣狗",
+      "biomes": [
+        "plains"
+      ],
+      "hp": 62,
+      "attack": 11,
+      "defense": 4,
+      "speed": 165,
+      "element": "none",
+      "level": 2,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "plains_raider",
+      "name": "平原劫匪",
+      "biomes": [
+        "plains"
+      ],
+      "hp": 80,
+      "attack": 13,
+      "defense": 6,
+      "speed": 120,
+      "element": "none",
+      "level": 3,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.12
+        }
+      ]
+    },
+    {
+      "id": "wild_boarlord",
+      "name": "野猪头目",
+      "biomes": [
+        "plains"
+      ],
+      "hp": 96,
+      "attack": 14,
+      "defense": 7,
+      "speed": 100,
+      "element": "none",
+      "level": 4,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.13
+        }
+      ]
+    },
+    {
+      "id": "bog_leech",
+      "name": "沼泽水蛭",
+      "biomes": [
+        "marsh"
+      ],
+      "hp": 36,
+      "attack": 8,
+      "defense": 2,
+      "speed": 95,
+      "element": "dark",
+      "level": 1,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.06
+        }
+      ]
+    },
+    {
+      "id": "mire_toad",
+      "name": "泥沼蟾蜍",
+      "biomes": [
+        "marsh"
+      ],
+      "hp": 70,
+      "attack": 12,
+      "defense": 5,
+      "speed": 80,
+      "element": "none",
+      "level": 3,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "swamp_wraith",
+      "name": "沼泽幽影",
+      "biomes": [
+        "marsh"
+      ],
+      "hp": 64,
+      "attack": 14,
+      "defense": 3,
+      "speed": 150,
+      "element": "dark",
+      "level": 4,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.12
+        }
+      ]
+    },
+    {
+      "id": "rot_crawler",
+      "name": "腐化爬虫",
+      "biomes": [
+        "marsh",
+        "forest"
+      ],
+      "hp": 58,
+      "attack": 11,
+      "defense": 4,
+      "speed": 120,
+      "element": "dark",
+      "level": 3,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "rift_fragment",
+      "name": "裂隙残片",
+      "biomes": [
+        "forest",
+        "ashland",
+        "plains"
+      ],
+      "hp": 90,
+      "attack": 15,
+      "defense": 8,
+      "speed": 130,
+      "element": "dark",
+      "level": 5,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.14
+        }
+      ]
+    },
+    {
+      "id": "void_moth",
+      "name": "虚空飞蛾",
+      "biomes": [
+        "forest",
+        "marsh"
+      ],
+      "hp": 72,
+      "attack": 14,
+      "defense": 3,
+      "speed": 190,
+      "element": "dark",
+      "level": 4,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.12
+        }
+      ]
+    },
+    {
+      "id": "gravel_mite",
+      "name": "碎石螨",
+      "biomes": [
+        "ashland",
+        "plains"
+      ],
+      "hp": 50,
+      "attack": 10,
+      "defense": 8,
+      "speed": 95,
+      "element": "none",
+      "level": 2,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.08
+        }
+      ]
+    },
+    {
+      "id": "elite_frost_alpha",
+      "name": "霜狼首领",
+      "biomes": [
+        "snow"
+      ],
+      "hp": 260,
+      "attack": 22,
+      "defense": 12,
+      "speed": 170,
+      "element": "ice",
+      "level": 5,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.5
+        }
+      ],
+      "elite": true
+    },
+    {
+      "id": "elite_ice_warden",
+      "name": "寒冰守卫",
+      "biomes": [
+        "snow"
+      ],
+      "hp": 320,
+      "attack": 24,
+      "defense": 16,
+      "speed": 80,
+      "element": "ice",
+      "level": 6,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.5
+        }
+      ],
+      "elite": true
+    },
+    {
+      "id": "elite_ash_drake",
+      "name": "灰烬幼龙",
+      "biomes": [
+        "ashland"
+      ],
+      "hp": 280,
+      "attack": 25,
+      "defense": 10,
+      "speed": 150,
+      "element": "fire",
+      "level": 5,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.5
+        }
+      ],
+      "elite": true
+    },
+    {
+      "id": "elite_magma_crab",
+      "name": "熔岩蟹",
+      "biomes": [
+        "ashland"
+      ],
+      "hp": 340,
+      "attack": 23,
+      "defense": 18,
+      "speed": 70,
+      "element": "fire",
+      "level": 6,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.5
+        }
+      ],
+      "elite": true
+    },
+    {
+      "id": "elite_ancient_stag",
+      "name": "古树神鹿",
+      "biomes": [
+        "forest"
+      ],
+      "hp": 300,
+      "attack": 21,
+      "defense": 14,
+      "speed": 130,
+      "element": "none",
+      "level": 5,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.5
+        }
+      ],
+      "elite": true
+    },
+    {
+      "id": "elite_grove_witch",
+      "name": "林中女巫",
+      "biomes": [
+        "forest"
+      ],
+      "hp": 250,
+      "attack": 26,
+      "defense": 8,
+      "speed": 140,
+      "element": "dark",
+      "level": 6,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.5
+        }
+      ],
+      "elite": true
+    },
+    {
+      "id": "elite_war_chief",
+      "name": "平原战首",
+      "biomes": [
+        "plains"
+      ],
+      "hp": 310,
+      "attack": 24,
+      "defense": 15,
+      "speed": 125,
+      "element": "none",
+      "level": 5,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.5
+        }
+      ],
+      "elite": true
+    },
+    {
+      "id": "elite_dust_titan",
+      "name": "尘暴巨人",
+      "biomes": [
+        "plains"
+      ],
+      "hp": 360,
+      "attack": 22,
+      "defense": 20,
+      "speed": 60,
+      "element": "none",
+      "level": 6,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.5
+        }
+      ],
+      "elite": true
+    },
+    {
+      "id": "elite_bog_matriarch",
+      "name": "沼泽母巢",
+      "biomes": [
+        "marsh"
+      ],
+      "hp": 290,
+      "attack": 23,
+      "defense": 12,
+      "speed": 90,
+      "element": "dark",
+      "level": 5,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.5
+        }
+      ],
+      "elite": true
+    },
+    {
+      "id": "elite_mire_shaman",
+      "name": "泥沼萨满",
+      "biomes": [
+        "marsh"
+      ],
+      "hp": 260,
+      "attack": 27,
+      "defense": 9,
+      "speed": 110,
+      "element": "dark",
+      "level": 6,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.5
+        }
+      ],
+      "elite": true
+    },
+    {
+      "id": "elite_rift_hound",
+      "name": "裂隙猎犬王",
+      "biomes": [
+        "forest",
+        "ashland"
+      ],
+      "hp": 330,
+      "attack": 25,
+      "defense": 11,
+      "speed": 180,
+      "element": "dark",
+      "level": 6,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.5
+        }
+      ],
+      "elite": true
+    },
+    {
+      "id": "elite_rot_colossus",
+      "name": "腐化巨像",
+      "biomes": [
+        "marsh",
+        "forest"
+      ],
+      "hp": 380,
+      "attack": 21,
+      "defense": 22,
+      "speed": 55,
+      "element": "dark",
+      "level": 6,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 0.5
+        }
+      ],
+      "elite": true
+    },
+    {
+      "id": "boss_glacier_queen",
+      "name": "冰河女王",
+      "biomes": [
+        "snow"
+      ],
+      "hp": 900,
+      "attack": 38,
+      "defense": 20,
+      "speed": 110,
+      "element": "ice",
+      "level": 7,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 1.0
+        }
+      ],
+      "boss": true,
+      "staggerImmune": true
+    },
+    {
+      "id": "boss_ember_titan",
+      "name": "余烬泰坦",
+      "biomes": [
+        "ashland"
+      ],
+      "hp": 1000,
+      "attack": 40,
+      "defense": 22,
+      "speed": 90,
+      "element": "fire",
+      "level": 7,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 1.0
+        }
+      ],
+      "boss": true,
+      "staggerImmune": true
+    },
+    {
+      "id": "boss_ancient_treant",
+      "name": "万年树灵",
+      "biomes": [
+        "forest"
+      ],
+      "hp": 950,
+      "attack": 36,
+      "defense": 26,
+      "speed": 70,
+      "element": "none",
+      "level": 8,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 1.0
+        }
+      ],
+      "boss": true,
+      "staggerImmune": true
+    },
+    {
+      "id": "boss_dune_regent",
+      "name": "沙海摄政",
+      "biomes": [
+        "plains"
+      ],
+      "hp": 980,
+      "attack": 39,
+      "defense": 24,
+      "speed": 100,
+      "element": "none",
+      "level": 8,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 1.0
+        }
+      ],
+      "boss": true,
+      "staggerImmune": true
+    },
+    {
+      "id": "boss_swamp_mother",
+      "name": "沼泽之母",
+      "biomes": [
+        "marsh"
+      ],
+      "hp": 920,
+      "attack": 37,
+      "defense": 18,
+      "speed": 120,
+      "element": "dark",
+      "level": 8,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 1.0
+        }
+      ],
+      "boss": true,
+      "staggerImmune": true
+    },
+    {
+      "id": "boss_rift_herald",
+      "name": "裂隙先驱",
+      "biomes": [
+        "forest",
+        "ashland",
+        "plains"
+      ],
+      "hp": 1100,
+      "attack": 42,
+      "defense": 24,
+      "speed": 120,
+      "element": "dark",
+      "level": 9,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 1.0
+        }
+      ],
+      "boss": true,
+      "staggerImmune": true
+    },
+    {
+      "id": "boss_frozen_colossus",
+      "name": "冻土巨神",
+      "biomes": [
+        "snow",
+        "plains"
+      ],
+      "hp": 1200,
+      "attack": 44,
+      "defense": 30,
+      "speed": 60,
+      "element": "ice",
+      "level": 10,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 1.0
+        }
+      ],
+      "boss": true,
+      "staggerImmune": true
+    },
+    {
+      "id": "boss_core_warden",
+      "name": "裂隙核心守卫",
+      "biomes": [
+        "ashland",
+        "forest",
+        "snow",
+        "plains",
+        "marsh"
+      ],
+      "hp": 1500,
+      "attack": 50,
+      "defense": 30,
+      "speed": 100,
+      "element": "dark",
+      "level": 12,
+      "drops": [
+        {
+          "item": "rift_shard",
+          "chance": 1.0
+        }
+      ],
+      "boss": true,
+      "staggerImmune": true
     }
   ]
 }

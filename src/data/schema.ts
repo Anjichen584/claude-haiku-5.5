@@ -44,6 +44,14 @@ export interface EnemyDef {
   speed: number;
   element?: string;
   drops: Array<{ item: string; chance: number }>;
+  /** 怪物等级（1–12），用于地牢与数值缩放 */
+  level?: number;
+  /** 精英怪 */
+  elite?: boolean;
+  /** Boss */
+  boss?: boolean;
+  /** Boss 不受受击硬直影响 */
+  staggerImmune?: boolean;
 }
 
 export interface QuestDef {
