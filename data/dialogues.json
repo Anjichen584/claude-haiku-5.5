@@ -1572,6 +1572,476 @@
           "next": null
         }
       }
+    },
+    {
+      "id": "side_71_lantern_keeper",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "守灯人 西蒙",
+          "text": "余烬蜥蜴最怕的是灯笼的光，可它们偏偏喜欢在灯下打转。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "守灯人 西蒙",
+          "text": "我的灯油快用完了，裂隙碎片可以替代，但需要有人去拿。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "守灯人 西蒙",
+          "text": "灯亮了，路就不会走错。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_72_candle_monk",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "僧人 艾纳",
+          "text": "霜神龛的蜡烛已经熄灭三十年，我们只能等待有人点燃它。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "僧人 艾纳",
+          "text": "老鼠在神龛里做了窝，它们啃掉了所有蜡芯。",
+          "choices": [
+            {
+              "text": "我会把老鼠赶走。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "monk_clear"
+                ]
+              }
+            },
+            {
+              "text": "老鼠我不管，我只要蜡烛。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "monk_candle"
+                ]
+              }
+            }
+          ]
+        },
+        "n3": {
+          "speaker": "僧人 艾纳",
+          "text": "你要是愿意帮忙，我会为你念一段祈祷。",
+          "next": "n4"
+        },
+        "n4": {
+          "speaker": "僧人 艾纳",
+          "text": "去吧，蜡烛的光会替我们照亮前路。",
+          "next": null
+        },
+        "c1": {
+          "speaker": "僧人 艾纳",
+          "text": "愿神明保佑你的每一步。",
+          "next": "n3"
+        },
+        "c2": {
+          "speaker": "僧人 艾纳",
+          "text": "蜡烛会给你，但别忘了神龛的规矩。",
+          "next": "n3"
+        }
+      }
+    },
+    {
+      "id": "side_74_patrol_captain",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "巡逻队长 雷恩",
+          "text": "灰烬之路最近不太平，乌鸦成群结队地盯着过路人。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "巡逻队长 雷恩",
+          "text": "余烬猎犬也越来越大胆，它们不再怕火把。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "巡逻队长 雷恩",
+          "text": "我需要一个能把它们逼退的人，你愿意吗？",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_75_well_digger",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "挖井人 欧文",
+          "text": "砂岩水井快干了，地下的水脉被沙蝎挡住了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "挖井人 欧文",
+          "text": "我挖了三天，只挖出一堆蝎子壳。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "挖井人 欧文",
+          "text": "如果你能帮我清理掉它们，水脉就能重新流动。",
+          "choices": [
+            {
+              "text": "我会去清理蝎子。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "well_clear"
+                ]
+              }
+            },
+            {
+              "text": "水井的事你自己想办法。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "well_self"
+                ]
+              }
+            }
+          ]
+        },
+        "n4": {
+          "speaker": "挖井人 欧文",
+          "text": "水井是沙漠的命，别让它断在我手里。",
+          "next": null
+        },
+        "c1": {
+          "speaker": "挖井人 欧文",
+          "text": "太好了，我在井口等你。",
+          "next": "n4"
+        },
+        "c2": {
+          "speaker": "挖井人 欧文",
+          "text": "那就只能靠你自己了。",
+          "next": "n4"
+        }
+      }
+    },
+    {
+      "id": "side_76_grove_singer",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "歌者 露西",
+          "text": "林子里的歌是荆棘精灵在唱，它们唱的是这片土地的过去。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "歌者 露西",
+          "text": "可最近，歌声变得悲伤，因为有鹿被猎杀在林子边缘。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "歌者 露西",
+          "text": "如果你能让它们安静下来，我就把完整的歌教给你。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_78_stew_cook",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "厨子 格瑞",
+          "text": "苔原野猪的肉是最好的炖料，但它们的獠牙也很难对付。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "厨子 格瑞",
+          "text": "我需要五头完整的野猪，我会把它们的肉做成最香的汤。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "厨子 格瑞",
+          "text": "做好之后，我给你留一大碗。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_79_scout_leader",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "斥候长 玛拉",
+          "text": "草原的潜猎者和沙尘鬣狗最近走得很近，像是被同一个人驱赶。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "斥候长 玛拉",
+          "text": "我怀疑平原上有人在操纵它们。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "斥候长 玛拉",
+          "text": "你要是能查出真相，我就把斥候的令牌交给你。",
+          "choices": [
+            {
+              "text": "我会查清楚。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "scout_investigate"
+                ]
+              }
+            },
+            {
+              "text": "我只做我的任务。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "scout_task"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "斥候长 玛拉",
+          "text": "很好，记住要小心你身边的人。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "斥候长 玛拉",
+          "text": "任务也好，只是别让我失望。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_80_tusk_trader",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "商人 布鲁",
+          "text": "野猪领主的獠牙在黑市上很值钱，但没人敢收。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "商人 布鲁",
+          "text": "我愿意出高价，前提是獠牙是从它身上直接拔下来的。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "商人 布鲁",
+          "text": "这是一笔大生意，你考虑一下。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_81_bog_mapper",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "测绘员 诺亚",
+          "text": "沼泽的边缘每天都在变化，我的地图已经过时了。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "测绘员 诺亚",
+          "text": "泥沼蟾蜍会在地图上留下新的湿地，那些地方很危险。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "测绘员 诺亚",
+          "text": "帮我标出那些湿地，我会给你一份新的地图。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_82_bell_ringer",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "钟楼守 索菲",
+          "text": "幽影的铃铛在夜里会自己响，那是它们在召唤同伴。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "钟楼守 索菲",
+          "text": "我试过把铃铛收起来，可第二天它又出现在钟楼顶上。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "钟楼守 索菲",
+          "text": "你把它交给守望队长，也许他们能找到办法。",
+          "choices": [
+            {
+              "text": "我会把它带给守望队长。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "bell_deliver"
+                ]
+              }
+            },
+            {
+              "text": "铃铛我想留着。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "bell_keep"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "钟楼守 索菲",
+          "text": "谢谢你，钟声终于能停了。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "钟楼守 索菲",
+          "text": "那就留着吧，但小心夜里的钟声。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_84_mine_foreman",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "矿工头 格雷厄姆",
+          "text": "砂砾矿井里的螨虫越来越多，它们啃坏了支柱。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "矿工头 格雷厄姆",
+          "text": "灰烬头盔是矿工的保命装备，可我们已经没有存货了。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "矿工头 格雷厄姆",
+          "text": "如果你能找到头盔，矿井就能继续开挖。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_85_moth_artist",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "画家 莉亚",
+          "text": "虚空飞蛾的翅膀在月光下会显出图案，我想把它们画下来。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "画家 莉亚",
+          "text": "可每次我靠近，它们就会散开，像是在躲避什么。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "画家 莉亚",
+          "text": "如果你能帮我带回几片翅膀，我愿意为你画一幅像。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_86_fragment_scholar",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "学者 奥斯卡",
+          "text": "裂隙碎片不是石头，它们是被撕碎的时间。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "学者 奥斯卡",
+          "text": "我正在研究它们的排列方式，发现它们会重新组合。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "学者 奥斯卡",
+          "text": "你要是能拿到更多碎片，我就能知道它们要拼成什么。",
+          "choices": [
+            {
+              "text": "我会帮你收集碎片。",
+              "next": "c1",
+              "effects": {
+                "setFlags": [
+                  "fragment_collect"
+                ]
+              }
+            },
+            {
+              "text": "碎片太危险了，我不想碰。",
+              "next": "c2",
+              "effects": {
+                "setFlags": [
+                  "fragment_avoid"
+                ]
+              }
+            }
+          ]
+        },
+        "c1": {
+          "speaker": "学者 奥斯卡",
+          "text": "太好了，我的研究终于有了进展。",
+          "next": null
+        },
+        "c2": {
+          "speaker": "学者 奥斯卡",
+          "text": "谨慎是好事，但有时候真相就在危险里。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_88_courier_route",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "驿站长 汉娜",
+          "text": "灰烬之路的信使最近越来越少，因为路上的乌鸦会抢走信件。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "驿站长 汉娜",
+          "text": "这封信很重要，必须送到营地，不能有任何延误。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "驿站长 汉娜",
+          "text": "疾行靴能帮你跑得更快，但别在路上停留太久。",
+          "next": null
+        }
+      }
+    },
+    {
+      "id": "side_90_bridge_guard",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "桥卫 托马斯",
+          "text": "冻桥是通往北方唯一的桥，桥下的狼群已经堵住了三支商队。",
+          "next": "n2"
+        },
+        "n2": {
+          "speaker": "桥卫 托马斯",
+          "text": "我们守不住，只能靠过路的人帮忙。",
+          "next": "n3"
+        },
+        "n3": {
+          "speaker": "桥卫 托马斯",
+          "text": "你若能清理掉它们，我就给你一份北方的通行证。",
+          "next": null
+        }
+      }
     }
   ]
 }

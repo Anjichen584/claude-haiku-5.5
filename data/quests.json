@@ -2348,6 +2348,569 @@
       "rewards": {
         "exp": 2200
       }
+    },
+    {
+      "id": "side_71_ember_lantern",
+      "type": "side",
+      "title": "余烬灯笼",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "ember_lizard",
+          "count": 4,
+          "text": "猎杀 4 只余烬蜥蜴"
+        },
+        {
+          "type": "collect",
+          "target": "rift_shard",
+          "count": 2,
+          "text": "收集 2 块裂隙碎片"
+        }
+      ],
+      "rewards": {
+        "exp": 300,
+        "gold": 120
+      }
+    },
+    {
+      "id": "side_72_frost_shrine_candles",
+      "type": "side",
+      "title": "霜神龛的蜡烛",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "frost_rat",
+          "count": 5,
+          "text": "清除 5 只霜原鼠"
+        },
+        {
+          "type": "reach",
+          "target": "frost_shrine",
+          "text": "点燃霜神龛的蜡烛"
+        }
+      ],
+      "rewards": {
+        "exp": 280,
+        "gold": 110
+      }
+    },
+    {
+      "id": "side_73_tundra_hunt",
+      "type": "side",
+      "title": "苔原狩猎",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "snow_hare",
+          "count": 8,
+          "text": "猎取 8 只雪兔"
+        },
+        {
+          "type": "kill",
+          "target": "icicle_slime",
+          "count": 4,
+          "text": "清理 4 只冰晶史莱姆"
+        }
+      ],
+      "rewards": {
+        "exp": 260,
+        "gold": 100
+      }
+    },
+    {
+      "id": "side_74_ash_road_patrol",
+      "type": "side",
+      "title": "灰烬之路巡逻",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "ash_crow",
+          "count": 5,
+          "text": "击落 5 只灰烬乌鸦"
+        },
+        {
+          "type": "kill",
+          "target": "ember_hound",
+          "count": 4,
+          "text": "猎杀 4 只余烬猎犬"
+        }
+      ],
+      "rewards": {
+        "exp": 330,
+        "gold": 130
+      }
+    },
+    {
+      "id": "side_75_sandstone_wells",
+      "type": "side",
+      "title": "砂岩水井",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "sand_scorpion",
+          "count": 3,
+          "text": "猎杀 3 只沙漠蝎"
+        },
+        {
+          "type": "reach",
+          "target": "sand_wells",
+          "text": "抵达砂岩水井"
+        }
+      ],
+      "rewards": {
+        "exp": 290,
+        "gold": 115
+      }
+    },
+    {
+      "id": "side_76_grove_song",
+      "type": "side",
+      "title": "林间的歌",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "thorn_sprite",
+          "count": 6,
+          "text": "清除 6 个荆棘精灵"
+        },
+        {
+          "type": "kill",
+          "target": "bark_stag",
+          "count": 2,
+          "text": "猎杀 2 只树皮鹿"
+        }
+      ],
+      "rewards": {
+        "exp": 320,
+        "gold": 125
+      }
+    },
+    {
+      "id": "side_77_moss_bridge_repair",
+      "type": "side",
+      "title": "苔藓桥的修复",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "moss_golem",
+          "count": 3,
+          "text": "击碎 3 尊苔藓魔像"
+        },
+        {
+          "type": "collect",
+          "target": "rift_shard",
+          "count": 3,
+          "text": "收集 3 块裂隙碎片"
+        }
+      ],
+      "rewards": {
+        "exp": 350,
+        "gold": 140
+      }
+    },
+    {
+      "id": "side_78_moss_boar_stew",
+      "type": "side",
+      "title": "苔原野猪炖汤",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "moss_boar",
+          "count": 5,
+          "text": "猎杀 5 头苔原野猪"
+        }
+      ],
+      "rewards": {
+        "exp": 240,
+        "gold": 90
+      }
+    },
+    {
+      "id": "side_79_plains_scouts",
+      "type": "side",
+      "title": "平原斥候",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "grass_stalker",
+          "count": 5,
+          "text": "猎杀 5 只草原潜猎者"
+        },
+        {
+          "type": "kill",
+          "target": "dust_hyena",
+          "count": 4,
+          "text": "驱散 4 只沙尘鬣狗"
+        }
+      ],
+      "rewards": {
+        "exp": 340,
+        "gold": 135
+      }
+    },
+    {
+      "id": "side_80_wild_boar_tusks",
+      "type": "side",
+      "title": "野猪的獠牙",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "wild_boarlord",
+          "count": 1,
+          "text": "击败野猪领主"
+        },
+        {
+          "type": "collect",
+          "target": "iron_sword",
+          "count": 1,
+          "text": "收集 1 把铁剑"
+        }
+      ],
+      "rewards": {
+        "exp": 480,
+        "gold": 200
+      }
+    },
+    {
+      "id": "side_81_bog_mapping",
+      "type": "side",
+      "title": "沼泽测绘",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "reach",
+          "target": "bog_edge",
+          "text": "测量沼泽边缘"
+        },
+        {
+          "type": "kill",
+          "target": "mire_toad",
+          "count": 4,
+          "text": "猎杀 4 只泥沼蟾蜍"
+        }
+      ],
+      "rewards": {
+        "exp": 270,
+        "gold": 105
+      }
+    },
+    {
+      "id": "side_82_wraith_bells",
+      "type": "side",
+      "title": "幽影的铃铛",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "swamp_wraith",
+          "count": 5,
+          "text": "驱散 5 个沼泽幽影"
+        },
+        {
+          "type": "talk",
+          "target": "ashguard_captain",
+          "text": "把铃铛交给守望队长"
+        }
+      ],
+      "rewards": {
+        "exp": 370,
+        "gold": 155
+      }
+    },
+    {
+      "id": "side_83_rot_sample",
+      "type": "side",
+      "title": "腐化样本",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "rot_crawler",
+          "count": 6,
+          "text": "清理 6 只腐化爬行者"
+        },
+        {
+          "type": "collect",
+          "target": "scholar_robe",
+          "count": 1,
+          "text": "收集 1 件学者长袍材料"
+        }
+      ],
+      "rewards": {
+        "exp": 290,
+        "gold": 120
+      }
+    },
+    {
+      "id": "side_84_gravel_mine",
+      "type": "side",
+      "title": "砂砾矿井",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "gravel_mite",
+          "count": 8,
+          "text": "清剿 8 只砂砾螨"
+        },
+        {
+          "type": "collect",
+          "target": "ash_helm",
+          "count": 1,
+          "text": "收集 1 顶灰烬头盔"
+        }
+      ],
+      "rewards": {
+        "exp": 310,
+        "gold": 125
+      }
+    },
+    {
+      "id": "side_85_void_moth_wings",
+      "type": "side",
+      "title": "虚空飞蛾的翅膀",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "void_moth",
+          "count": 5,
+          "text": "捕杀 5 只虚空飞蛾"
+        },
+        {
+          "type": "collect",
+          "target": "rift_blade",
+          "count": 1,
+          "text": "收集 1 件裂隙刃材料"
+        }
+      ],
+      "rewards": {
+        "exp": 390,
+        "gold": 165
+      }
+    },
+    {
+      "id": "side_86_rift_fragment_hunt",
+      "type": "side",
+      "title": "裂隙碎片的猎取",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "rift_fragment",
+          "count": 4,
+          "text": "击碎 4 块裂隙碎片怪"
+        },
+        {
+          "type": "collect",
+          "target": "rift_shard",
+          "count": 4,
+          "text": "收集 4 块裂隙碎片"
+        }
+      ],
+      "rewards": {
+        "exp": 360,
+        "gold": 150
+      }
+    },
+    {
+      "id": "side_87_scholar_lamp",
+      "type": "side",
+      "title": "学者的油灯",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "collect",
+          "target": "scholar_robe",
+          "count": 2,
+          "text": "收集 2 件学者长袍材料"
+        },
+        {
+          "type": "reach",
+          "target": "ash_archive",
+          "text": "回到灰烬档案馆"
+        }
+      ],
+      "rewards": {
+        "exp": 310,
+        "gold": 130
+      }
+    },
+    {
+      "id": "side_88_stride_courier",
+      "type": "side",
+      "title": "疾行信使",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "collect",
+          "target": "stride_boots",
+          "count": 1,
+          "text": "收集 1 双疾行靴材料"
+        },
+        {
+          "type": "reach",
+          "target": "ash_road_camp",
+          "text": "把信送到灰烬之路营地"
+        }
+      ],
+      "rewards": {
+        "exp": 300,
+        "gold": 125
+      }
+    },
+    {
+      "id": "side_89_ash_helm_repair",
+      "type": "side",
+      "title": "灰烬头盔的修补",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "collect",
+          "target": "ash_helm",
+          "count": 2,
+          "text": "收集 2 顶灰烬头盔"
+        },
+        {
+          "type": "kill",
+          "target": "ash_crow",
+          "count": 3,
+          "text": "击落 3 只灰烬乌鸦"
+        }
+      ],
+      "rewards": {
+        "exp": 330,
+        "gold": 135
+      }
+    },
+    {
+      "id": "side_90_frozen_bridge_patrol",
+      "type": "side",
+      "title": "冻桥巡逻",
+      "requires": [],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "frost_wolf",
+          "count": 5,
+          "text": "猎杀 5 只霜狼"
+        },
+        {
+          "type": "reach",
+          "target": "frozen_bridge",
+          "text": "巡视冻桥"
+        }
+      ],
+      "rewards": {
+        "exp": 340,
+        "gold": 140
+      }
+    },
+    {
+      "id": "hidden_10_scholar_secret",
+      "type": "hidden",
+      "title": "学者的秘密",
+      "requires": [
+        "hidden_06_void_bell"
+      ],
+      "objectives": [
+        {
+          "type": "reach",
+          "target": "hidden_archive_vault",
+          "text": "打开档案馆的密室"
+        },
+        {
+          "type": "collect",
+          "target": "scholar_robe",
+          "count": 1,
+          "text": "收集 1 件学者长袍材料"
+        }
+      ],
+      "rewards": {
+        "exp": 2200
+      }
+    },
+    {
+      "id": "hidden_11_frost_memory",
+      "type": "hidden",
+      "title": "冰封的记忆",
+      "requires": [
+        "hidden_07_glacier_mirror"
+      ],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "elite_ice_warden",
+          "count": 1,
+          "text": "击败冰封守卫"
+        },
+        {
+          "type": "reach",
+          "target": "frozen_archive",
+          "text": "回到冰封档案馆"
+        }
+      ],
+      "rewards": {
+        "exp": 2300
+      }
+    },
+    {
+      "id": "hidden_12_ash_eyes",
+      "type": "hidden",
+      "title": "灰烬之眼",
+      "requires": [
+        "hidden_08_ember_crown"
+      ],
+      "objectives": [
+        {
+          "type": "kill",
+          "target": "elite_ash_drake",
+          "count": 1,
+          "text": "击败灰烬巨龙"
+        },
+        {
+          "type": "collect",
+          "target": "ash_helm",
+          "count": 1,
+          "text": "收集 1 顶灰烬头盔"
+        }
+      ],
+      "rewards": {
+        "exp": 2400
+      }
+    },
+    {
+      "id": "hidden_13_last_oath",
+      "type": "hidden",
+      "title": "最后的誓言",
+      "requires": [
+        "hidden_09_dune_oath"
+      ],
+      "objectives": [
+        {
+          "type": "talk",
+          "target": "ashguard_captain",
+          "text": "向守望队长说出最后的誓言"
+        },
+        {
+          "type": "reach",
+          "target": "rift_core_whisper",
+          "text": "回到裂隙核心的低语之处"
+        }
+      ],
+      "rewards": {
+        "exp": 2500
+      }
     }
   ]
 }
