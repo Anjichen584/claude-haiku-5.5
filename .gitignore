@@ -1,0 +1,15 @@
+# 源文件（不入库，见 docs/asset-guidelines.md）
+source-assets/
+
+# 依赖与构建产物
+node_modules/
+dist/
+src-tauri/target/
+coverage/
+
+# 本地环境
+.env
+.env.*
+*.log
+.DS_Store
+Thumbs.db
