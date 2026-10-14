@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import itemsJson from '../data/items.json';
 import type { ItemDef } from '../src/data/schema';
 import { BASE_STATS, combatStats, cycleSlot, equippableFor } from '../src/state/equipment';
+import type { AffixDef } from '../src/data/schema';
+import type { ItemSetDef } from '../src/items/sets';
 import { newSession } from '../src/state/session';
 import questsJson from '../data/quests.json';
 import type { QuestDef } from '../src/data/schema';
@@ -62,5 +64,52 @@ describe('战斗属性', () => {
     const stats = combatStats({ main_hand: 'rift_blade', head: 'ash_helm', chest: 'ash_plate' }, items);
     expect(stats.attack).toBe(BASE_STATS.attack + 26);
     expect(stats.defense).toBe(BASE_STATS.defense + 3 + 6);
+  });
+});
+
+describe('词条与套装加成', () => {
+  const pool: AffixDef[] = [
+    { id: 'sharp', name: '锋利', stat: 'attack', min: 1, max: 5, weight: 10 },
+    { id: 'tough', name: '坚韧', stat: 'defense', min: 1, max: 5, weight: 10 },
+    { id: 'vital', name: '活力', stat: 'maxHp', min: 10, max: 20, weight: 10 },
+  ];
+  const speedOnly: AffixDef[] = [
+    { id: 'swift', name: '迅捷', stat: 'speed', min: 1, max: 5, weight: 10 },
+    { id: 'keen', name: '精准', stat: 'critRate', min: 1, max: 5, weight: 10 },
+    { id: 'nimble', name: '灵巧', stat: 'dodgeChance', min: 1, max: 5, weight: 10 },
+  ];
+  const gear: ItemDef[] = [
+    { id: 'ash_helm', name: '灰烬头盔', type: 'armor', slot: 'head', baseDamage: 0, rarity: 'epic', price: 1, setId: 'ash', itemLevel: 1, defense: 3 },
+    { id: 'ash_plate', name: '灰烬胸甲', type: 'armor', slot: 'chest', baseDamage: 0, rarity: 'epic', price: 1, setId: 'ash', itemLevel: 1, defense: 6 },
+  ];
+  const sets: ItemSetDef[] = [
+    { id: 'ash', name: '灰烬', bonuses: [{ pieces: 2, stat: 'defense', value: 5, text: '防御 +5' }] },
+  ];
+
+  it('词条按物品固定抽取：同一件装备多次计算结果一致', () => {
+    expect(combatStats({ head: 'ash_helm' }, gear, pool)).toEqual(combatStats({ head: 'ash_helm' }, gear, pool));
+  });
+
+  it('非战斗词条（如速度）不改变战斗属性', () => {
+    expect(combatStats({ head: 'ash_helm' }, gear, speedOnly)).toEqual(combatStats({ head: 'ash_helm' }, gear));
+  });
+
+  it('攻击、防御、生命类词条会计入战斗属性', () => {
+    const withAffix = combatStats({ head: 'ash_helm' }, gear, pool);
+    const noAffix = combatStats({ head: 'ash_helm' }, gear);
+    expect(withAffix.attack + withAffix.defense + withAffix.maxHp).toBeGreaterThan(
+      noAffix.attack + noAffix.defense + noAffix.maxHp,
+    );
+  });
+
+  it('两件同套装激活 2 件套效果（防御 +5）', () => {
+    const one = combatStats({ head: 'ash_helm' }, gear, [], sets);
+    const two = combatStats({ head: 'ash_helm', chest: 'ash_plate' }, gear, [], sets);
+    expect(one.defense).toBe(BASE_STATS.defense + 3);
+    expect(two.defense).toBe(BASE_STATS.defense + 3 + 6 + 5);
+  });
+
+  it('未提供词条池时不抽取词条，不报错', () => {
+    expect(() => combatStats({ head: 'ash_helm' }, gear)).not.toThrow();
   });
 });

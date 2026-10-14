@@ -230,7 +230,8 @@ export class TestRoomScene extends Phaser.Scene {
     this.px = 320;
     this.py = display.baseHeight / 2;
     // 战斗属性由装备决定（没有会话时为基础属性）
-    this.stats = combatStats(this.session?.player.equipment ?? {}, loadGameData().items);
+    const gameData = loadGameData();
+    this.stats = combatStats(this.session?.player.equipment ?? {}, gameData.items, gameData.affixes, gameData.itemSets);
     this.playerActor = new Actor({ maxHp: this.stats.maxHp, staggerMs: 150 });
     if (this.session) {
       // 生命从会话带入（已被击败的刷新点不会再次进入）

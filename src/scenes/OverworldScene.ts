@@ -20,7 +20,8 @@ import { formatInventory, inventoryLines } from '../state/inventory';
 import { combatStats, cycleSlot, EQUIP_SLOTS, SLOT_LABEL } from '../state/equipment';
 import { getSession, persistSession, setSession } from '../state/sessionStore';
 import { newSession, type GameSession } from '../state/session';
-import type { EnemyDef, ItemDef, QuestDef } from '../data/schema';
+import type { AffixDef, EnemyDef, ItemDef, QuestDef } from '../data/schema';
+import type { ItemSetDef } from '../items/sets';
 import { grantQuestRewards } from '../state/rewards';
 import type { QuestCompletion } from '../narrative/QuestManager';
 
@@ -104,6 +105,8 @@ export class OverworldScene extends Phaser.Scene {
   private equipPanel!: Phaser.GameObjects.Text;
   private equipPanelOpen = false;
   private itemDefs: readonly ItemDef[] = [];
+  private affixDefs: readonly AffixDef[] = [];
+  private itemSetDefs: readonly ItemSetDef[] = [];
   /** 战败返回后的剩余保护时间 */
   private graceMs = 0;
   /** 已进入战斗，正在切换场景，阻止重复触发 */
@@ -129,6 +132,8 @@ export class OverworldScene extends Phaser.Scene {
     this.questDefs = data.quests;
     this.itemNames = new Map(data.items.map((i) => [i.id, i.name]));
     this.itemDefs = data.items;
+    this.affixDefs = data.affixes;
+    this.itemSetDefs = data.itemSets;
 
     // 场景实例会被复用，所有运行时状态都要在这里重置
     this.chunks = new Map();
@@ -296,7 +301,7 @@ export class OverworldScene extends Phaser.Scene {
 
   private refreshEquipPanel(): void {
     const eq = this.session.player.equipment;
-    const stats = combatStats(eq, this.itemDefs);
+    const stats = combatStats(eq, this.itemDefs, this.affixDefs, this.itemSetDefs);
     const rows = EQUIP_SLOTS.map((slot, i) => {
       const id = eq[slot];
       const name = id ? (this.itemNames.get(id) ?? id) : '—';
