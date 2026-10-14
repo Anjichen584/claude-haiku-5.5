@@ -1,3 +1,4 @@
+import { retreatDungeon } from '../dungeon/checkpoint';
 import { useConsumable } from '../state/consumables';
 import Phaser from 'phaser';
 import { bufferSceneKeys, pressed } from '../input/bufferedKeys';
@@ -144,7 +145,7 @@ export class TestRoomScene extends Phaser.Scene {
       return;
     }
     this.effects.clear();
-    if(this.playerActor.isDead){this.render();return;}
+    if(this.playerActor.isDead){this.checkEncounterEnd();this.render();return;}
     this.runtime.tick(deltaMs,this.targets());
     this.checkEncounterEnd();
     if(this.finished){this.render();return;}
@@ -185,7 +186,7 @@ export class TestRoomScene extends Phaser.Scene {
         ).lines,
       );
     }
-    if(session){session.player.hp=won?Math.max(1,this.playerActor.hp):Math.max(1,Math.ceil(this.stats.maxHp*.3));session.player.mana=this.runtime.mana;persistSession(session);}
+    if(session){session.player.hp=won?Math.max(1,this.playerActor.hp):Math.max(1,Math.ceil(this.stats.maxHp*.3));session.player.mana=this.runtime.mana;if(!persistSession(session))lines.push('保存失败：请勿刷新，进度目前仅保留在本页面');}
     lines.push(won ? (this.encounter?.dungeon?'按 Space 返回地牢':'按 Space 返回地表') : '按 Space 返回地表（生命恢复少量）');
     this.add
       .text(display.baseWidth / 2, display.baseHeight / 2 - 60, lines.join('\n'), {
@@ -202,14 +203,15 @@ export class TestRoomScene extends Phaser.Scene {
     const session = this.session;
     if (!run || !session) return [];
     if (!won) {
+      if(session.dungeon)retreatDungeon(session.dungeon);
       setRun(null);
-      return ['地牢探索失败，已返回地表'];
+      return ['战败撤回地表；已清理进度保留，下次从入口继续'];
     }
-    markCleared(run, dungeon.roomId);
+    if(!markCleared(run,dungeon.roomId))return ['此房间奖励已领取'];
     const lines = applyGains(session, combatGains(run, dungeon.boss));
     if (dungeon.boss) {
       if (session.dungeonFloor === run.floor && run.floor < MAX_DUNGEON_FLOOR) session.dungeonFloor = run.floor + 1;
-      lines.push(`击败了本层 Boss！下一层解锁：第 ${session.dungeonFloor} 层`);
+      lines.push(run.floor===MAX_DUNGEON_FLOOR?'已通关全部 12 层！仍可探索本层未清理房间。':`击败了本层 Boss！下一层解锁：第 ${session.dungeonFloor} 层`);
     }
     return lines;
   }
@@ -222,7 +224,7 @@ export class TestRoomScene extends Phaser.Scene {
         : Math.max(1, Math.ceil(this.stats.maxHp * 0.3));
     }
     if (this.session && this.encounter) this.session.player.mana=this.runtime.mana;
-    if (this.session) persistSession(this.session);
+    if(this.session&&!persistSession(this.session)){this.pushLog('保存失败：请检查浏览器存储空间，再按 Space 重试');return;}
     if (this.encounter?.dungeon) {
       // 地牢：胜利回到地牢继续探索；战败则结束本次探索，回到地表
       if (this.won && getRun()) this.scene.start('DungeonScene', { resume: true });

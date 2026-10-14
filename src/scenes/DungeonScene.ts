@@ -1,3 +1,4 @@
+import { openDungeon } from '../dungeon/checkpoint';
 import { useConsumable } from '../state/consumables';
 import Phaser from 'phaser';
 import { bufferSceneKeys, pressed } from '../input/bufferedKeys';
@@ -12,7 +13,6 @@ import {
   neighbors,
   roomById,
   roomOutcome,
-  startRun,
   type DungeonRun,
 } from '../dungeon/run';
 import type { RoomKind } from '../dungeon/layout';
@@ -26,6 +26,7 @@ import { type GameSession } from '../state/session';
  * 操作：数字键 1–9 移动到相邻房间 · E 与当前房间互动 · L 离开地牢（保留已获得的奖励）
  *
  * 战斗房与 Boss 房会切换到战斗场景；胜利后回到这里继续探索。
+ * 会话保存已生成地图与房间领取记录；退出/刷新均可继续，战败回入口。
  * 布局由 (种子, 层数) 决定，同一层每次进入的房间都相同。
  */
 
@@ -58,13 +59,14 @@ export class DungeonScene extends Phaser.Scene {
   private message!: Phaser.GameObjects.Text;
   private keyE!: Phaser.Input.Keyboard.Key;
   private supplyKeys!:Phaser.Input.Keyboard.Key[];
+  private keyK!:Phaser.Input.Keyboard.Key;
   private keyL!: Phaser.Input.Keyboard.Key;
 
   constructor() {
     super('DungeonScene');
   }
 
-  create(init?: { resume?: boolean }): void {
+  create(): void {
     const session = getSession();
     if (!session) {
       this.scene.start('TitleScene');
@@ -79,9 +81,10 @@ export class DungeonScene extends Phaser.Scene {
     this.dynamic = [];
     this.shopOpen = false;
 
-    // 从战斗返回时沿用当前探索；否则开始新的探索
-    const existing = init?.resume ? getRun() : null;
-    this.run = existing ?? startRun(DUNGEON_SEED, session.dungeonFloor, data.dungeon);
+    // The session owns active and archived floors; do not regenerate on re-entry/reload.
+    const existing=getRun()??session.dungeon?.runs.find(r=>r.floor===session.dungeonFloor);
+    session.dungeon??={activeFloor:null,runs:[]};
+    this.run=existing??openDungeon(session.dungeon,DUNGEON_SEED,session.dungeonFloor,data.dungeon);
     setRun(this.run);
 
     this.cameras.main.setBackgroundColor('#0b2028');
@@ -95,14 +98,16 @@ export class DungeonScene extends Phaser.Scene {
     this.roomTitle=text(this,1080,337,'',22,'#e4ce99').setOrigin(.5);
     text(this,1080,381,'数字键选择相邻房间\nE 与当前房间互动',14,'#9bb5a3').setOrigin(.5).setAlign('center').setLineSpacing(12);
     button(this,1080,468,260,'E  探索当前房间',()=>{if(!this.shopOpen)this.interact();});
+    button(this,770,674,200,'K  保存 / 重试',()=>{if(!this.shopOpen&&this.saveCheckpoint())this.say('地牢进度已保存');});
     button(this,1120,674,260,'L  返回地表',()=>{if(!this.shopOpen)this.leave();});
-    text(this,42,661,'H 治疗药剂 · M 魔力药剂 · 已获奖励保留。',14,'#8da996');
+    text(this,42,661,'每次移动自动存档 · H/M 药剂 · L 退出保留探索进度',14,'#8da996');
     this.shop=new ShopView(this,this.session,this.itemDefs,this.factionDefs,()=>this.closeShop());
 
     const keyboard = this.input.keyboard;
     if (!keyboard) throw new Error('Keyboard input is not available');
     this.keyE = keyboard.addKey('E');
     this.keyL = keyboard.addKey('L');
+    this.keyK = keyboard.addKey('K');
     this.escape=keyboard.addKey('ESC');
     this.supplyKeys=[keyboard.addKey('H'),keyboard.addKey('M')];
     bufferSceneKeys(this);
@@ -110,13 +115,15 @@ export class DungeonScene extends Phaser.Scene {
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => keyboard.off('keydown', this.onDigit, this));
 
     if (this.run.finished) this.say('本层 Boss 已击败，按 L 离开地牢');
-    else if (existing) this.say('返回地牢，继续探索。');
+    else if (existing) this.say('已恢复地牢进度；房间位置和已领取奖励均已保留。');
     else this.say(`第 ${this.run.floor} 层。按数字键前进，按 E 与房间互动。`);
     this.render();
+    this.saveCheckpoint();
   }
 
   update(_time:number,deltaMs:number): void {
     if(this.session.player.mana!==undefined){const d=loadGameData(),p=combatProfile(this.session.player.equipment,d.items,d.affixes,d.itemSets);this.session.player.mana=Math.min(p.maxMana,this.session.player.mana+p.manaRegen*Math.min(100,Math.max(0,deltaMs))/1000);}
+    if(!this.shopOpen&&pressed(this.keyK)&&this.saveCheckpoint())this.say('地牢进度已保存');
     if(!this.shopOpen)for(let i=0;i<this.supplyKeys.length;i++)if(pressed(this.supplyKeys[i]))this.useSupply(i);
     if(this.shopOpen && pressed(this.escape)){this.closeShop();return;}
     if (!this.shopOpen && pressed(this.keyL)) {
@@ -133,7 +140,7 @@ export class DungeonScene extends Phaser.Scene {
     const data=loadGameData(),p=this.session.player,profile=combatProfile(p.equipment,data.items,data.affixes,data.itemSets);
     const item=data.items.find(i=>i.id===(index?'mana_potion':'health_potion'));if(!item)return;
     const result=useConsumable(this.session,item,profile,{hp:p.hp,mana:p.mana??profile.maxMana});this.say(result.message);
-    if(result.ok){p.hp=result.hp;p.mana=result.mana;persistSession(this.session);this.render();}
+    if(result.ok){p.hp=result.hp;p.mana=result.mana;this.saveCheckpoint();this.render();}
   }
 
   // ---------- 移动 ----------
@@ -147,10 +154,15 @@ export class DungeonScene extends Phaser.Scene {
     }
     const next = neighbors(this.run, this.run.current)[Number(e.key) - 1];
     if (!next) return;
-    moveTo(this.run, next.id);
-    const cleared = this.run.cleared.has(next.id) ? '（已清理）' : '';
-    this.say(`进入：${KIND_LABEL[next.kind]}房间${cleared}`);
-    this.render();
+    this.travelTo(next.id);
+  }
+
+  private saveCheckpoint():boolean{
+    const ok=persistSession(this.session);if(!ok)this.say('保存失败：进度仅保留在当前页面，请勿刷新；请检查浏览器存储空间。');return ok;
+  }
+  private travelTo(id:number):void{
+    if(this.shopOpen)return;moveTo(this.run,id);const room=roomById(this.run,id);
+    this.say(`进入：${KIND_LABEL[room.kind]}房间${this.run.cleared.has(id)?'（已清理）':''}`);this.render();this.saveCheckpoint();
   }
 
   // ---------- 房间互动 ----------
@@ -170,6 +182,7 @@ export class DungeonScene extends Phaser.Scene {
       case 'combat': {
         const names = out.enemyIds.map((id) => this.enemies.find((e) => e.id === id)?.name ?? id).join('、');
         this.say(`${out.boss ? 'Boss' : '遭遇'}：${names}`);
+        if(!this.saveCheckpoint())return;
         this.scene.start('TestRoomScene', {
           encounter: {
             enemyIds: out.enemyIds,
@@ -201,7 +214,7 @@ export class DungeonScene extends Phaser.Scene {
         this.say('这里是入口，没有可以互动的内容');
         break;
     }
-    persistSession(this.session);
+    this.saveCheckpoint();
     this.render();
   }
 
@@ -214,7 +227,7 @@ export class DungeonScene extends Phaser.Scene {
   private closeShop():void { this.shopOpen=false;this.shop.hide();this.say('交易结束，祝你一路平安。'); }
 
   private grant(gains: Gains, roomId: number, label: string): void {
-    markCleared(this.run, roomId);
+    if(!markCleared(this.run,roomId)){this.say('此房间奖励已领取');return;}
     const levelUps = applyGains(this.session, gains);
     const text = describeGains(gains, (id) => this.itemNames.get(id) ?? id);
     // 宝箱等获得的物品可能完成收集任务
@@ -229,8 +242,8 @@ export class DungeonScene extends Phaser.Scene {
   }
 
   private leave(): void {
-    setRun(null);
-    persistSession(this.session);
+    const active=getRun();setRun(null);
+    if(!this.saveCheckpoint()){setRun(active);return;}
     this.scene.start('OverworldScene', { retreated: false });
   }
 
@@ -278,7 +291,7 @@ export class DungeonScene extends Phaser.Scene {
       this.dynamic.push(this.add.text(p.x,p.y,icons[room.kind],{fontSize:22,color:'#10292b'}).setOrigin(.5).setDepth(15));
       if(reachable.has(room.id)){
         const hit=this.add.rectangle(p.x,p.y,46,46,0xffffff,0).setDepth(25).setInteractive({useHandCursor:true});
-        hit.on('pointerdown',()=>{if(!this.shopOpen){moveTo(this.run,room.id);this.say(`进入：${KIND_LABEL[room.kind]}房间`);this.render();}});this.dynamic.push(hit);
+        hit.on('pointerdown',()=>this.travelTo(room.id));this.dynamic.push(hit);
       }
       const label = this.add.text(p.x, p.y + ROOM_RADIUS + 4, KIND_LABEL[room.kind], {
         fontFamily: 'sans-serif', fontSize: '12px', color: cleared ? '#6b7089' : '#e6d9ff',
@@ -286,9 +299,10 @@ export class DungeonScene extends Phaser.Scene {
       this.dynamic.push(label);
       if (reachable.has(room.id)) {
         index++;
-        const key = this.add.text(p.x, p.y - ROOM_RADIUS - 4, `[${index}]`, {
-          fontFamily: 'monospace', fontSize: '14px', color: '#fff3c4',
-        }).setOrigin(0.5, 1).setDepth(20);
+        const key = this.add.text(p.x+14, p.y-18, `${index}`, {
+          fontFamily: 'monospace', fontSize: '12px', color: '#fff3c4',backgroundColor:'#17333a',padding:{x:4,y:2},
+        }).setOrigin(0,.5).setDepth(30).setInteractive({useHandCursor:true});
+        key.on('pointerdown',()=>this.travelTo(room.id));
         this.dynamic.push(key);
       }
     }

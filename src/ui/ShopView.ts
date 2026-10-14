@@ -66,6 +66,6 @@ export class ShopView {
   if(!Number.isInteger(index)||index<0||index>=this.pageSize)return;
   const item=this.available()[this.page*this.pageSize+index];if(!item)return;
   const result=this.mode==='buy'?buyItem(this.session,item,this.multiplier):sellItem(this.session,item);
-  this.note.setText(result.message).setColor(result.ok?'#b9d7aa':'#e4a58b');if(result.ok)persistSession(this.session);this.refresh();
+  this.note.setText(result.message).setColor(result.ok?'#b9d7aa':'#e4a58b');if(result.ok&&!persistSession(this.session))this.note.setText(`${result.message}；保存失败，请勿刷新`).setColor('#e4a58b');this.refresh();
  }
 }

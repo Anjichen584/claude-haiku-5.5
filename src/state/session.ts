@@ -1,3 +1,4 @@
+import { parseDungeon, snapshotDungeon, restoreDungeon, type DungeonProgress, type DungeonSnapshot } from '../dungeon/checkpoint';
 /**
  * 游戏会话：一局游戏中所有需要跨场景保留的数据。
  *
@@ -42,6 +43,7 @@ export interface PlayerState {
 }
 
 export interface GameSession {
+  dungeon?: DungeonProgress;
   world: WorldState;
   quests: QuestManager;
   player: PlayerState;
@@ -56,6 +58,7 @@ export interface GameSession {
 export const SAVE_VERSION = 1;
 
 export interface SaveFile {
+  dungeon?: DungeonSnapshot;
   version: number;
   savedAt: string;
   world: WorldSnapshot;
@@ -89,6 +92,7 @@ export function newSession(quests: readonly QuestDef[]): GameSession {
 
 export function toSaveFile(session: GameSession, savedAt: Date = new Date()): SaveFile {
   return {
+    ...(session.dungeon?{dungeon:snapshotDungeon(session.dungeon)}:{}),
     version: SAVE_VERSION,
     savedAt: savedAt.toISOString(),
     world: session.world.snapshot(),
@@ -175,7 +179,10 @@ export function parseSave(raw: string): SaveFile {
   }
   if(world.stability!==undefined&&(!isFiniteNumber(world.stability)||world.stability<0||world.stability>100))throw new SaveError('稳定度数据错误');
 
+  let dungeon:DungeonSnapshot|undefined;
+  if(data.dungeon!==undefined){try{dungeon=parseDungeon(data.dungeon,dungeonFloor);}catch(error){throw new SaveError(`地牢进度错误：${error instanceof Error?error.message:'结构错误'}`);}}
   return {
+    ...(dungeon?{dungeon}:{}),
     version: SAVE_VERSION,
     savedAt: typeof data.savedAt === 'string' ? data.savedAt : '',
     world: world as unknown as WorldSnapshot,
@@ -191,6 +198,7 @@ export function parseSave(raw: string): SaveFile {
 export function fromSaveFile(file: SaveFile, quests: readonly QuestDef[]): GameSession {
   const world = WorldState.restore(file.world);
   return {
+    ...(file.dungeon?{dungeon:restoreDungeon(file.dungeon)}:{}),
     world,
     quests: new QuestManager(quests, world),
     player: { ...file.player, equipment: { ...file.player.equipment }, skills: { ...file.player.skills, unlocked: [...file.player.skills.unlocked], ...(file.player.skills.equipped?{equipped:[...file.player.skills.equipped]}:{}) } },

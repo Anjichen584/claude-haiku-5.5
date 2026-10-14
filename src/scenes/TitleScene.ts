@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { landscape, panel, text, UI } from '../ui/theme';
 import { loadGameData } from '../data/loader';
 import { newSession, fromSaveFile, parseSave, SaveError } from '../state/session';
-import { readSaveRaw, setSession } from '../state/sessionStore';
+import { readSaveRaw, readSaveState, setSession } from '../state/sessionStore';
 
 /**
  * 标题菜单：新游戏 / 继续。
@@ -17,6 +17,7 @@ export class TitleScene extends Phaser.Scene {
   private labels: Phaser.GameObjects.Text[] = [];
   private selected = 0;
   private message!: Phaser.GameObjects.Text;
+  private continueFloor:number|null=null;
   private continueError: string | null = null;
 
   constructor() {
@@ -38,12 +39,13 @@ export class TitleScene extends Phaser.Scene {
     text(this, 94, 663, '离线单人冒险', 12, '#87a496');
     text(this, 1100, 663, '原型 · 0.1', 12, '#a7b6a1');
 
-    const raw = readSaveRaw();
+    const saved=readSaveState(),raw=saved.raw;
+    this.continueFloor=null;
     this.choices = ['new'];
     this.continueError = null;
     if (raw !== null) {
       try {
-        parseSave(raw);
+        this.continueFloor=parseSave(raw).dungeon?.activeFloor??null;
         this.choices.push('continue');
       } catch (e) {
         this.continueError = e instanceof SaveError ? e.message : '存档无法读取';
@@ -53,7 +55,7 @@ export class TitleScene extends Phaser.Scene {
     if(raw===null)text(this,122,475,'尚无存档 · 从第一道裂隙开始',14,'#7f9a8b');
     this.choices.forEach((choice, i) => {
       const label = this.add
-        .text(122, 403 + i * 62, choice === 'new' ? '启程  /  新的旅途' : '继续  /  重返世界', {
+        .text(122, 403 + i * 62, choice === 'new' ? '启程  /  新的旅途' : this.continueFloor!==null?`继续  /  地牢第 ${this.continueFloor} 层`:'继续  /  重返世界', {
           fontFamily: UI.font, fontSize: '22px', color: '#c9c3dd',
         })
         .setOrigin(0,0)
@@ -64,8 +66,8 @@ export class TitleScene extends Phaser.Scene {
     });
 
     this.message = this.add
-      .text(94, 553, this.continueError ? `无法继续：${this.continueError}` : '', {
-        fontFamily: 'sans-serif', fontSize: '16px', color: '#ff9b9b',
+      .text(94, 553, this.continueError ? `无法继续：${this.continueError}` : saved.source==='backup'?'主存档异常，继续将恢复上一备份（进度可能回退）':'', {
+        fontFamily: 'sans-serif', fontSize: '14px', color: saved.source==='backup'?'#e6c685':'#ff9b9b',wordWrap:{width:420},
       })
       .setOrigin(0,0);
 
@@ -121,8 +123,8 @@ export class TitleScene extends Phaser.Scene {
     try {
       const raw = readSaveRaw();
       if (raw === null) throw new SaveError('没有找到存档');
-      setSession(fromSaveFile(parseSave(raw), quests));
-      this.scene.start('OverworldScene');
+      const session=fromSaveFile(parseSave(raw),quests);setSession(session);
+      this.scene.start(session.dungeon?.activeFloor!=null?'DungeonScene':'OverworldScene',{resume:true});
     } catch (e) {
       this.message.setText(`无法继续：${e instanceof Error ? e.message : '未知错误'}`);
     }

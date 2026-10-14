@@ -8,7 +8,7 @@
  * - chest：获得金币与一件材料；
  * - event：获得经验（残影事件，本阶段只有数值奖励）；
  * - rest：恢复最大生命的 30%；
- * - shop：商店尚未开放，只能看到提示；
+ * - shop：分页买卖；
  * - entrance：入口，无内容。
  *
  * 同一 (种子, 楼层, 房间) 的内容永远相同。
@@ -107,9 +107,12 @@ export function combatGains(run: DungeonRun, boss: boolean): Gains {
 }
 
 /** 标记房间已清理；击败 Boss 时设置通关。 */
-export function markCleared(run: DungeonRun, roomId: number): void {
+export function markCleared(run: DungeonRun, roomId: number): boolean {
+  const room=roomById(run,roomId);
+  if(run.cleared.has(roomId)||room.kind==='entrance'||room.kind==='shop')return false;
   run.cleared.add(roomId);
-  if (roomById(run, roomId).kind === 'boss') run.finished = true;
+  if(room.kind==='boss')run.finished=true;
+  return true;
 }
 
 function getTier(run: DungeonRun): number {
