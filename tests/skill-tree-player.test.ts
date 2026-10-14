@@ -7,8 +7,7 @@ import {
 import type { SkillDef } from '../src/data/schema';
 
 const skills = (JSON.parse(readFileSync('data/skills.json', 'utf8')) as { skills: SkillDef[] }).skills;
-const combos = (JSON.parse(readFileSync('data/combos.json', 'utf8')) as { combos?: ComboDef[] } & ComboDef[]);
-const comboList: ComboDef[] = Array.isArray(combos) ? combos : (combos.combos ?? []);
+const comboList = (JSON.parse(readFileSync('data/combos.json', 'utf8')) as { combos: ComboDef[] }).combos;
 const byId = indexSkills(skills);
 
 /** 递归学习某个技能及其所有前置（测试用，保证路径合法） */
