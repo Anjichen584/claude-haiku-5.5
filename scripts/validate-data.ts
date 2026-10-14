@@ -107,6 +107,8 @@ for (const enemy of enemies) {
   }
 }
 
+const WEATHER_KEYS = ['clear', 'rain', 'fog', 'snowstorm', 'sandstorm', 'thunder'];
+
 // ---------- 群系 ----------
 for (const biome of biomes) {
   for (const e of biome.enemyTable ?? []) {
@@ -115,6 +117,24 @@ for (const biome of biomes) {
   const [tMin, tMax] = biome.temperature;
   const [hMin, hMax] = biome.humidity;
   if (tMin > tMax || hMin > hMax) fail(`biomes.${biome.id}: 温度或湿度区间顺序错误`);
+  if (!/^#[0-9a-fA-F]{6}$/.test(biome.color ?? '')) fail(`biomes.${biome.id}: color 必须为 #RRGGBB`);
+  for (const w of Object.keys(biome.weatherWeights ?? {})) {
+    if (!WEATHER_KEYS.includes(w)) fail(`biomes.${biome.id}: 未知天气 "${w}"`);
+  }
+}
+
+// 群系覆盖检查：温度–湿度平面网格采样，每个点都应被某个群系包含
+for (let ti = 0; ti <= 20; ti++) {
+  for (let hi = 0; hi <= 20; hi++) {
+    const t = ti / 20; // 整数步进，避免浮点累加误差
+    const h = hi / 20;
+    const covered = biomes.some(
+      (b: any) => t >= b.temperature[0] && t <= b.temperature[1] && h >= b.humidity[0] && h <= b.humidity[1],
+    );
+    if (!covered) {
+      fail(`biomes: 温度 ${t.toFixed(2)} / 湿度 ${h.toFixed(2)} 没有群系覆盖`);
+    }
+  }
 }
 
 // ---------- 任务 ----------
