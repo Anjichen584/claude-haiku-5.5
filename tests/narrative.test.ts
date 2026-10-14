@@ -7,8 +7,8 @@ import { evaluateCondition } from '../src/narrative/conditions';
 import { QuestError, QuestManager } from '../src/narrative/QuestManager';
 import { DialogueRunner, DialogueError } from '../src/dialogue/DialogueRunner';
 
-const quests = (questsJson as { quests: QuestDef[] }).quests;
-const dialogues = (dialoguesJson as { dialogues: DialogueDef[] }).dialogues;
+const quests = (questsJson as unknown as { quests: QuestDef[] }).quests;
+const dialogues = (dialoguesJson as unknown as { dialogues: DialogueDef[] }).dialogues;
 const captain = dialogues.find((d) => d.id === 'ashguard_captain_intro')!;
 
 function newGame() {
