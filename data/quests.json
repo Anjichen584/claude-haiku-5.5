@@ -1,0 +1,15 @@
+{
+  "quests": [
+    {
+      "id": "main_01_first_rift",
+      "type": "main",
+      "chapter": 1,
+      "title": "第一道裂隙",
+      "requires": [],
+      "objectives": [
+        { "type": "kill", "target": "ash_wolf", "count": 5, "text": "清理周边灰烬狼" }
+      ],
+      "rewards": { "exp": 300, "gold": 120, "items": ["rift_shard"] }
+    }
+  ]
+}

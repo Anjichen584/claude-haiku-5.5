@@ -1,0 +1,23 @@
+{
+  "skills": [
+    {
+      "id": "fireball",
+      "name": "火球术",
+      "branch": "arcane",
+      "tier": 1,
+      "requires": [],
+      "element": "fire",
+      "manaCost": 15,
+      "cooldown": 3,
+      "multiplier": 1.8
+    },
+    {
+      "id": "armor_break",
+      "name": "破甲",
+      "branch": "martial",
+      "tier": 1,
+      "requires": [],
+      "multiplier": 1.2
+    }
+  ]
+}

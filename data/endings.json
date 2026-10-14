@@ -1,0 +1,10 @@
+{
+  "endings": [
+    {
+      "id": "ending_default",
+      "name": "无名者",
+      "priority": 99,
+      "text": "你离开了这片大陆，没有人记得你的名字。"
+    }
+  ]
+}

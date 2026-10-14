@@ -1,0 +1,20 @@
+{
+  "dialogues": [
+    {
+      "id": "ashguard_captain_intro",
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "speaker": "守望队长 伊瑟",
+          "text": "你就是那个从裂隙里爬出来的人？",
+          "choices": [
+            { "text": "我需要帮助。", "next": "n2" },
+            { "text": "与你无关。", "next": "n3" }
+          ]
+        },
+        "n2": { "speaker": "守望队长 伊瑟", "text": "好，跟我来。", "next": null },
+        "n3": { "speaker": "守望队长 伊瑟", "text": "那就别挡路。", "next": null }
+      }
+    }
+  ]
+}

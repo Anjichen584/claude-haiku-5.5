@@ -1,0 +1,174 @@
+/**
+ * 数据校验脚本：npm run validate:data
+ *
+ * 检查项：
+ * 1. 每个文件的顶层结构是否正确；
+ * 2. 所有 id 是否唯一；
+ * 3. 所有跨文件引用（物品、敌人、任务、群系、阵营、对话节点）是否存在；
+ * 4. 数值范围是否合理。
+ *
+ * 任一错误都会以非零退出码结束，便于 CI 使用。
+ */
+import { readFileSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const load = (name: string): any => JSON.parse(readFileSync(resolve(root, 'data', name), 'utf8'));
+
+const errors: string[] = [];
+const fail = (msg: string) => errors.push(msg);
+
+function checkUniqueIds(label: string, list: Array<{ id?: unknown }>): Set<string> {
+  const seen = new Set<string>();
+  for (const entry of list) {
+    if (typeof entry.id !== 'string' || entry.id.length === 0) {
+      fail(`${label}: 存在缺少 id 的条目`);
+      continue;
+    }
+    if (seen.has(entry.id)) fail(`${label}: id 重复 "${entry.id}"`);
+    seen.add(entry.id);
+  }
+  return seen;
+}
+
+function expectArray(label: string, value: unknown): value is unknown[] {
+  if (!Array.isArray(value)) {
+    fail(`${label}: 顶层应为数组`);
+    return false;
+  }
+  return true;
+}
+
+// ---------- 读取文件 ----------
+const itemsFile = load('items.json');
+const skillsFile = load('skills.json');
+const enemiesFile = load('enemies.json');
+const questsFile = load('quests.json');
+const dialoguesFile = load('dialogues.json');
+const biomesFile = load('biomes.json');
+const endingsFile = load('endings.json');
+const factionsFile = load('factions.json');
+const affixesFile = load('affixes.json');
+
+if (!expectArray('items', itemsFile.items)) process.exit(1);
+
+const items = itemsFile.items;
+const skills = skillsFile.skills;
+const enemies = enemiesFile.enemies;
+const quests = questsFile.quests;
+const dialogues = dialoguesFile.dialogues;
+const biomes = biomesFile.biomes;
+const endings = endingsFile.endings;
+const factions = factionsFile.factions;
+const affixes = affixesFile.affixes;
+
+
+// ---------- id 集合 ----------
+const itemIds = checkUniqueIds('items', items);
+const skillIds = checkUniqueIds('skills', skills);
+const enemyIds = checkUniqueIds('enemies', enemies);
+const questIds = checkUniqueIds('quests', quests);
+checkUniqueIds('dialogues', dialogues);
+const biomeIds = checkUniqueIds('biomes', biomes);
+checkUniqueIds('endings', endings);
+const factionIds = checkUniqueIds('factions', factions);
+checkUniqueIds('affixes', affixes);
+
+// ---------- 物品 ----------
+for (const item of items) {
+  if (typeof item.price !== 'number' || item.price < 0) fail(`items.${item.id}: price 必须为非负数`);
+  if (item.stackable && (!item.maxStack || item.maxStack < 1)) {
+    fail(`items.${item.id}: 可堆叠物品必须设置 maxStack >= 1`);
+  }
+}
+
+// ---------- 技能 ----------
+for (const skill of skills) {
+  for (const req of skill.requires ?? []) {
+    if (!skillIds.has(req)) fail(`skills.${skill.id}: 前置技能 "${req}" 不存在`);
+  }
+  if (skill.multiplier !== undefined && skill.multiplier <= 0) {
+    fail(`skills.${skill.id}: multiplier 必须大于 0`);
+  }
+}
+
+// ---------- 敌人 ----------
+for (const enemy of enemies) {
+  if (enemy.hp <= 0) fail(`enemies.${enemy.id}: hp 必须大于 0`);
+  for (const b of enemy.biomes ?? []) {
+    if (!biomeIds.has(b)) fail(`enemies.${enemy.id}: 群系 "${b}" 不存在`);
+  }
+  for (const drop of enemy.drops ?? []) {
+    if (!itemIds.has(drop.item)) fail(`enemies.${enemy.id}: 掉落物品 "${drop.item}" 不存在`);
+    if (drop.chance < 0 || drop.chance > 1) fail(`enemies.${enemy.id}: 掉落概率必须在 0–1 之间`);
+  }
+}
+
+// ---------- 群系 ----------
+for (const biome of biomes) {
+  for (const e of biome.enemyTable ?? []) {
+    if (!enemyIds.has(e)) fail(`biomes.${biome.id}: 敌人 "${e}" 不存在`);
+  }
+  const [tMin, tMax] = biome.temperature;
+  const [hMin, hMax] = biome.humidity;
+  if (tMin > tMax || hMin > hMax) fail(`biomes.${biome.id}: 温度或湿度区间顺序错误`);
+}
+
+// ---------- 任务 ----------
+for (const quest of quests) {
+  for (const req of quest.requires ?? []) {
+    if (!questIds.has(req)) fail(`quests.${quest.id}: 前置任务 "${req}" 不存在`);
+  }
+  for (const obj of quest.objectives ?? []) {
+    if (obj.type === 'kill' && !enemyIds.has(obj.target)) {
+      fail(`quests.${quest.id}: 击杀目标敌人 "${obj.target}" 不存在`);
+    }
+    if (obj.type === 'kill' && (obj.count ?? 0) < 1) {
+      fail(`quests.${quest.id}: 击杀数量必须 >= 1`);
+    }
+  }
+  for (const item of quest.rewards?.items ?? []) {
+    if (!itemIds.has(item)) fail(`quests.${quest.id}: 奖励物品 "${item}" 不存在`);
+  }
+}
+
+// ---------- 对话 ----------
+for (const dlg of dialogues) {
+  const nodeIds = new Set(Object.keys(dlg.nodes ?? {}));
+  if (!nodeIds.has(dlg.start)) fail(`dialogues.${dlg.id}: 起始节点 "${dlg.start}" 不存在`);
+  for (const [nodeId, node] of Object.entries<any>(dlg.nodes ?? {})) {
+    if (node.next && !nodeIds.has(node.next)) {
+      fail(`dialogues.${dlg.id}.${nodeId}: next "${node.next}" 不存在`);
+    }
+    for (const choice of node.choices ?? []) {
+      if (choice.next && !nodeIds.has(choice.next)) {
+        fail(`dialogues.${dlg.id}.${nodeId}: 选项 next "${choice.next}" 不存在`);
+      }
+    }
+  }
+}
+
+// ---------- 阵营 ----------
+for (const f of factions) {
+  for (const r of f.rivals ?? []) {
+    if (!factionIds.has(r)) fail(`factions.${f.id}: 敌对阵营 "${r}" 不存在`);
+  }
+}
+
+// ---------- 结局 ----------
+const priorities = endings.map((e: { priority: number }) => e.priority);
+if (new Set(priorities).size !== priorities.length) fail('endings: priority 必须唯一');
+
+// ---------- 输出 ----------
+if (errors.length > 0) {
+  console.error(`✖ 数据校验失败，共 ${errors.length} 个问题：`);
+  for (const e of errors) console.error(`  - ${e}`);
+  process.exit(1);
+}
+
+console.log(
+  `✔ 数据校验通过：物品 ${items.length}，技能 ${skills.length}，敌人 ${enemies.length}，` +
+    `任务 ${quests.length}，对话 ${dialogues.length}，群系 ${biomes.length}，` +
+    `结局 ${endings.length}，阵营 ${factions.length}，词条 ${affixes.length}`,
+);

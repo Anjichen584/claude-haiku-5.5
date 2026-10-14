@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "id": "iron_sword",
+      "name": "铁剑",
+      "type": "weapon",
+      "slot": "main_hand",
+      "baseDamage": 12,
+      "rarity": "common",
+      "price": 40
+    },
+    {
+      "id": "rift_shard",
+      "name": "裂隙碎片",
+      "type": "material",
+      "stackable": true,
+      "maxStack": 99,
+      "rarity": "uncommon",
+      "price": 15
+    }
+  ]
+}

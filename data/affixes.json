@@ -1,0 +1,6 @@
+{
+  "affixes": [
+    { "id": "sharp", "name": "锋利", "stat": "attack", "min": 1, "max": 5, "weight": 10 },
+    { "id": "swift", "name": "迅捷", "stat": "speed", "min": 2, "max": 8, "weight": 6 }
+  ]
+}

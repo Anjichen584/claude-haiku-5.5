@@ -1,0 +1,6 @@
+{
+  "factions": [
+    { "id": "ashguard", "name": "灰烬守望会", "rivals": ["rift_institute"] },
+    { "id": "rift_institute", "name": "裂隙研究院", "rivals": ["ashguard"] }
+  ]
+}

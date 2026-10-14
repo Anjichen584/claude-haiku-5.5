@@ -1,0 +1,17 @@
+{
+  "enemies": [
+    {
+      "id": "ash_wolf",
+      "name": "灰烬狼",
+      "biomes": ["forest"],
+      "hp": 60,
+      "attack": 10,
+      "defense": 3,
+      "speed": 140,
+      "element": "fire",
+      "drops": [
+        { "item": "rift_shard", "chance": 0.1 }
+      ]
+    }
+  ]
+}
