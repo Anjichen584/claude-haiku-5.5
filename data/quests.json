@@ -19,7 +19,10 @@
         "gold": 120,
         "items": [
           "rift_shard"
-        ]
+        ],
+        "reputation": {
+          "ashguard": 8
+        }
       }
     },
     {
@@ -45,7 +48,10 @@
       ],
       "rewards": {
         "exp": 500,
-        "gold": 200
+        "gold": 200,
+        "reputation": {
+          "rift_institute": 8
+        }
       }
     },
     {
@@ -106,7 +112,10 @@
       "rewards": {
         "exp": 580,
         "gold": 210,
-        "items": []
+        "items": [],
+        "reputation": {
+          "red_tide": 8
+        }
       }
     },
     {
@@ -135,7 +144,10 @@
         "gold": 230,
         "items": [
           "rift_shard"
-        ]
+        ],
+        "reputation": {
+          "wild_tribes": 8
+        }
       }
     },
     {
@@ -163,7 +175,10 @@
       "rewards": {
         "exp": 700,
         "gold": 250,
-        "items": []
+        "items": [],
+        "reputation": {
+          "remnant_empire": 8
+        }
       }
     },
     {
@@ -192,7 +207,10 @@
         "gold": 270,
         "items": [
           "rift_shard"
-        ]
+        ],
+        "reputation": {
+          "ashguard": 8
+        }
       }
     },
     {
@@ -219,7 +237,10 @@
       "rewards": {
         "exp": 820,
         "gold": 290,
-        "items": []
+        "items": [],
+        "reputation": {
+          "rift_institute": 8
+        }
       }
     },
     {
@@ -249,7 +270,10 @@
         "gold": 310,
         "items": [
           "rift_shard"
-        ]
+        ],
+        "reputation": {
+          "red_tide": 8
+        }
       }
     },
     {
@@ -276,7 +300,10 @@
       "rewards": {
         "exp": 940,
         "gold": 330,
-        "items": []
+        "items": [],
+        "reputation": {
+          "wild_tribes": 8
+        }
       }
     },
     {
@@ -305,7 +332,10 @@
         "gold": 350,
         "items": [
           "rift_shard"
-        ]
+        ],
+        "reputation": {
+          "remnant_empire": 8
+        }
       }
     },
     {
@@ -332,7 +362,10 @@
       "rewards": {
         "exp": 1060,
         "gold": 370,
-        "items": []
+        "items": [],
+        "reputation": {
+          "ashguard": 8
+        }
       }
     },
     {
@@ -361,7 +394,10 @@
         "gold": 390,
         "items": [
           "rift_shard"
-        ]
+        ],
+        "reputation": {
+          "rift_institute": 8
+        }
       }
     },
     {
@@ -389,7 +425,10 @@
       "rewards": {
         "exp": 1180,
         "gold": 410,
-        "items": []
+        "items": [],
+        "reputation": {
+          "red_tide": 8
+        }
       }
     },
     {
@@ -418,7 +457,10 @@
         "gold": 430,
         "items": [
           "rift_shard"
-        ]
+        ],
+        "reputation": {
+          "wild_tribes": 8
+        }
       }
     },
     {
@@ -446,7 +488,10 @@
       "rewards": {
         "exp": 1300,
         "gold": 450,
-        "items": []
+        "items": [],
+        "reputation": {
+          "remnant_empire": 8
+        }
       }
     },
     {
@@ -474,7 +519,10 @@
         "gold": 470,
         "items": [
           "rift_shard"
-        ]
+        ],
+        "reputation": {
+          "ashguard": 8
+        }
       }
     },
     {
@@ -501,7 +549,10 @@
       "rewards": {
         "exp": 1420,
         "gold": 490,
-        "items": []
+        "items": [],
+        "reputation": {
+          "rift_institute": 8
+        }
       }
     },
     {
@@ -529,7 +580,10 @@
         "gold": 510,
         "items": [
           "rift_shard"
-        ]
+        ],
+        "reputation": {
+          "red_tide": 8
+        }
       }
     },
     {
@@ -555,7 +609,10 @@
       "rewards": {
         "exp": 1540,
         "gold": 530,
-        "items": []
+        "items": [],
+        "reputation": {
+          "wild_tribes": 8
+        }
       }
     },
     {
@@ -583,7 +640,10 @@
         "gold": 550,
         "items": [
           "rift_shard"
-        ]
+        ],
+        "reputation": {
+          "remnant_empire": 8
+        }
       }
     },
     {
@@ -609,7 +669,10 @@
       "rewards": {
         "exp": 1660,
         "gold": 570,
-        "items": []
+        "items": [],
+        "reputation": {
+          "ashguard": 8
+        }
       }
     },
     {
@@ -637,7 +700,10 @@
         "gold": 590,
         "items": [
           "rift_shard"
-        ]
+        ],
+        "reputation": {
+          "rift_institute": 8
+        }
       }
     },
     {
@@ -663,7 +729,10 @@
       "rewards": {
         "exp": 1780,
         "gold": 610,
-        "items": []
+        "items": [],
+        "reputation": {
+          "red_tide": 8
+        }
       }
     },
     {
@@ -691,7 +760,10 @@
         "gold": 630,
         "items": [
           "rift_shard"
-        ]
+        ],
+        "reputation": {
+          "wild_tribes": 8
+        }
       }
     },
     {

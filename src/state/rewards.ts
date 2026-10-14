@@ -54,6 +54,10 @@ export function grantQuestRewards(
     const text = describeGains(gains, itemName);
     lines.push(text ? `任务完成：${titleOf(c.questId)}（${text}）` : `任务完成：${titleOf(c.questId)}`);
     lines.push(...applyGains(session, gains));
+    for (const [faction, delta] of Object.entries(c.rewards.reputation ?? {})) {
+      const after = session.world.addReputation(faction, delta);
+      lines.push(`声望变化：${faction} ${delta > 0 ? '+' : ''}${delta}（现为 ${after}）`);
+    }
   }
   return lines;
 }

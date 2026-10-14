@@ -63,7 +63,7 @@ export interface QuestDef {
   title: string;
   requires: string[];
   objectives: Array<{ type: string; target: string; count?: number; text: string }>;
-  rewards?: { exp?: number; gold?: number; items?: string[] };
+  rewards?: { exp?: number; gold?: number; items?: string[]; reputation?: Record<string, number> };
 }
 
 export interface DialogueDef {

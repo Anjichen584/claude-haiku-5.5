@@ -21,6 +21,7 @@ export interface QuestRewards {
   exp?: number;
   gold?: number;
   items?: string[];
+  reputation?: Record<string, number>;
 }
 
 export interface QuestCompletion {
