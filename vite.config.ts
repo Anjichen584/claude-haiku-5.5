@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  // 相对路径：产物可以放在任意目录，也便于离线单文件打包（见 scripts/build-standalone.mjs）
+  base: './',
   server: {
     host: '0.0.0.0',
     port: 5173,

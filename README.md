@@ -96,7 +96,12 @@ npm run validate:data  # 校验 data/ 中的 JSON 引用与字段
 npm test               # 运行单元测试
 npm run build          # 类型检查 + 生产构建，输出到 dist/
 npm run preview        # 预览生产构建（http://localhost:4173）
+npm run build:standalone  # 生成单文件版 dist-standalone/rift-chronicles.html（可直接双击打开，无需服务器）
 ```
+
+**发布产物**：`dist/` 是网站式产物（入口 `index.html` 加 `assets/`，需要静态服务器，已使用相对路径）。
+`dist-standalone/rift-chronicles.html` 是单文件版，内联了全部脚本，可以离线直接打开；运行时不发起任何网络请求。
+桌面安装包（Tauri）尚未配置，计划在阶段 8 加入。
 
 > 打包桌面应用（`npm run tauri build`）计划在阶段 8 加入。
 

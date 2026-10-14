@@ -4,6 +4,7 @@ source-assets/
 # 依赖与构建产物
 node_modules/
 dist/
+dist-standalone/
 src-tauri/target/
 coverage/
 
