@@ -201,6 +201,8 @@ export class OverworldScene extends Phaser.Scene {
       fontFamily: 'sans-serif', fontSize: '18px', color: '#fff3c4', align: 'center',
       backgroundColor: '#0b0a1aee', padding: { x: 24, y: 20 }, wordWrap: { width: display.baseWidth - 200 },
     }).setOrigin(0.5).setScrollFactor(0).setDepth(400).setVisible(false);
+    const early = this.rewardLines([]);
+    if (early.length > 0) this.showToast(early.join('\n'));
     this.refreshKeyChoice();
     this.repPanel = this.add.text(16, 420, '', {
       fontFamily: 'sans-serif', fontSize: '14px', color: '#f4f0ff', lineSpacing: 4,
@@ -607,7 +609,9 @@ export class OverworldScene extends Phaser.Scene {
   }
 
   /** 发放任务奖励并返回提示文本行（含升级提示）。 */
-  private rewardLines(done: QuestCompletion[]): string[] {
+  private rewardLines(finished: QuestCompletion[]): string[] {
+    // 收集目标按背包持有数量判定，每次发奖时一并检查
+    const done = [...finished, ...this.quests.syncCollect()];
     const lines = grantQuestRewards(
       this.session,
       done,

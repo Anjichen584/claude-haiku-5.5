@@ -12,7 +12,7 @@ import {
   type DungeonRun,
 } from '../dungeon/run';
 import type { RoomKind } from '../dungeon/layout';
-import { applyGains, describeGains, levelForExp, type Gains } from '../state/rewards';
+import { applyGains, describeGains, grantQuestRewards, levelForExp, type Gains } from '../state/rewards';
 import { getSession, persistSession, setRun, getRun } from '../state/sessionStore';
 import { PLAYER_MAX_HP, type GameSession } from '../state/session';
 
@@ -171,7 +171,15 @@ export class DungeonScene extends Phaser.Scene {
     markCleared(this.run, roomId);
     const levelUps = applyGains(this.session, gains);
     const text = describeGains(gains, (id) => this.itemNames.get(id) ?? id);
-    this.say([`${label}：${text || '无'}`, ...levelUps].join('\n'));
+    // 宝箱等获得的物品可能完成收集任务
+    const done = this.session.quests.syncCollect();
+    const questLines = grantQuestRewards(
+      this.session,
+      done,
+      (id) => this.session.quests.def(id)?.title ?? id,
+      (id) => this.itemNames.get(id) ?? id,
+    );
+    this.say([`${label}：${text || '无'}`, ...levelUps, ...questLines].join('\n'));
   }
 
   private leave(): void {

@@ -146,6 +146,39 @@ export class QuestManager {
     return completed;
   }
 
+  /**
+   * 收集目标按“持有数量”判定：进度 = max(已记录进度, 当前背包数量)，封顶为需要的数量。
+   * 不消耗物品；每次背包可能变化后调用（获得奖励、宝箱、掉落、进入地表时）。
+   */
+  syncCollect(): QuestCompletion[] {
+    const completed: QuestCompletion[] = [];
+    for (const def of this.defs.values()) {
+      const rec = this.world.getQuest(def.id);
+      if (!rec || rec.status !== 'active') continue;
+      const progress = [...rec.progress];
+      let changed = false;
+      def.objectives.forEach((obj, i) => {
+        if (obj.type !== 'collect') return;
+        const need = obj.count ?? 1;
+        const next = Math.min(need, Math.max(progress[i] ?? 0, this.world.getItemCount(obj.target ?? '')));
+        if (next !== progress[i]) {
+          progress[i] = next;
+          changed = true;
+        }
+      });
+      if (!changed) continue;
+      const allDone = def.objectives.every((obj, i) => progress[i] >= (obj.count ?? 1));
+      if (allDone) {
+        this.world.setQuest(def.id, { status: 'completed', progress });
+        completed.push({ questId: def.id, rewards: def.rewards ?? {} });
+        this.refreshAvailability();
+      } else {
+        this.world.setQuest(def.id, { ...rec, progress });
+      }
+    }
+    return completed;
+  }
+
   progressOf(id: string): QuestRecord | undefined {
     return this.world.getQuest(id);
   }
