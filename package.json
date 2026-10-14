@@ -1,0 +1,26 @@
+{
+  "name": "rift-chronicles",
+  "version": "0.1.0",
+  "private": true,
+  "description": "裂隙编年史 / Rift Chronicles — 2D 开放世界 RPG + Roguelike 地牢",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "typecheck": "tsc --noEmit",
+    "validate:data": "tsx scripts/validate-data.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "phaser": "^3.80.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vite": "^5.4.0",
+    "vitest": "^2.1.0"
+  }
+}
