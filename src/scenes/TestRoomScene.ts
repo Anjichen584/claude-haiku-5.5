@@ -13,6 +13,7 @@ import type { EnemyDef } from '../data/schema';
 import type { QuestCompletion } from '../narrative/QuestManager';
 import { getRun, getSession, persistSession, setRun } from '../state/sessionStore';
 import { applyGains, grantQuestRewards } from '../state/rewards';
+import { killGains, rollDrops } from '../state/killRewards';
 import { MAX_DUNGEON_FLOOR, PLAYER_MAX_HP, type GameSession } from '../state/session';
 import { combatGains, markCleared } from '../dungeon/run';
 import type { EncounterRequest } from '../world/encounters';
@@ -84,6 +85,8 @@ export class TestRoomScene extends Phaser.Scene {
   private encounter: EncounterRequest | null = null;
   private session: GameSession | null = null;
   private completions: QuestCompletion[] = [];
+  /** 本场战斗获得的击杀奖励与掉落文字 */
+  private loot: string[] = [];
   private finished = false;
 
   constructor() {
@@ -94,6 +97,7 @@ export class TestRoomScene extends Phaser.Scene {
     this.encounter = data?.encounter ?? null;
     this.session = getSession();
     this.completions = [];
+    this.loot = [];
     this.finished = false;
     this.won = false;
   }
@@ -143,7 +147,8 @@ export class TestRoomScene extends Phaser.Scene {
     // 地牢战斗不写入地表的击败记录
     if (won && this.encounter && this.session && !this.encounter.dungeon) this.session.defeated.add(this.encounter.spawnKey);
 
-    const lines = [won ? '胜利！' : '你倒下了……'];
+    const lines = [won ? '胜利！' : '你倒下了……', ...this.loot.slice(0, 8)];
+    if (this.loot.length > 8) lines.push(`…另有 ${this.loot.length - 8} 条记录`);
     if (this.encounter?.dungeon) lines.push(...this.settleDungeonRoom(this.encounter.dungeon, won));
     const session = this.session;
     if (session) {
@@ -346,6 +351,16 @@ export class TestRoomScene extends Phaser.Scene {
         // 遭遇战中的击杀计入 kill 任务
         this.completions.push(...this.session.quests.report({ type: 'kill', target: enemy.def.id, amount: 1 }));
         this.session.quests.acceptAvailable((d) => d.type !== 'side');
+        // 击杀奖励与掉落（掉落按 战斗键 + 敌人序号 决定，结果稳定）
+        const slot = this.enemies.indexOf(enemy);
+        const key = `${this.encounter.spawnKey}:${slot}`;
+        const kg = killGains(enemy.def);
+        this.loot.push(`击杀 ${enemy.def.name}：+${kg.exp} 经验、+${kg.gold} 金币`);
+        this.loot.push(...applyGains(this.session, kg));
+        for (const item of rollDrops(enemy.def, key)) {
+          this.session.world.addItem(item, 1);
+          this.loot.push(`掉落：${loadGameData().items.find((i) => i.id === item)?.name ?? item}`);
+        }
       }
     }
   }
