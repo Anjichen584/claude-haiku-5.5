@@ -27,7 +27,7 @@ jobs:
   browser-smoke:
     needs: verify
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -43,7 +43,7 @@ jobs:
       - run: pip install -r scripts/e2e/requirements.txt
       - run: python -m playwright install --with-deps chromium
       - run: npm run build:standalone
-      - name: Quest journey and offline browser smoke
+      - name: Early route, quest journey and offline browser smoke
         shell: bash
         run: |
           npm run preview -- --port 5173 > "$RUNNER_TEMP/vite-smoke.log" 2>&1 &
@@ -60,6 +60,7 @@ jobs:
           else:
               raise SystemExit('Production preview did not start')
           PY
+          python scripts/e2e/early_route_e2e.py
           python scripts/e2e/quest_tracking_e2e.py
           python scripts/e2e/quest_journey_e2e.py
           python scripts/e2e/standalone_e2e.py

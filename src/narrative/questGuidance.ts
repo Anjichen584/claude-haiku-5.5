@@ -3,6 +3,7 @@ import type {WorldState} from '../state/WorldState';
 import type {PlacedLocation} from '../world/placement';
 import type {PlacedNpc,TilePoint} from '../world/npcPlacement';
 import type {SurfaceSpawn} from '../world/encounters';
+import {CAMP_SUPPLIES_FLAG} from '../state/campSupplies';
 import {trackedObjective} from './questTracking';
 
 export interface NpcQuestState {available:number;ready:number;active:number;kind:'ready'|'available'|'active'|'none'}
@@ -25,6 +26,11 @@ export function questGuidance(quest:QuestDef,world:WorldState,player:TilePoint,p
   positions:ReadonlyMap<string,PlacedNpc>,spawns:readonly SurfaceSpawn[],enemies:readonly EnemyDef[]):QuestGuidance {
   const index=trackedObjective(quest,world),objective=quest.objectives[index];
   if(!objective)return {label:'目标已达成',hint:'等待任务结算'};
+  if(quest.id==='main_02_ash_road' && ((objective.type==='collect' && objective.target==='rift_shard') || (objective.type==='reach' && objective.target==='ash_road_camp'))
+    && world.questStatus(quest.id)==='active' && world.questStatus('main_01_first_rift')==='completed' && !world.hasFlag(CAMP_SUPPLIES_FLAG)){
+    const camp=places.find(p=>p.id==='ash_road_camp');
+    if(camp)return {point:camp,label:'营地中心 · 首次补给',hint:'靠近营地中心自动领取首次补给',location:camp.id};
+  }
   if(objective.type==='reach'){
     const place=places.find(p=>p.id===objective.target);
     return place?{point:place,label:place.name,hint:'走近地点中心',location:place.id}:{label:'探索目标',hint:'地点暂未标注'};

@@ -61,6 +61,9 @@ async def main():
             print(f'starter pack {pack}: defeated',flush=True)
         assert await page.evaluate(f"{O}.world.questStatus('main_01_first_rift')==='completed'")
         camp=await page.evaluate(f"{O}.places.find(p=>p.id==='ash_road_camp')")
+        await walk(camp['x']-4,camp['y'])
+        assert await page.evaluate(f"{O}.tracker.text.includes('营地中心')&&{O}.tracker.text.includes('首次补给')&&!{O}.tracker.text.includes('可能掉落')"),'approach lost the guaranteed-supplies guidance'
+        assert await page.evaluate(f"{O}.world.questStatus('main_02_ash_road')==='active'"),'supplies claimed too far from center'
         await walk(camp['x'],camp['y'])
         await page.wait_for_function(f"{O}.world.questStatus('main_02_ash_road')==='completed'")
         assert await page.evaluate(f"{O}.world.getItemCount('rift_shard')>=3")

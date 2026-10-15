@@ -55,3 +55,22 @@ describe('quest destination guidance',()=>{
     expect(directionHint({x:0,y:0},{x:1,y:1})).toBe('已到目标附近');
   });
 });
+
+describe('guaranteed chapter-two supplies guidance',()=>{
+  const q:QuestDef={id:'main_02_ash_road',title:'Camp',type:'main',requires:[],objectives:[
+    {type:'reach',target:'ash_road_camp',text:'camp'},{type:'collect',target:'rift_shard',text:'shards',count:3}]};
+  const camp={...place,id:'ash_road_camp'};
+  const setup=()=>{const s=newSession([q]);s.world.setQuest('main_01_first_rift',{status:'completed',progress:[5]});s.quests.report({type:'reach',target:camp.id});return s;};
+  it('keeps the target at the center after discovery instead of redirecting to random drops',()=>{
+    const s=setup();
+    const guide=()=>questGuidance(q,s.world,{x:96,y:100},[camp],[],new Map(),[],[wolf]);
+    expect(guide()).toMatchObject({point:camp,label:'营地中心 · 首次补给',hint:'靠近营地中心自动领取首次补给'});
+    s.world.setFlag('ash-road-intro-supplies-claimed');expect(guide().point).toBeUndefined();
+  });
+  it('does not invent a camp when absent or offer supplies without the completed prerequisite',()=>{
+    const s=setup();
+    expect(questGuidance(q,s.world,{x:0,y:0},[],[],new Map(),[],[]).point).toBeUndefined();
+    s.world.setQuest('main_01_first_rift',{status:'active',progress:[0]});
+    expect(questGuidance(q,s.world,{x:0,y:0},[camp],[],new Map(),[],[]).point).toBeUndefined();
+  });
+});
