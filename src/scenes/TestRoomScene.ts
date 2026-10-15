@@ -6,6 +6,7 @@ import { landscape, panel, UI } from '../ui/theme';
 import { settleQuestRewards } from '../state/rewards';
 import { display } from '../config/display';
 import { Actor } from '../combat/Actor';
+import { attackIntent, encounterFormation, BATTLE_PLAYER_START, ENCOUNTER_OPENING_MS } from '../combat/engagement';
 import type { Element } from '../combat/damage';
 import { CombatRuntime, type CombatTarget } from '../combat/CombatRuntime';
 import { combatProfile } from '../combat/profile';
@@ -31,9 +32,9 @@ import type { EncounterRequest } from '../world/encounters';
 
 /**
  * 阶段 1 测试房间：验证移动、冲刺、闪避、攻击、伤害与敌人 AI。
- * 美术使用纯色矩形占位，不依赖任何外部资源。
+ * 共用遭遇战与试炼规则，角色使用项目本地生成美术。
  *
- * 操作：WASD 移动 · Shift 冲刺 · Space 闪避 · J 攻击 · R 重置
+ * 操作：WASD 手动走位 · Shift 冲刺 · Space 闪避 · 按住 J 追击/普攻 · R 重置试炼
  */
 
 const PLAYER = {
@@ -103,6 +104,7 @@ export class TestRoomScene extends Phaser.Scene {
   /** 本场战斗获得的击杀奖励与掉落文字 */
   private loot: string[] = [];
   private finished = false;
+  private openingLeftMs = 0;
 
   constructor() {
     super('TestRoomScene');
@@ -151,7 +153,8 @@ export class TestRoomScene extends Phaser.Scene {
     if(this.finished){this.render();return;}
     this.updatePlayer(deltaMs);
     if(this.finished){this.render();return;}
-    this.updateEnemies(deltaMs);
+    if (this.openingLeftMs > 0) this.openingLeftMs = Math.max(0, this.openingLeftMs-deltaMs);
+    else this.updateEnemies(deltaMs);
     this.checkEncounterEnd();
     this.render();
   }
@@ -250,15 +253,17 @@ export class TestRoomScene extends Phaser.Scene {
     for(let i=0;i<30;i++){const x=110+(i*131)%1060,y=173+(i*79)%390;floor.lineStyle(1,0x9fb18b,.12).strokeCircle(x,y,12+(i%4)*5);}
     panel(this,24,22,1232,90);
     this.add.text(48,39,this.encounter?.dungeon?'裂隙深处  /  房间战斗':this.encounter?'荒野遭遇':'战斗试炼', {fontFamily:UI.font,fontSize:23,color:'#e7dbb6'}).setDepth(200);
-    this.add.text(48,79,'W A S D 移动   ·   J 挥剑   ·   Shift 冲刺   ·   Space 闪避', {fontFamily:UI.font,fontSize:13,color:'#a4bcaa'}).setDepth(200);
+    this.add.text(48,79,'按住 J 追击/普攻 · WASD 手动走位优先 · Shift 冲刺 · Space 闪避', {fontFamily:UI.font,fontSize:13,color:'#a4bcaa'}).setDepth(200);
     panel(this,24,618,1232,78);
     this.hud = this.add.text(48,632,'',{fontFamily:UI.font,fontSize:15,color:'#d5dec2',lineSpacing:7}).setDepth(200);
     if(!this.encounter)this.add.text(1125,44,'Esc 返回',{fontFamily:UI.font,fontSize:15,color:'#e3cb93'}).setDepth(200).setInteractive({useHandCursor:true}).on('pointerdown',()=>this.scene.start('OverworldScene'));
     this.effects=this.add.graphics().setDepth(30);
     this.health=this.add.graphics().setDepth(201);
 
-    this.px = 320;
-    this.py = display.baseHeight / 2;
+    this.px = this.encounter ? BATTLE_PLAYER_START.x : 320;
+    this.py = this.encounter ? BATTLE_PLAYER_START.y : display.baseHeight / 2;
+    this.facing = {x:1,y:0};
+    this.openingLeftMs = this.encounter ? ENCOUNTER_OPENING_MS : 0;
     // 战斗属性由装备决定（没有会话时为基础属性）
     const gameData = loadGameData();
     const profile = combatProfile(this.session?.player.equipment ?? {}, gameData.items, gameData.affixes, gameData.itemSets);
@@ -279,7 +284,7 @@ export class TestRoomScene extends Phaser.Scene {
 
     const data = loadGameData();
     const spawns = this.encounter
-      ? this.encounter.enemyIds.map((id, i) => ({ id, x: 820 + (i % 2) * 80, y: 200 + i * 120 }))
+      ? encounterFormation(this.encounter.enemyIds)
       : ENEMY_SPAWNS;
     for (const [index,spawn] of spawns.entries()) {
       const def = data.enemies.find((e) => e.id === spawn.id);
@@ -301,7 +306,7 @@ export class TestRoomScene extends Phaser.Scene {
     }
     this.supplyLabels=['治疗药剂','魔力药剂'].map((name,i)=>this.add.text(925,520+i*34,`${i?'M':'H'} ${name}`,{fontFamily:UI.font,fontSize:12,color:'#dfd3b2',backgroundColor:'#1b3638',padding:{x:10,y:7}}).setDepth(211).setInteractive({useHandCursor:true}).on('pointerdown',()=>this.useSupply(i)));
     this.hotbar=new BattleHotbar(this,this.equippedSkills,this.runtime,i=>this.castSkill(i));
-    this.pushLog('1–4 施放技能 · J 普攻 · Space 闪避（消耗耐力）');
+    this.pushLog('按住 J 自动接近并普攻，松开停止追击；WASD 走位优先 · 1–4 技能');
   }
 
   // ---------- 玩家 ----------
@@ -345,7 +350,16 @@ export class TestRoomScene extends Phaser.Scene {
     } else if (this.dashLeftMs > 0) {
       this.movePlayer(this.facing.x * PLAYER.dashSpeed * dt, this.facing.y * PLAYER.dashSpeed * dt);
     } else if (!this.playerActor.isStaggered) {
-      this.movePlayer(mx * PLAYER.speed * this.runtime.speedMultiplier * dt, my * PLAYER.speed * this.runtime.speedMultiplier * dt);
+      if (len === 0 && this.keys.J.isDown) {
+        const intent = attackIntent({x:this.px,y:this.py}, this.targets(), this.runtime.profile.weaponRange);
+        if (intent) {
+          this.facing = intent.direction;
+          const step = Math.min(intent.approach, PLAYER.speed * this.runtime.speedMultiplier * dt);
+          this.movePlayer(intent.direction.x * step, intent.direction.y * step);
+        }
+      } else {
+        this.movePlayer(mx * PLAYER.speed * this.runtime.speedMultiplier * dt, my * PLAYER.speed * this.runtime.speedMultiplier * dt);
+      }
     }
 
     for(let i=0;i<this.supplyKeys.length;i++)if(pressed(this.supplyKeys[i]))this.useSupply(i);
@@ -353,7 +367,8 @@ export class TestRoomScene extends Phaser.Scene {
 
     // 攻击
     if (this.keys.J.isDown && this.runtime.basicCooldownMs === 0 && this.runtime.globalCooldownMs===0 && !this.playerActor.isStaggered) {
-      this.performPlayerAttack();
+      const intent = attackIntent({x:this.px,y:this.py}, this.targets(), this.runtime.profile.weaponRange);
+      if (len > 0 || (intent && intent.distance <= this.runtime.profile.weaponRange)) this.performPlayerAttack();
     }
   }
 
@@ -387,6 +402,12 @@ export class TestRoomScene extends Phaser.Scene {
   private castSkill(index:number):void{
     if(this.finished || this.playerActor.isDead)return;
     const skill=this.equippedSkills[index];if(!skill)return;
+    if (!this.keys.W.isDown && !this.keys.A.isDown && !this.keys.S.isDown && !this.keys.D.isDown
+      && this.dodgeLeftMs === 0 && this.dashLeftMs === 0
+      && ['strike','bolt','blast'].includes(skill.combat?.kind ?? '')) {
+      const intent = attackIntent({x:this.px,y:this.py}, this.targets(), this.runtime.profile.weaponRange);
+      if (intent) this.facing = intent.direction;
+    }
     const result=this.runtime.cast(skill.id,{x:this.px,y:this.py},this.facing,this.targets());
     if(!result.ok){const messages:Record<string,string>={'no-target':'前方没有射程内目标',mana:'魔力不足',stamina:'耐力不足',cooldown:'技能冷却中',busy:'正在硬直或施法间隔中'};this.pushLog(`${skill.name}：${messages[result.reason??'']??'无法施放'}`);return;}
     const colors:Record<string,number>={fire:0xf3ae73,ice:0xa9e5ec,lightning:0xe8cf89,dark:0xbca1dc,holy:0xeae8ae,none:0xcdddab};
@@ -445,7 +466,9 @@ export class TestRoomScene extends Phaser.Scene {
 
       if(this.runtime.isStunned(enemy.combat)){enemy.windup=0;enemy.body.setTint(0x9fcde0);continue;}else enemy.body.clearTint();
       const dist = Math.hypot(this.px - enemy.x, this.py - enemy.y);
-      const decision = decideEnemyAction(enemy.brain, enemy.tactics.ai, { distanceToPlayer: dist, deltaMs });
+      // In an accepted encounter the enemy already knows we are here. Patrol/leash belongs to overworld AI.
+      const ai = this.encounter ? {...enemy.tactics.ai, aggroRange:1800, leashRange:1800} : enemy.tactics.ai;
+      const decision = decideEnemyAction(enemy.brain, ai, { distanceToPlayer: dist, deltaMs });
 
       const retreat=dist<enemy.tactics.retreatRange;
       if ((decision.moveTowardPlayer || retreat) && enemy.windup===0 && !enemy.actor.isStaggered && dist > 0) {
@@ -498,6 +521,11 @@ export class TestRoomScene extends Phaser.Scene {
       enemy.hpBar.fillStyle(0xc18b62, 1).fillRect(enemy.x - 20, enemy.y - (enemy.def.boss?82:58), 40 * ratio, 5);
     }
 
+    if (!this.finished && this.keys.J.isDown) {
+      const intent = attackIntent({x:this.px,y:this.py}, this.targets(), this.runtime.profile.weaponRange);
+      const target = intent ? this.enemies.find(e => e.combat.id === intent.targetId) : undefined;
+      if (target) this.effects.lineStyle(2,0xe5d4a4,.85).strokeEllipse(target.x,target.y+8,60,20);
+    }
     this.hotbar.update();
     const cd=Math.max(0,Math.ceil(((this.session?.player.consumableReadyAt??0)-Date.now())/1000));
     this.supplyLabels.forEach((label,i)=>label.setText(`${i?'M 魔力':'H 治疗'} ×${this.session?.world.getItemCount(i?'mana_potion':'health_potion')??0}${cd>0?` · ${cd}s`:''}`));
@@ -505,7 +533,7 @@ export class TestRoomScene extends Phaser.Scene {
     this.health.clear().fillStyle(0x304b44).fillRoundedRect(790,52,300,12,6).fillStyle(0xa3c18c).fillRoundedRect(790,52,300*Math.max(0,this.playerActor.hp/this.playerActor.maxHp),12,6);
     this.hud.setText([
       `生命 ${Math.ceil(this.playerActor.hp)}/${this.playerActor.maxHp}     冲刺 ${this.runtime.dashCooldownMs>0?'冷却中':'就绪'}     剩余敌人 ${this.enemies.filter(e=>e.alive).length}`,
-      this.log[this.log.length-1]??'靠近敌人，面向目标挥剑；橙色圆圈表示攻击预警。',
+      this.openingLeftMs>0 ? '遭遇接敌中… 可走位或按住 J 迎战；橙色圆圈是敌人攻击预警。' : (this.log[this.log.length-1]??'按住 J 追击/普攻；WASD 手动走位优先。'),
     ]);
   }
 
