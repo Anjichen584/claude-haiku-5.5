@@ -29,6 +29,11 @@ async def main():
   # Position/learned-skill fixture: never change enemy HP or invoke damage callbacks.
   await page.evaluate(f"""() => {{const s={O};s.tileX=15;s.tileY=-5;s.player.setPosition(240,-80);s.session.player.skills.unlocked=['fireball'];s.session.player.skills.equipped=['fireball'];s.syncChunks();}}""")
   await page.wait_for_function(f'{O}.surface.engaged')
+  await page.get_by_role('button',name='存档 / 帮助',exact=True).click()
+  await page.get_by_role('button',name='保存并返回标题',exact=True).click()
+  await page.wait_for_function("document.querySelector('#save-status').textContent.includes('先结束战斗')")
+  assert await page.evaluate(f'{O}.scene.isActive()'), 'save tools escaped active combat'
+  await page.keyboard.press('Escape')
   await page.keyboard.press('1');await page.wait_for_function(f"({O}.surface.runtime.cooldowns.get('fireball')??0)>0")
   await page.keyboard.press('Space');await page.wait_for_function(f'{O}.surface.runtime.dodgeCooldownMs>0')
   await page.keyboard.down('j');await page.wait_for_function(f"{O}.session.defeated.has('camp-wolves-0')",timeout=35000);await page.keyboard.up('j')
