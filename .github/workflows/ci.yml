@@ -27,7 +27,7 @@ jobs:
   browser-smoke:
     needs: verify
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -60,7 +60,8 @@ jobs:
           else:
               raise SystemExit('Production preview did not start')
           PY
-          python scripts/e2e/early_route_e2e.py
+          python scripts/e2e/early_route_e2e.py --snow
+          python scripts/e2e/story_patrols_e2e.py
           python scripts/e2e/mixed_objective_guidance_e2e.py
           python scripts/e2e/quest_tracking_e2e.py
           python scripts/e2e/quest_journey_e2e.py

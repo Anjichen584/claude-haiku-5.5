@@ -12,7 +12,7 @@ C="window.__game.scene.getScene('TestRoomScene')"
 async def main():
     async with async_playwright() as p:
         browser=await p.chromium.launch(args=['--no-sandbox'])
-        page=await browser.new_page(viewport={'width':1280,'height':720});errors=[];battles=0;held=set();started=time.monotonic()
+        page=await browser.new_page(viewport={'width':1280,'height':720});errors=[];battles=0;held=set();started=time.monotonic();budget=900 if '--snow' in sys.argv else 300
         page.on('pageerror',lambda e:errors.append(str(e)))
         async def movement(keys):
             nonlocal held
@@ -24,7 +24,7 @@ async def main():
             await movement(set());battles+=1
             await page.keyboard.down('j')
             while not await page.evaluate(f'{C}.finished'):
-                if time.monotonic()-started>900:raise AssertionError('early route exceeded 900 seconds')
+                if time.monotonic()-started>budget:raise AssertionError(f'early route exceeded {budget} seconds')
                 status=await page.evaluate(f"""() => {{const s={C};return {{hp:s.playerActor.hp,
                     potionReady:Date.now()>=(s.session.player.consumableReadyAt??0),
                     dodge:s.runtime.dodgeCooldownMs===0&&s.runtime.stamina>=24,
@@ -40,7 +40,7 @@ async def main():
             print(f'encounter {battles}: hp={resources[0]}, health potions={resources[1]}',flush=True)
         async def walk(x,y):
             while True:
-                if time.monotonic()-started>900:raise AssertionError('walk timeout')
+                if time.monotonic()-started>budget:raise AssertionError('walk timeout')
                 state=await page.evaluate(f"""() => ({{combat:{C}.scene.isActive(),x:{O}.tileX,y:{O}.tileY}})""")
                 if state['combat']:await battle();continue
                 dx=x-state['x'];dy=y-state['y']
@@ -120,6 +120,6 @@ async def main():
             assert sorted(await page.evaluate(f"[...{O}.session.defeated]"))==sorted(snapshot)
             print('PASS: real WASD from camp to snow gate, real frost-wolf fights, chapter three and reload',flush=True)
         assert not errors,errors
-        print(f'PASS: real WASD route, {battles} real encounters, chapters 1–2, camp supplies, Q side tracking, captain dialogue/reload and three neutral revisits; {time.monotonic()-started:.1f}s; no page errors')
+        print(f'PASS: real WASD route, {battles} real encounters, chapters 1–{3 if "--snow" in sys.argv else 2}, camp supplies, Q side tracking, captain dialogue/reload and three neutral revisits; {time.monotonic()-started:.1f}s; no page errors')
         await browser.close()
 asyncio.run(main())

@@ -1,3 +1,4 @@
+import {settleQuestRewards} from '../src/state/rewards';
 import {describe,expect,it} from 'vitest';
 import {snowGatePatrols,spawnAvailable,SNOW_PATROL_PREFIX} from '../src/world/storyPatrols';
 import {placeLocations} from '../src/world/placement';
@@ -42,5 +43,36 @@ describe('snow gate story patrols',()=>{
   it('does not mutate placement data or require a save migration',()=>{
     const before=JSON.stringify(places);snowGatePatrols(places,positions);expect(JSON.stringify(places)).toBe(before);
     expect(snowGatePatrols([],new Map())).toEqual([]);
+  });
+});
+
+
+describe('old chapter-three saves and exactly-once settlement',()=>{
+  it('uses an already visited snow gate, counts only remaining kills and does not re-award after reload',()=>{
+    let s=newSession(defs);
+    s.world.setQuest('main_01_first_rift',{status:'completed',progress:[5]});
+    s.world.setQuest('main_02_ash_road',{status:'completed',progress:[1,3]});
+    s.world.setQuest('main_03',{status:'active',progress:[2,0]});
+    s.visited.add('snow_gate');s.defeated.add(patrols[0].key);
+    settleQuestRewards(s,[],id=>id,id=>id);
+    expect(s.world.getQuest('main_03')?.progress).toEqual([2,1]);
+    expect(s.player.gold).toBe(0);
+    const done=s.quests.report({type:'kill',target:'frost_wolf',amount:4});
+    settleQuestRewards(s,done,id=>id,id=>id);
+    expect(s.world.questStatus('main_03')).toBe('completed');
+    const gold=s.player.gold,exp=s.player.exp;
+    expect(gold).toBe(defs.find(q=>q.id==='main_03')?.rewards?.gold);
+    s=fromSaveFile(parseSave(serializeSave(toSaveFile(s))),defs);
+    settleQuestRewards(s,s.quests.report({type:'kill',target:'frost_wolf',amount:4}),id=>id,id=>id);
+    expect(s.player.gold).toBe(gold);expect(s.player.exp).toBe(exp);
+    expect(patrols.filter(p=>spawnAvailable(p,s.world))).toEqual([]);
+  });
+  it('searches around occupied approach offsets deterministically without moving a court',()=>{
+    const gate=places.find(p=>p.id==='snow_gate')!;
+    const blocked=[{...gate},{id:'court',name:'court',region:gate.region,x:gate.x+18,y:gate.y+12}];
+    const result=snowGatePatrols(blocked,new Map());
+    expect(result).toEqual(snowGatePatrols([...blocked].reverse(),new Map()));
+    expect(result[0].tileX!==gate.x+18||result[0].tileY!==gate.y+12).toBe(true);
+    expect(result.every(p=>!inSettlement({x:p.tileX,y:p.tileY},blocked,new Map()))).toBe(true);
   });
 });
