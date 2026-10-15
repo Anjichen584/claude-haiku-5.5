@@ -78,7 +78,9 @@ async def main():
   await pg.keyboard.press('s');await pg.keyboard.press('Enter');await active('DungeonScene')
   assert await pg.evaluate(f'{D}.run.current')==backup['dungeon']['runs'][-1]['current'];assert await pg.evaluate(f'{D}.session.player.gold')==backup['player']['gold']
   # New game must discard the other character's in-memory active run.
-  await pg.evaluate(f"{D}.scene.start('TitleScene')");await active('TitleScene');await pg.keyboard.press('Enter');await active('OverworldScene');await enter_gate(True)
+  await pg.evaluate(f"{D}.scene.start('TitleScene')");await active('TitleScene');await pg.keyboard.press('Enter')
+  await pg.wait_for_function("window.__game.scene.getScene('TitleScene').newGamePrompt !== null")
+  await pg.keyboard.press('y');await active('OverworldScene');await enter_gate(True)
   assert await pg.evaluate(f'{D}.run.floor===1 && {D}.run.cleared.size===0')
   chest=await travel('chest');await pg.keyboard.press('e');await pg.wait_for_function(f'{D}.run.cleared.has({chest})')
   await travel('combat');await pg.keyboard.press('e');await active('TestRoomScene');await pg.evaluate(f'{C}.playerActor.hp=0');await pg.wait_for_function(f'{C}.finished')

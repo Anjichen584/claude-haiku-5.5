@@ -19,12 +19,14 @@ export class TitleScene extends Phaser.Scene {
   private message!: Phaser.GameObjects.Text;
   private continueFloor:number|null=null;
   private continueError: string | null = null;
+  private newGamePrompt: Phaser.GameObjects.Container | null = null;
 
   constructor() {
     super('TitleScene');
   }
 
   create(): void {
+    this.newGamePrompt = null;
     this.selected = 0;
     this.labels = [];
     landscape(this);
@@ -80,6 +82,9 @@ export class TitleScene extends Phaser.Scene {
     const kb = this.input.keyboard;
     if (!kb) throw new Error('Keyboard input is not available');
     const handlers: Array<[string, () => void]> = [
+      ['keydown-Y', () => { if (this.newGamePrompt) this.startNewGame(); }],
+      ['keydown-N', () => this.cancelNewGame()],
+      ['keydown-ESC', () => this.cancelNewGame()],
       ['keydown-UP', () => this.move(-1)],
       ['keydown-W', () => this.move(-1)],
       ['keydown-DOWN', () => this.move(1)],
@@ -102,6 +107,7 @@ export class TitleScene extends Phaser.Scene {
   }
 
   private select(index: number): void {
+    if (this.newGamePrompt) return;
     this.selected = index;
     this.labels.forEach((label, i) => {
       const active = i === index;
@@ -110,13 +116,14 @@ export class TitleScene extends Phaser.Scene {
   }
 
   private activate(index: number): void {
+    if (this.newGamePrompt) return;
     const choice = this.choices[index];
     if (!choice) return;
     const quests = loadGameData().quests;
 
     if (choice === 'new') {
-      setSession(newSession(quests));
-      this.scene.start('OverworldScene');
+      if (readSaveState().raw !== null) this.confirmNewGame();
+      else this.startNewGame();
       return;
     }
 
@@ -129,4 +136,32 @@ export class TitleScene extends Phaser.Scene {
       this.message.setText(`无法继续：${e instanceof Error ? e.message : '未知错误'}`);
     }
   }
+  private confirmNewGame(): void {
+    const shade = this.add.rectangle(640, 360, 1280, 720, 0x000000, .8)
+      .setInteractive();
+    const box = this.add.rectangle(640, 350, 670, 260, 0x14252c)
+      .setStrokeStyle(2, UI.gold);
+    const heading = text(this, 370, 260, '要开始新的旅途吗？', 28, '#eee8ce');
+    const warning = text(this, 370, 318, '新游戏的自动保存会替换当前进度。\n想保留原来的旅途，请取消并选择“继续”。', 19, '#e6c685');
+    const yes = text(this, 370, 411, '[Y] 确认新游戏', 22, '#e7cb8c')
+      .setInteractive({useHandCursor: true});
+    const no = text(this, 690, 411, '[N / Esc] 取消', 22, '#b6c8b7')
+      .setInteractive({useHandCursor: true});
+    yes.on('pointerdown', () => this.startNewGame());
+    no.on('pointerdown', () => this.cancelNewGame());
+    this.newGamePrompt = this.add.container(0, 0, [shade, box, heading, warning, yes, no])
+      .setDepth(100);
+  }
+
+  private cancelNewGame(): void {
+    this.newGamePrompt?.destroy();
+    this.newGamePrompt = null;
+  }
+
+  private startNewGame(): void {
+    this.cancelNewGame();
+    setSession(newSession(loadGameData().quests));
+    this.scene.start('OverworldScene');
+  }
+
 }
