@@ -55,10 +55,10 @@ async def main():
             point=await page.evaluate(f"""() => {{const s={O};return [...s.chunks.values()].flatMap(c=>c.spawns).find(x=>x.key==='camp-wolves-{pack}')??null;}}""")
             assert point,f'starter encounter {pack} missing'
             await walk(point['tileX'],point['tileY'])
-            if await page.evaluate(f'{C}.scene.isActive()'):await battle()
-            else:
+            if not await page.evaluate(f"{O}.session.defeated.has('camp-wolves-{pack}')"):
                 await page.wait_for_function(f'{C}.scene.isActive()')
                 await battle()
+            print(f'starter pack {pack}: defeated',flush=True)
         assert await page.evaluate(f"{O}.world.questStatus('main_01_first_rift')==='completed'")
         camp=await page.evaluate(f"{O}.places.find(p=>p.id==='ash_road_camp')")
         await walk(camp['x'],camp['y'])
@@ -81,7 +81,16 @@ async def main():
         await page.wait_for_timeout(400);await page.keyboard.press('s');await page.keyboard.press('Enter')
         await page.wait_for_function(f'{O}.scene.isActive()')
         assert await page.evaluate(f"[ {O}.session.player.gold,{O}.world.getItemCount('rift_shard'),{O}.world.getItemCount('health_potion') ]")==state,'reload changed settled rewards/supplies'
+        reputation=await page.evaluate(f"{O}.world.getReputation('ashguard')")
+        for _ in range(3):
+            await page.keyboard.press('e');await page.wait_for_function(f'!!{O}.talk')
+            choices=await page.evaluate(f'{O}.talk.runner.choices()')
+            assert not any(c['text']=='我需要帮助。' for c in choices),'first-help reward remained available'
+            pick=next(i+1 for i,c in enumerate(choices) if c['text']=='我想确认一下接下来的路。')
+            await page.keyboard.press(str(pick));await page.keyboard.press('Space')
+            await page.wait_for_function(f'!{O}.talk')
+            assert await page.evaluate(f"{O}.world.getReputation('ashguard')")==reputation,'revisit changed reputation'
         assert not errors,errors
-        print(f'PASS: real WASD route, {battles} real encounters, chapters 1–2, camp supplies, Q side tracking, captain dialogue and reload; {time.monotonic()-started:.1f}s; no page errors')
+        print(f'PASS: real WASD route, {battles} real encounters, chapters 1–2, camp supplies, Q side tracking, captain dialogue/reload and three neutral revisits; {time.monotonic()-started:.1f}s; no page errors')
         await browser.close()
 asyncio.run(main())

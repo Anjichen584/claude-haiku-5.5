@@ -21,6 +21,20 @@
                 "startQuest": [
                   "main_01_first_rift"
                 ]
+              },
+              "condition": {
+                "notFlags": [
+                  "met_captain"
+                ]
+              }
+            },
+            {
+              "text": "我想确认一下接下来的路。",
+              "next": "n5",
+              "condition": {
+                "flags": [
+                  "met_captain"
+                ]
               }
             },
             {
@@ -31,12 +45,18 @@
                   "ashguard": {
                     "gte": -20
                   }
-                }
+                },
+                "notFlags": [
+                  "insulted_captain"
+                ]
               },
               "effects": {
                 "reputation": {
                   "ashguard": -5
-                }
+                },
+                "setFlags": [
+                  "insulted_captain"
+                ]
               }
             },
             {
@@ -47,12 +67,16 @@
                   "main_01_first_rift": "completed"
                 }
               }
+            },
+            {
+              "text": "先告辞了。",
+              "next": null
             }
           ]
         },
         "n2": {
           "speaker": "守望队长 伊瑟",
-          "text": "好，先去清理营地外的灰烬狼，回来再说。",
+          "text": "营地接纳愿意相助的旅人。按任务栏里的当前目标行动，已经完成的灰烬狼清理不必重复。进入第二章后，可到营地中心领取一次性行路补给。",
           "next": null
         },
         "n3": {
@@ -68,6 +92,11 @@
               "knows_rift"
             ]
           },
+          "next": null
+        },
+        "n5": {
+          "speaker": "守望队长 伊瑟",
+          "text": "按任务栏里的当前目标继续前进。营地中心的行路补给只能领取一次；缺少物资时，记得找商人整备。",
           "next": null
         }
       }
