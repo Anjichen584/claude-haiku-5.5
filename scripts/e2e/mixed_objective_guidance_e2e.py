@@ -19,6 +19,8 @@ async def main():
           s.session.trackedQuestId='main_03';
         }}""")
         assert await page.evaluate(f"[...{O}.chunks.values()].flatMap(c=>c.spawns).every(s=>!s.enemyIds.includes('frost_wolf'))"),'fixture requires no nearby frost wolves'
+        await page.wait_for_function(f"{O}.tracker.text.includes('剧情巡逻队')")
+        await page.evaluate(f"() => {{const s={O};for(const p of s.snowPatrols)s.session.defeated.add(p.key);}}")
         await page.wait_for_function(f"{O}.tracker.text.includes('先探索：雪门')&&{O}.tracker.text.includes('击杀目标仍需另寻')")
         assert await page.evaluate(f"JSON.stringify({O}.world.getQuest('main_03').progress)")=='[0,0]','guidance changed progress'
         assert await page.evaluate(f'{O}.tracker.getBounds().bottom<472'),'tracker overflow'

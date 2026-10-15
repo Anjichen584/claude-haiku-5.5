@@ -55,7 +55,7 @@ export function questGuidance(quest:QuestDef,world:WorldState,player:TilePoint,p
       }
     }
 
-    return {point:near?{x:near.tileX,y:near.tileY}:undefined,label:near?'附近目标':names||'探索与交易',
+    return {point:near?{x:near.tileX,y:near.tileY}:undefined,label:near?(near.requiredQuest?'剧情巡逻队':'附近目标'):names||'探索与交易',
       hint:near?(objective.type==='collect'?'可能掉落所需物品，并非必掉':'前往遭遇目标'):
         sources.some(e=>e.boss||e.elite)?'目标可能出现在地牢或剧情遭遇':names?`附近未发现；寻找${names}`:'探索、交易或任务奖励获取'};
   }

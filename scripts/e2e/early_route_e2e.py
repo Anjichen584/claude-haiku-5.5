@@ -3,6 +3,7 @@ Reads positions to drive WASD, uses J/H/Space, visits the camp and completes a d
 Requires production preview on localhost:5173. This is an early-route check, not an hour-long playthrough.
 """
 import asyncio
+import sys
 import time
 from playwright.async_api import async_playwright
 O="window.__game.scene.getScene('OverworldScene')"
@@ -23,7 +24,7 @@ async def main():
             await movement(set());battles+=1
             await page.keyboard.down('j')
             while not await page.evaluate(f'{C}.finished'):
-                if time.monotonic()-started>300:raise AssertionError('early route exceeded 300 seconds')
+                if time.monotonic()-started>900:raise AssertionError('early route exceeded 900 seconds')
                 status=await page.evaluate(f"""() => {{const s={C};return {{hp:s.playerActor.hp,
                     potionReady:Date.now()>=(s.session.player.consumableReadyAt??0),
                     dodge:s.runtime.dodgeCooldownMs===0&&s.runtime.stamina>=24,
@@ -35,9 +36,11 @@ async def main():
             assert await page.evaluate(f'{C}.won'),f'player lost encounter {battles}'
             await page.wait_for_function(f'{C}.resultInputGate.ready')
             await page.keyboard.press('Space');await page.wait_for_function(f'{O}.scene.isActive()')
+            resources=await page.evaluate(f"[ {O}.session.player.hp,{O}.world.getItemCount('health_potion') ]")
+            print(f'encounter {battles}: hp={resources[0]}, health potions={resources[1]}',flush=True)
         async def walk(x,y):
             while True:
-                if time.monotonic()-started>300:raise AssertionError('walk timeout')
+                if time.monotonic()-started>900:raise AssertionError('walk timeout')
                 state=await page.evaluate(f"""() => ({{combat:{C}.scene.isActive(),x:{O}.tileX,y:{O}.tileY}})""")
                 if state['combat']:await battle();continue
                 dx=x-state['x'];dy=y-state['y']
@@ -93,6 +96,29 @@ async def main():
             await page.keyboard.press(str(pick));await page.keyboard.press('Space')
             await page.wait_for_function(f'!{O}.talk')
             assert await page.evaluate(f"{O}.world.getReputation('ashguard')")==reputation,'revisit changed reputation'
+        if '--snow' in sys.argv:
+            print('starting real-input chapter-three route',flush=True)
+            patrols=await page.evaluate(f'{O}.snowPatrols')
+            # Known fixed patrol positions are read, never injected. Travel and combat remain real inputs.
+            for patrol in reversed(patrols):
+                if await page.evaluate(f"{O}.world.questStatus('main_03')==='completed'"):break
+                await walk(patrol['tileX'],patrol['tileY'])
+                if not await page.evaluate(f"{O}.session.defeated.has('{patrol['key']}')"):
+                    await page.wait_for_function(f'{C}.scene.isActive()');await battle()
+                print('patrol defeated:',patrol['key'],flush=True)
+            gate=await page.evaluate(f"{O}.places.find(p=>p.id==='snow_gate')")
+            await walk(gate['x'],gate['y'])
+            await page.wait_for_function(f"{O}.world.questStatus('main_03')==='completed'")
+            assert await page.evaluate(f"{O}.world.getQuest('main_03').progress[0]===6")
+            print('chapter three complete; real encounters:',battles,flush=True)
+            snapshot=await page.evaluate(f"[...{O}.session.defeated]")
+            await page.keyboard.press('k');await page.reload()
+            await page.wait_for_function("window.__game?.scene.isActive('TitleScene')")
+            await page.wait_for_timeout(400);await page.keyboard.press('s');await page.keyboard.press('Enter')
+            await page.wait_for_function(f'{O}.scene.isActive()')
+            assert await page.evaluate(f"{O}.world.questStatus('main_03')==='completed'")
+            assert sorted(await page.evaluate(f"[...{O}.session.defeated]"))==sorted(snapshot)
+            print('PASS: real WASD from camp to snow gate, real frost-wolf fights, chapter three and reload',flush=True)
         assert not errors,errors
         print(f'PASS: real WASD route, {battles} real encounters, chapters 1–2, camp supplies, Q side tracking, captain dialogue/reload and three neutral revisits; {time.monotonic()-started:.1f}s; no page errors')
         await browser.close()

@@ -11,6 +11,8 @@ import { CHUNK_SIZE, FLAG_RIVER, type Chunk } from './chunk';
 import { hashString } from './placement';
 
 export interface SurfaceSpawn {
+  /** Story encounters are available only while this quest is active. Not serialized. */
+  requiredQuest?: string;
   /** 形如 `cx,cy,序号`，在会话的 defeated 集合中使用 */
   key: string;
   /** 世界瓦片坐标 */

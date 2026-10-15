@@ -28,6 +28,7 @@ import { placeLocations, REGION_ANCHORS, type PlacedLocation } from '../world/pl
 const GATE_TILE = REGION_ANCHORS['裂隙'];
 const GATE_RADIUS = 2;
 import { surfaceSpawnsForChunk, type EncounterRequest, type SurfaceSpawn } from '../world/encounters';
+import {snowGatePatrols,spawnAvailable} from '../world/storyPatrols';
 import { questGuidance, directionHint, npcQuestState } from '../narrative/questGuidance';
 import { trackedQuest, trackedObjective, questPage } from '../narrative/questTracking';
 import { activeQuestLog, formatQuestLog } from '../narrative/questLog';
@@ -181,6 +182,7 @@ export class OverworldScene extends Phaser.Scene {
   private toast!: Phaser.GameObjects.Text;
   private toastUntil = 0;
   private campSupplyLabel!: Phaser.GameObjects.Text;
+  private snowPatrols:SurfaceSpawn[]=[];
   private npcRegistry!: NpcRegistry;
   private npcPositions = new Map<string, PlacedNpc>();
   private npcLabels = new Map<string, Phaser.GameObjects.Text>();
@@ -263,6 +265,7 @@ export class OverworldScene extends Phaser.Scene {
       {x: -5, y: 4, radius: 4}, {x: 0, y: 0, radius: 4},
       {...GATE_TILE, radius: 7},
     ]);
+    this.snowPatrols=snowGatePatrols(this.places,this.npcPositions);
     this.npcLabels.clear();
     this.npcQuestMarkers.clear();
     this.npcHighlights.clear();
@@ -704,6 +707,7 @@ export class OverworldScene extends Phaser.Scene {
     if (this.graceMs > 0) return;
     for (const loaded of this.chunks.values()) {
       for (const spawn of loaded.spawns) {
+        if(!spawnAvailable(spawn,this.world))continue;
         const d = Math.hypot(this.tileX - spawn.tileX, this.tileY - spawn.tileY);
         if (d > ENCOUNTER_RADIUS * this.detectMult) continue;
         this.transitioning = true;
@@ -726,7 +730,8 @@ export class OverworldScene extends Phaser.Scene {
       fontFamily: 'sans-serif', fontSize: '11px', color: '#ffd6d1',
       backgroundColor: '#00000088', padding: { x: 3, y: 1 },
     }).setOrigin(0.5, 1).setDepth(8);
-    return [dot, label];
+    const visible=spawnAvailable(spawn,this.world);
+    return [dot.setVisible(visible), label.setVisible(visible)];
   }
 
   // ---------- 地点 ----------
@@ -1066,6 +1071,7 @@ export class OverworldScene extends Phaser.Scene {
       const key=`camp-wolves-${i}`;
       if(Math.floor(t[0]/64)===cx && Math.floor(t[1]/64)===cy && !this.session.defeated.has(key))spawns.push({key,tileX:t[0],tileY:t[1],enemyIds:i===2?['ash_wolf']:['ash_wolf','ash_wolf']});
     }
+    spawns.push(...this.snowPatrols.filter(s=>Math.floor(s.tileX/64)===cx&&Math.floor(s.tileY/64)===cy&&!this.session.defeated.has(s.key)));
     spawns = spawns.filter(spawn => !inSettlement({x: spawn.tileX, y: spawn.tileY}, this.places, this.npcPositions));
     const markers = spawns.map((s) => ({ spawn: s, objs: this.drawSpawnMarker(s) }));
     const decor: Phaser.GameObjects.Image[] = [];
@@ -1248,7 +1254,8 @@ export class OverworldScene extends Phaser.Scene {
     const oi=active?trackedObjective(active,this.world):-1;
     const objective=active?.objectives[oi];
     const guidance=active?questGuidance(active,this.world,{x:this.tileX,y:this.tileY},this.places,this.npcRegistry.list(),this.npcPositions,
-      [...this.chunks.values()].flatMap(c=>c.spawns),this.enemyDefs):undefined;
+      [...new Map([...this.chunks.values()].flatMap(c=>c.spawns).concat(this.snowPatrols).map(s=>[s.key,s])).values()]
+        .filter(s=>!this.session.defeated.has(s.key)&&spawnAvailable(s,this.world)),this.enemyDefs):undefined;
     const nav=guidance?.point;
     const destination=guidance?.label?`目标：${guidance.label}`:'';
     const directions=nav?directionHint({x:this.tileX,y:this.tileY},nav):guidance?.hint??'';
@@ -1308,7 +1315,7 @@ export class OverworldScene extends Phaser.Scene {
     for (const loaded of this.chunks.values()) {
       for (const m of loaded.markers) {
         const d = Math.hypot(this.tileX - m.spawn.tileX, this.tileY - m.spawn.tileY);
-        const visible = d <= this.sightTiles;
+        const visible = d <= this.sightTiles && spawnAvailable(m.spawn,this.world);
         for (const o of m.objs) (o as unknown as { setVisible(v: boolean): unknown }).setVisible(visible);
       }
     }
