@@ -311,7 +311,7 @@ export class TestRoomScene extends Phaser.Scene {
     this.openingLeftMs = this.encounter ? ENCOUNTER_OPENING_MS : 0;
     // 战斗属性由装备决定（没有会话时为基础属性）
     const gameData = loadGameData();
-    const profile = combatProfile(this.session?.player.equipment ?? {}, gameData.items, gameData.affixes, gameData.itemSets);
+    const profile = combatProfile(this.session?.player.equipment ?? {}, gameData.items, gameData.affixes, gameData.itemSets,this.session?.player.crafting);
     this.stats=profile;
     this.playerActor = new Actor({ maxHp: this.stats.maxHp, staggerMs: 150 });
     this.runtime=new CombatRuntime(this.playerActor,profile,gameData.skills,this.session?.player.skills.unlocked??[],gameData.combos,hashSeed('combat',this.encounter?.spawnKey??'training'));

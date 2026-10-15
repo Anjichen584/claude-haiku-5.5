@@ -388,6 +388,9 @@ export class OverworldScene extends Phaser.Scene {
     this.syncChunks();
     this.events.once('shutdown',()=>{for(const c of this.chunks.values())if(this.textures.exists(c.textureKey))this.textures.remove(c.textureKey);});
     this.createInterface();
+    const craftRefresh=()=>{const lines=this.rewardLines([]);if(lines.length)this.showToast(lines.join('\n'));if(this.equipPanelOpen)this.refreshEquipPanel();if(this.invPanelOpen)this.refreshInventoryPanel();};
+    this.events.on('craft-updated',craftRefresh);
+    this.events.once('shutdown',()=>this.events.off('craft-updated',craftRefresh));
     bufferSceneKeys(this);
     this.updateEnvironment();
   }
@@ -405,7 +408,7 @@ export class OverworldScene extends Phaser.Scene {
       return;
     }
     deltaMs=Math.min(Math.max(0,deltaMs),100);
-    const profile=combatProfile(this.session.player.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs);
+    const profile=combatProfile(this.session.player.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs,this.session.player.crafting);
     this.surface.syncProfile(profile,this.session.player.skills.unlocked,this.session.player.hp,this.session.player.mana??profile.maxMana);
     this.elapsedMs += deltaMs;
     this.graceMs = Math.max(0, this.graceMs - deltaMs);
@@ -673,7 +676,7 @@ export class OverworldScene extends Phaser.Scene {
 
   private refreshEquipPanel(): void {
     const eq = this.session.player.equipment;
-    const stats = combatStats(eq, this.itemDefs, this.affixDefs, this.itemSetDefs);
+    const stats = combatStats(eq, this.itemDefs, this.affixDefs, this.itemSetDefs,this.session.player.crafting);
     const rows = EQUIP_SLOTS.map((slot, i) => {
       const id = eq[slot];
       const name = id ? (this.itemNames.get(id) ?? id) : '—';
@@ -684,7 +687,7 @@ export class OverworldScene extends Phaser.Scene {
       '装备（C 关闭 · 数字键切换）',
       ...rows,
       `攻击 ${stats.attack}   防御 ${stats.defense}   生命 ${stats.maxHp}`,
-      ...equipmentDetailLines(eq, this.itemDefs, this.affixDefs, this.itemSetDefs),
+      ...equipmentDetailLines(eq, this.itemDefs, this.affixDefs, this.itemSetDefs,this.session.player.crafting),
     ].join('\n'));
     this.renderCards();
   }
@@ -707,7 +710,7 @@ export class OverworldScene extends Phaser.Scene {
   }
   private useSupply(id:string):void{
     const item=this.itemDefs.find(i=>i.id===id);if(!item)return;
-    const p=this.session.player,profile=combatProfile(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs);
+    const p=this.session.player,profile=combatProfile(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs,p.crafting);
     const result=useConsumable(this.session,item,profile,{hp:p.hp,mana:p.mana??profile.maxMana});
     this.showToast(result.message);if(!result.ok)return;
     audio.play('pickup');p.hp=result.hp;p.mana=result.mana;this.surface?.syncProfile(profile,p.skills.unlocked,p.hp,p.mana);this.persistProgress();if(this.invPanelOpen)this.refreshInventoryPanel();
@@ -745,7 +748,7 @@ export class OverworldScene extends Phaser.Scene {
   private initSurfaceCombat(): void {
     this.streak=new KillStreak();
     this.surfaceEffects=this.add.graphics().setDepth(12);
-    const p=this.session.player,profile=combatProfile(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs);
+    const p=this.session.player,profile=combatProfile(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs,p.crafting);
     this.surface=new SurfaceCombat(profile,this.skillDefs,p.skills.unlocked,this.comboDefs,p.hp,p.mana??profile.maxMana);
     this.surfaceVisuals=new Map();this.facing={x:1,y:0};this.dodgeMs=0;this.autoAttack=false;this.surfaceSavePending=false;
     this.surface.onHit=(enemy,damage)=>{
@@ -1341,9 +1344,9 @@ export class OverworldScene extends Phaser.Scene {
       ]);this.renderLoadout();return;
     }
     if(this.equipPanelOpen){
-      const p=this.session.player,stats=combatProfile(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs);
-      const cards=EQUIP_SLOTS.map((slot,i)=>{const item=this.itemDefs.find(t=>t.id===p.equipment[slot]);return {title:`${SLOT_LABEL[slot]}  /  ${item?.name??'未装备'}`,key:`${i+1}`,subtitle:item?`基础攻击 +${item.baseDamage??0} 防御 +${item.defense??0}\n${itemAffixes(item,this.affixDefs).map(a=>`${a.name}+${Math.round(a.value*100)/100}${isSupportedModifier(a.stat)?'':'(预留)'}`).join(' · ')}`:'点击从背包中切换装备',accent:item?0xd6bb7c:0x536b62,onClick:()=>{cycleSlot(this.session,slot,this.itemDefs,this.affixDefs,this.itemSetDefs);this.persistProgress();this.refreshEquipPanel();}};});
-      this.cards.show('旅人装备',`攻击 ${stats.attack} · 防御 ${stats.defense} · 生命 ${stats.maxHp} · 魔力 ${stats.maxMana} · 暴击 ${Math.round(stats.critChance*100)}%`,cards,2,this.itemSetDefs.map(set=>{const count=Object.values(p.equipment).filter(id=>this.itemDefs.find(i=>i.id===id)?.setId===set.id).length;return `${set.name} ${count}/6 件`;}).join(' · ')+'\n'+(activeSetBonuses(this.itemSetDefs,Object.values(p.equipment).map(id=>this.itemDefs.find(i=>i.id===id)!).filter(Boolean)).map(b=>`${b.pieces}件：${b.text}`).join('；')||'数字键 1–6 切换槽位 · 行囊中点击装备可直接穿戴'));return;
+      const p=this.session.player,stats=combatProfile(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs,p.crafting);
+      const cards=EQUIP_SLOTS.map((slot,i)=>{const item=this.itemDefs.find(t=>t.id===p.equipment[slot]);return {title:`${SLOT_LABEL[slot]}  /  ${item?.name??'未装备'}${item&&p.crafting?.[item.id]?.rank?` +${p.crafting[item.id].rank}`:''}`,key:`${i+1}`,subtitle:item?`基础攻击 +${item.baseDamage??0} 防御 +${item.defense??0}\n${itemAffixes(item,this.affixDefs,p.crafting).map(a=>`${a.name}+${Math.round(a.value*100)/100}${isSupportedModifier(a.stat)?'':'(预留)'}`).join(' · ')}`:'点击从背包中切换装备',accent:item?0xd6bb7c:0x536b62,onClick:()=>{cycleSlot(this.session,slot,this.itemDefs,this.affixDefs,this.itemSetDefs);this.persistProgress();this.refreshEquipPanel();}};});
+      this.cards.show('旅人装备',`攻击 ${stats.attack} · 防御 ${stats.defense} · 生命 ${stats.maxHp} · 魔力 ${stats.maxMana} · 暴击 ${Math.round(stats.critChance*100)}%`,cards,2,this.itemSetDefs.map(set=>{const count=Object.values(p.equipment).filter(id=>this.itemDefs.find(i=>i.id===id)?.setId===set.id).length;return `${set.name} ${count}/6 件`;}).join(' · ')+'\n'+(activeSetBonuses(this.itemSetDefs,Object.values(p.equipment).map(id=>this.itemDefs.find(i=>i.id===id)!).filter(Boolean)).map(b=>`${b.pieces}件：${b.text}`).join('；')||'数字键 1–6 切换槽位 · 行囊中点击装备可直接穿戴'),[{label:'营地装备工坊',run:()=>window.dispatchEvent(new Event('rift-open-workshop'))}]);return;
     }
     if(this.invPanelOpen){
       const total=this.itemDefs.filter(i=>this.world.getItemCount(i.id)>0).length,pages=Math.max(1,Math.ceil(total/6));
@@ -1418,7 +1421,7 @@ export class OverworldScene extends Phaser.Scene {
     this.modalBackdrop?.setVisible(this.anyPanel());this.modalFrame?.setVisible(this.anyPanel());
     this.children.getByName("scrollHint")?.setActive(this.anyPanel());
     const hint=this.children.getByName("scrollHint") as Phaser.GameObjects.Text|undefined;hint?.setVisible(false);
-    const p=this.session.player,stats=combatStats(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs);
+    const p=this.session.player,stats=combatStats(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs,p.crafting);
     this.status.setText(`Lv.${levelForExp(p.exp)}  生命 ${Math.ceil(p.hp)}/${stats.maxHp}  金币 ${p.gold}${p.mana!==undefined?`  魔力 ${Math.floor(p.mana)}`:''}`);
     this.hpBar.clear().fillStyle(0x294343).fillRoundedRect(111,61,300,4,2).fillStyle(0x91b78c).fillRoundedRect(111,61,300*Math.max(0,Math.min(1,p.hp/stats.maxHp)),4,2);
     const active=trackedQuest(this.questList,this.world,this.session.trackedQuestId);

@@ -124,7 +124,7 @@ export class DungeonScene extends Phaser.Scene {
 
   update(_time:number,deltaMs:number): void {
     if (audio.panelOpen) return;
-    if(this.session.player.mana!==undefined){const d=loadGameData(),p=combatProfile(this.session.player.equipment,d.items,d.affixes,d.itemSets);this.session.player.mana=Math.min(p.maxMana,this.session.player.mana+p.manaRegen*Math.min(100,Math.max(0,deltaMs))/1000);}
+    if(this.session.player.mana!==undefined){const d=loadGameData(),p=combatProfile(this.session.player.equipment,d.items,d.affixes,d.itemSets,this.session.player.crafting);this.session.player.mana=Math.min(p.maxMana,this.session.player.mana+p.manaRegen*Math.min(100,Math.max(0,deltaMs))/1000);}
     if(!this.shopOpen&&pressed(this.keyK)&&this.saveCheckpoint())this.say('地牢进度已保存');
     if(!this.shopOpen)for(let i=0;i<this.supplyKeys.length;i++)if(pressed(this.supplyKeys[i]))this.useSupply(i);
     if(this.shopOpen && pressed(this.escape)){this.closeShop();return;}
@@ -139,7 +139,7 @@ export class DungeonScene extends Phaser.Scene {
   }
 
   private useSupply(index:number):void{
-    const data=loadGameData(),p=this.session.player,profile=combatProfile(p.equipment,data.items,data.affixes,data.itemSets);
+    const data=loadGameData(),p=this.session.player,profile=combatProfile(p.equipment,data.items,data.affixes,data.itemSets,p.crafting);
     const item=data.items.find(i=>i.id===(index?'mana_potion':'health_potion'));if(!item)return;
     const result=useConsumable(this.session,item,profile,{hp:p.hp,mana:p.mana??profile.maxMana});this.say(result.message);
     if(result.ok){p.hp=result.hp;p.mana=result.mana;this.saveCheckpoint();this.render();}
@@ -200,7 +200,7 @@ export class DungeonScene extends Phaser.Scene {
         break;
       case 'rest': {
         const data = loadGameData();
-        const stats=combatProfile(this.session.player.equipment,data.items,data.affixes,data.itemSets),max=stats.maxHp;
+        const stats=combatProfile(this.session.player.equipment,data.items,data.affixes,data.itemSets,this.session.player.crafting),max=stats.maxHp;
         const before = this.session.player.hp;
         this.session.player.hp = Math.min(max, before + Math.ceil(max * out.healFraction));
         const manaBefore=this.session.player.mana??stats.maxMana;
@@ -312,7 +312,7 @@ export class DungeonScene extends Phaser.Scene {
     const { player } = this.session;
     const level = levelForExp(player.exp);
     const kind = KIND_LABEL[roomById(this.run, this.run.current).kind];
-    const data=loadGameData(),stats=combatProfile(player.equipment,data.items,data.affixes,data.itemSets),maxHp=stats.maxHp;
+    const data=loadGameData(),stats=combatProfile(player.equipment,data.items,data.affixes,data.itemSets,player.crafting),maxHp=stats.maxHp;
     const current=roomById(this.run,this.run.current);
     const art=current.kind==='shop'?'actor-merchant':current.kind==='combat'?`enemy-${this.enemies[0].id}`:current.kind==='boss'?`enemy-${this.enemies.find(e=>e.boss)!.id}`:current.kind==='rest'?'actor-mage':'portal';
     this.portrait.setTexture(art);this.roomTitle.setText(`${kind}房间`);

@@ -1,3 +1,4 @@
+import {parseCrafting,cloneCrafting,type GearCrafting} from '../items/gearCraft';
 import { parseDungeon, snapshotDungeon, restoreDungeon, type DungeonProgress, type DungeonSnapshot } from '../dungeon/checkpoint';
 /**
  * 游戏会话：一局游戏中所有需要跨场景保留的数据。
@@ -26,6 +27,8 @@ import { WorldState, type WorldSnapshot } from './WorldState';
 
 
 export interface PlayerState {
+  /** Optional item-type blueprint progression; old saves omit it. */
+  crafting?: GearCrafting;
   tileX: number;
   tileY: number;
   hp: number;
@@ -99,7 +102,7 @@ export function toSaveFile(session: GameSession, savedAt: Date = new Date()): Sa
     version: SAVE_VERSION,
     savedAt: savedAt.toISOString(),
     world: session.world.snapshot(),
-    player: { ...session.player, equipment:{...session.player.equipment}, skills:{...session.player.skills,unlocked:[...session.player.skills.unlocked],...(session.player.skills.equipped?{equipped:[...session.player.skills.equipped]}:{})} },
+    player: { ...session.player, ...(session.player.crafting?{crafting:cloneCrafting(session.player.crafting)}:{}), equipment:{...session.player.equipment}, skills:{...session.player.skills,unlocked:[...session.player.skills.unlocked],...(session.player.skills.equipped?{equipped:[...session.player.skills.equipped]}:{})} },
     elapsedMs: session.elapsedMs,
     visited: [...session.visited].sort(),
     defeated: [...session.defeated].sort(),
@@ -142,7 +145,9 @@ export function parseSave(raw: string): SaveFile {
     if (typeof id !== 'string' || !isEquipSlot(slot) || !itemsData.items.some(i=>i.id===id && 'slot' in i && i.slot===slot)) throw new SaveError('装备数据错误');
     equipment[slot] = id;
   }
-  const maxHp = combatStats(equipment, itemsData.items as ItemDef[], affixesData.affixes as AffixDef[], setsData.sets as ItemSetDef[]).maxHp;
+  let crafting:GearCrafting|undefined;
+  try{crafting=parseCrafting(player.crafting,itemsData.items as ItemDef[]);}catch(e){throw new SaveError(e instanceof Error?e.message:'装备工坊记录错误');}
+  const maxHp = combatStats(equipment, itemsData.items as ItemDef[], affixesData.affixes as AffixDef[], setsData.sets as ItemSetDef[],crafting).maxHp;
   if (player.hp < 0 || player.hp > maxHp) throw new SaveError('玩家生命值越界');
   // 旧存档没有技能，缺省为未解锁、0 点
   const skillsRaw: unknown = player.skills === undefined ? { unlocked: [], points: 0 } : player.skills;
@@ -157,7 +162,7 @@ export function parseSave(raw: string): SaveFile {
     skills.equipped=[...skillsRaw.equipped];
   }
   const mana=player.mana;
-  const maxMana=combatProfile(equipment,itemsData.items as ItemDef[],affixesData.affixes as AffixDef[],setsData.sets as ItemSetDef[]).maxMana;
+  const maxMana=combatProfile(equipment,itemsData.items as ItemDef[],affixesData.affixes as AffixDef[],setsData.sets as ItemSetDef[],crafting).maxMana;
   if(mana!==undefined && (!isFiniteNumber(mana) || mana<0 || mana>maxMana))throw new SaveError('魔力数据错误');
   const consumableReadyAt=player.consumableReadyAt;
   if(consumableReadyAt!==undefined&&(!isFiniteNumber(consumableReadyAt)||consumableReadyAt<0))throw new SaveError('药剂冷却数据错误');
@@ -191,7 +196,7 @@ export function parseSave(raw: string): SaveFile {
     savedAt: typeof data.savedAt === 'string' ? data.savedAt : '',
     ...(typeof data.trackedQuestId==='string'?{trackedQuestId:data.trackedQuestId}:{}),
     world: world as unknown as WorldSnapshot,
-    player: { tileX: player.tileX, tileY: player.tileY, hp: player.hp, exp, gold, equipment, skills, ...(mana===undefined?{}:{mana:mana as number}),...(consumableReadyAt===undefined?{}:{consumableReadyAt:consumableReadyAt as number}) },
+    player: { ...(crafting?{crafting}:{}), tileX: player.tileX, tileY: player.tileY, hp: player.hp, exp, gold, equipment, skills, ...(mana===undefined?{}:{mana:mana as number}),...(consumableReadyAt===undefined?{}:{consumableReadyAt:consumableReadyAt as number}) },
     elapsedMs: data.elapsedMs,
     visited: data.visited,
     defeated: data.defeated,
@@ -207,7 +212,7 @@ export function fromSaveFile(file: SaveFile, quests: readonly QuestDef[]): GameS
     world,
     ...(file.trackedQuestId ? {trackedQuestId:file.trackedQuestId} : {}),
     quests: new QuestManager(quests, world),
-    player: { ...file.player, equipment: { ...file.player.equipment }, skills: { ...file.player.skills, unlocked: [...file.player.skills.unlocked], ...(file.player.skills.equipped?{equipped:[...file.player.skills.equipped]}:{}) } },
+    player: { ...file.player, ...(file.player.crafting?{crafting:cloneCrafting(file.player.crafting)}:{}), equipment: { ...file.player.equipment }, skills: { ...file.player.skills, unlocked: [...file.player.skills.unlocked], ...(file.player.skills.equipped?{equipped:[...file.player.skills.equipped]}:{}) } },
     elapsedMs: file.elapsedMs,
     visited: new Set(file.visited),
     defeated: new Set(file.defeated),

@@ -1,14 +1,16 @@
+import {refinementBonuses,type GearCrafting,type GearCraftRecord} from '../items/gearCraft';
+import {isSupportedModifier} from '../combat/supportedModifiers';
 /**
  * 装备：六个槽位（主手、头部、胸甲、脚部、手部、项链）。
  *
  * - 装备会从背包扣除一件，卸下后放回背包；
  * - 战斗属性 = 基础属性 + 武器伤害 + 护甲防御 + 词条（攻击/防御/生命）+ 套装加成；
- * - 词条目前按物品 id 固定抽取（同一种装备数值一致），待接入物品实例后改为每件独立。
- *   这样不需要改存档结构，也不会出现“反复卸下重抽”的漏洞。
+ * - 初始词条按物品 id 固定抽取；可选 crafting 保存同款共享的精炼和重铸历史（不是独立实例）。
+ *   兼容缺省无图谱的旧存档，也不会出现“反复卸下重抽”的漏洞。
  */
 import type { AffixDef, ItemDef, Rarity } from '../data/schema';
-import { Rng } from '../core/Rng';
-import { rollAffixes, type RolledAffix } from '../items/affixRoller';
+import { Rng, hashSeed } from '../core/Rng';
+import { rollAffixes, reforgeAffix, type RolledAffix } from '../items/affixRoller';
 import { activeSetBonuses, type ItemSetDef } from '../items/sets';
 import type { GameSession } from './session';
 import { PLAYER_MAX_HP, PLAYER_MAX_MANA } from './constants';
@@ -57,8 +59,8 @@ export function cycleSlot(session: GameSession, slot: EquipSlot, items: readonly
   if (next !== undefined && next !== current) session.world.addItem(next, -1);
   if (next === undefined) delete equipment[slot];
   else equipment[slot] = next;
-  session.player.hp = Math.min(session.player.hp, combatStats(equipment, items, affixes, sets).maxHp);
-  if(session.player.mana!==undefined)session.player.mana=Math.min(session.player.mana,Math.max(1,PLAYER_MAX_MANA+(equipmentBonuses(equipment,items,affixes,sets).maxMana??0)));
+  session.player.hp = Math.min(session.player.hp, combatStats(equipment, items, affixes, sets, session.player.crafting).maxHp);
+  if(session.player.mana!==undefined)session.player.mana=Math.min(session.player.mana,Math.max(1,PLAYER_MAX_MANA+(equipmentBonuses(equipment,items,affixes,sets,session.player.crafting).maxMana??0)));
   return next;
 }
 
@@ -69,8 +71,8 @@ export function equipItem(session:GameSession,id:string,items:readonly ItemDef[]
   const current=session.player.equipment[item.slot];if(current===id)return false;
   if(current)session.world.addItem(current,1);
   session.world.addItem(id,-1);session.player.equipment[item.slot]=id;
-  session.player.hp=Math.min(session.player.hp,combatStats(session.player.equipment,items,affixes,sets).maxHp);
-  if(session.player.mana!==undefined)session.player.mana=Math.min(session.player.mana,Math.max(1,PLAYER_MAX_MANA+(equipmentBonuses(session.player.equipment,items,affixes,sets).maxMana??0)));
+  session.player.hp=Math.min(session.player.hp,combatStats(session.player.equipment,items,affixes,sets,session.player.crafting).maxHp);
+  if(session.player.mana!==undefined)session.player.mana=Math.min(session.player.mana,Math.max(1,PLAYER_MAX_MANA+(equipmentBonuses(session.player.equipment,items,affixes,sets,session.player.crafting).maxMana??0)));
   return true;
 }
 
@@ -85,16 +87,26 @@ function hashId(id: string): number {
 }
 
 /** 物品的固定词条（按物品 id 抽取，结果稳定）。无品质、无等级或未提供词条池时没有词条。 */
-export function itemAffixes(item: ItemDef, pool: readonly AffixDef[]): RolledAffix[] {
+const craftedAffixCache=new WeakMap<GearCraftRecord,{pool:readonly AffixDef[];item:ItemDef;affixes:RolledAffix[]}>();
+export function itemAffixes(item: ItemDef, pool: readonly AffixDef[],craft:GearCrafting={}): RolledAffix[] {
   if (!item.rarity || !item.itemLevel || pool.length === 0) return [];
-  return rollAffixes(new Rng(hashId(item.id)), item.rarity as Rarity, pool, item.itemLevel);
+  const record=craft[item.id],cached=record?craftedAffixCache.get(record):undefined;
+  if(cached&&cached.pool===pool&&cached.item===item)return cached.affixes.map(a=>({...a}));
+  let result=rollAffixes(new Rng(hashId(item.id)), item.rarity as Rarity, pool, item.itemLevel);
+  if(record){
+    const supported=pool.filter(a=>isSupportedModifier(a.stat));
+    record.reforges.forEach((index,turn)=>{result=reforgeAffix(new Rng(hashSeed('gear-reforge',item.id,turn+1)),result,index,supported,item.itemLevel!);});
+    craftedAffixCache.set(record,{pool,item,affixes:result});
+  }
+  return result.map(a=>({...a}));
 }
 
 /** Sum all modifiers from valid equipped slots, shared by the combat profile and resource clamping. */
-export function equipmentBonuses(equipment:Partial<Record<string,string>>,items:readonly ItemDef[],affixes:readonly AffixDef[]=[],sets:readonly ItemSetDef[]=[]):Record<string,number>{
+export function equipmentBonuses(equipment:Partial<Record<string,string>>,items:readonly ItemDef[],affixes:readonly AffixDef[]=[],sets:readonly ItemSetDef[]=[],craft:GearCrafting={}):Record<string,number>{
   const worn=EQUIP_SLOTS.map(slot=>items.find(i=>i.id===equipment[slot]&&i.slot===slot)).filter((i):i is ItemDef=>!!i);
   const result:Record<string,number>={};
-  for(const item of worn)for(const a of itemAffixes(item,affixes))result[a.stat]=(result[a.stat]??0)+a.value;
+  for(const item of worn)for(const a of itemAffixes(item,affixes,craft))result[a.stat]=(result[a.stat]??0)+a.value;
+  for(const item of worn)for(const [stat,value]of Object.entries(refinementBonuses(item,craft)))result[stat]=(result[stat]??0)+value;
   for(const b of activeSetBonuses(sets,worn))result[b.stat]=(result[b.stat]??0)+b.value;
   return result;
 }
@@ -113,6 +125,7 @@ export function combatStats(
   items: readonly ItemDef[],
   affixes: readonly AffixDef[] = [],
   sets: readonly ItemSetDef[] = [],
+  craft: GearCrafting = {},
 ): CombatStats {
   const byId = new Map(items.map((i) => [i.id, i]));
   const worn: ItemDef[] = [];
@@ -129,9 +142,10 @@ export function combatStats(
     maxHp: BASE_STATS.maxHp,
   };
   for (const item of worn) {
+    for(const [stat,value]of Object.entries(refinementBonuses(item,craft)))addIfCombat(totals,stat,value);
     totals.attack += item.baseDamage ?? 0;
     totals.defense += item.defense ?? 0;
-    for (const a of itemAffixes(item, affixes)) addIfCombat(totals, a.stat, a.value);
+    for (const a of itemAffixes(item, affixes,craft)) addIfCombat(totals, a.stat, a.value);
   }
   for (const bonus of activeSetBonuses(sets, worn)) addIfCombat(totals, bonus.stat, bonus.value);
 
@@ -151,6 +165,7 @@ export function equipmentDetailLines(
   items: readonly ItemDef[],
   affixes: readonly AffixDef[],
   sets: readonly ItemSetDef[],
+  craft: GearCrafting = {},
 ): string[] {
   const byId = new Map(items.map((i) => [i.id, i]));
   const worn: ItemDef[] = [];
@@ -160,7 +175,7 @@ export function equipmentDetailLines(
     const item = id ? byId.get(id) : undefined;
     if (!item) continue;
     worn.push(item);
-    for (const a of itemAffixes(item, affixes)) {
+    for (const a of itemAffixes(item, affixes,craft)) {
       lines.push(`  · ${item.name}：${a.name} +${a.value}（${a.stat}）${a.hidden ? ' [隐藏]' : ''}`);
     }
   }
