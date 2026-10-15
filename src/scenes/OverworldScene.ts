@@ -27,6 +27,7 @@ import { placeLocations, REGION_ANCHORS, type PlacedLocation } from '../world/pl
 const GATE_TILE = REGION_ANCHORS['裂隙'];
 const GATE_RADIUS = 2;
 import { surfaceSpawnsForChunk, type EncounterRequest, type SurfaceSpawn } from '../world/encounters';
+import { trackedQuest, trackedObjective, questPage } from '../narrative/questTracking';
 import { activeQuestLog, formatQuestLog } from '../narrative/questLog';
 import { formatInventory, inventoryLines } from '../state/inventory';
 import { combatStats, cycleSlot, equipItem, itemAffixes, EQUIP_SLOTS, equipmentDetailLines, SLOT_LABEL } from '../state/equipment';
@@ -392,6 +393,10 @@ export class OverworldScene extends Phaser.Scene {
       if (pressed(this.keyX)) this.resetSkillBranch();
       if (pressed(this.keyF)) {this.bindSlot=(this.bindSlot+1)%4;this.refreshSkillPanel();}
     }
+    if(this.questPanelOpen){
+      if(pressed(this.keyN)){this.questPageIndex++;this.refreshQuestPanel();}
+      if(pressed(this.keyB)){this.questPageIndex--;this.refreshQuestPanel();}
+    }
     if(this.invPanelOpen){if(pressed(this.keyN)){this.inventoryPage++;this.refreshInventoryPanel();}if(pressed(this.keyB)){this.inventoryPage--;this.refreshInventoryPanel();}}
     if(!this.talk&&!this.pendingChoice&&!this.endingPanel.visible){if(pressed(this.keys.H))this.useSupply('health_potion');if(pressed(this.keys.M))this.useSupply('mana_potion');}
     if (pressed(this.keyK)) this.saveGame();
@@ -665,6 +670,15 @@ export class OverworldScene extends Phaser.Scene {
   private refreshQuestPanel(): void {
     this.questPanel.setData('full',null).setData('offset',0);
     this.questPanel.setText(formatQuestLog(activeQuestLog(this.questDefs, this.world)));
+    this.renderCards();
+  }
+
+  private trackQuest(id:string):void {
+    if(this.world.questStatus(id)!=='active')return;
+    this.session.trackedQuestId=id;
+    this.persistProgress();
+    this.refreshQuestPanel();
+    this.showToast(`正在追踪：${this.quests.def(id)?.title??id}`);
   }
 
   // ---------- 地表遭遇 ----------
@@ -861,6 +875,11 @@ export class OverworldScene extends Phaser.Scene {
       this.persistProgress();
       return;
     }
+    if(this.questPanelOpen && !this.talk && /^[1-3]$/.test(e.key)) {
+      const item=questPage(this.questDefs,this.world,this.questPageIndex).items[Number(e.key)-1];
+      if(item)this.trackQuest(item.id);
+      return;
+    }
     // 技能面板打开且不在对话中：数字键学习列表中的技能
     if (this.skillPanelOpen && !this.talk && /^[1-9]$/.test(e.key)) {
       this.learnSkill(Number(e.key) - 1);
@@ -1022,6 +1041,7 @@ export class OverworldScene extends Phaser.Scene {
   }
 
   private inventoryPage=0;
+  private questPageIndex=0;
 
   private anyPanel(): boolean { return this.questPanelOpen || this.invPanelOpen || this.equipPanelOpen || this.repPanelOpen || this.skillPanelOpen; }
 
@@ -1048,6 +1068,21 @@ export class OverworldScene extends Phaser.Scene {
 
   private renderCards():void {
     if(!this.cards)return;
+    if(this.questPanelOpen){
+      const page=questPage(this.questDefs,this.world,this.questPageIndex);this.questPageIndex=page.page;
+      const selected=trackedQuest(this.questDefs,this.world,this.session.trackedQuestId);
+      const cards=page.items.map((q,i)=>{
+        const oi=trackedObjective(q,this.world),obj=q.objectives[oi],progress=this.world.getQuest(q.id)?.progress[oi]??0;
+        return {identity:q.id,title:`${selected?.id===q.id?'◆ ':''}${q.title}`,key:`${i+1}`,
+          subtitle:`${q.type==='main'?'主线':q.type==='side'?'支线':'隐藏'} · ${obj?.text??'等待结算'} ${obj?`${progress}/${obj.count??1}`:''} · 点击追踪`,
+          accent:selected?.id===q.id?0xd6bb7c:0x88a98e,onClick:()=>this.trackQuest(q.id)};
+      });
+      this.cards.show('任务日志',`第 ${page.page+1}/${page.pages} 页 · 点击或数字键 1–3 追踪任务`,cards,1,
+        selected?`当前追踪：${selected.title} · Esc 返回探索`:'暂无进行中的任务，靠近 NPC 按 E 接取任务。',[
+          {label:'B 上一页',run:()=>{this.questPageIndex--;this.refreshQuestPanel();}},
+          {label:'N 下一页',run:()=>{this.questPageIndex++;this.refreshQuestPanel();}},
+        ]);return;
+    }
     if(this.skillPanelOpen){
       const state=treeOf(this.session.player),branch=this.currentBranch(),pages=Math.ceil(branchSkills(this.skillDefs,branch).length/9);
       const cards=this.skillPageItems().map((skill,i)=>{
@@ -1129,7 +1164,7 @@ export class OverworldScene extends Phaser.Scene {
     this.choicePrompt.setPosition(640,250).setStyle({fontFamily:UI.font,fontSize:18,backgroundColor:'#183832',padding:{x:28,y:28},lineSpacing:16,wordWrap:{width:650}}).setDepth(390);
     this.cards=new CardPanel(this);
     this.loadoutUI=this.add.container(0,0).setScrollFactor(0).setDepth(295).setVisible(false);
-    for(const p of [this.skillPanel,this.invPanel,this.equipPanel,this.repPanel])p.setAlpha(0);
+    for(const p of [this.questPanel,this.skillPanel,this.invPanel,this.equipPanel,this.repPanel])p.setAlpha(0);
     this.updateInterface();
   }
 
@@ -1138,13 +1173,14 @@ export class OverworldScene extends Phaser.Scene {
     this.updateNpcLabels();
     this.modalBackdrop?.setVisible(this.anyPanel());this.modalFrame?.setVisible(this.anyPanel());
     this.children.getByName("scrollHint")?.setActive(this.anyPanel());
-    const hint=this.children.getByName("scrollHint") as Phaser.GameObjects.Text|undefined;hint?.setVisible(this.questPanelOpen);
+    const hint=this.children.getByName("scrollHint") as Phaser.GameObjects.Text|undefined;hint?.setVisible(false);
     const p=this.session.player,stats=combatStats(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs);
     this.status.setText(`Lv.${levelForExp(p.exp)}  生命 ${Math.ceil(p.hp)}/${stats.maxHp}  金币 ${p.gold}${p.mana!==undefined?`  魔力 ${Math.floor(p.mana)}`:''}`);
     this.hpBar.clear().fillStyle(0x294343).fillRoundedRect(111,61,300,4,2).fillStyle(0x91b78c).fillRoundedRect(111,61,300*Math.max(0,Math.min(1,p.hp/stats.maxHp)),4,2);
-    const active=this.questList.find(q=>q.type==='main' && this.world.questStatus(q.id)==='active');
+    const active=trackedQuest(this.questList,this.world,this.session.trackedQuestId);
+    this.session.trackedQuestId=active?.id;
     const record=active?this.quests.progressOf(active.id):undefined;
-    const oi=active?.objectives.findIndex((o,i)=>(record?.progress[i]??0)<(o.count??1))??-1;
+    const oi=active?trackedObjective(active,this.world):-1;
     const objective=active?.objectives[oi];
     const target=objective?.type==='reach'?this.places.find(x=>x.id===objective.target):undefined;
     const enemyTarget=objective?.type==='kill'?[...this.chunks.values()].flatMap(c=>c.spawns).filter(s=>s.enemyIds.includes(objective.target??'')).sort((a,b)=>Math.hypot(a.tileX-this.tileX,a.tileY-this.tileY)-Math.hypot(b.tileX-this.tileX,b.tileY-this.tileY))[0]:undefined;

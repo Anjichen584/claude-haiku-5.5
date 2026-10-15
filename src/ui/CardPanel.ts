@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { RenderSignature } from './renderSignature';
 import { UI, pinToScreen } from './theme';
-export interface PanelCard { title:string; subtitle:string; key?:string; accent?:number; onClick?:()=>void }
+export interface PanelCard { identity?:string; title:string; subtitle:string; key?:string; accent?:number; onClick?:()=>void }
 /** Screen-space card board, shared by inventory, equipment, factions and skills. */
 export class CardPanel {
  private readonly signature = new RenderSignature();
@@ -11,7 +11,7 @@ export class CardPanel {
  private label(x:number,y:number,t:string,size:number,color:string){const o=this.scene.add.text(x,y,t,{fontFamily:UI.font,fontSize:size,color});this.root.add(o);return o;}
  show(title:string,subtitle:string,cards:PanelCard[],columns:number,footer:string,actions:{label:string;run:()=>void}[]=[]):void{
   this.root.setVisible(true);
-  if (!this.signature.changed([title, subtitle, cards.map(c => [c.title,c.subtitle,c.key,c.accent,!!c.onClick]), columns, footer, actions.map(a => a.label)])) return;
+  if (!this.signature.changed([title, subtitle, cards.map(c => [c.identity,c.title,c.subtitle,c.key,c.accent,!!c.onClick]), columns, footer, actions.map(a => a.label)])) return;
   this.root.removeAll(true);
   this.label(306,159,title,25,'#e5d5a5');this.label(306,202,subtitle,14,'#9eb8a5');
   const line=this.scene.add.graphics();line.lineStyle(1,UI.edge,.5).lineBetween(306,235,974,235);this.root.add(line);

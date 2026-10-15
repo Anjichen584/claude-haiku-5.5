@@ -43,6 +43,7 @@ export interface PlayerState {
 }
 
 export interface GameSession {
+  trackedQuestId?: string;
   dungeon?: DungeonProgress;
   world: WorldState;
   quests: QuestManager;
@@ -58,6 +59,7 @@ export interface GameSession {
 export const SAVE_VERSION = 1;
 
 export interface SaveFile {
+  trackedQuestId?: string;
   dungeon?: DungeonSnapshot;
   version: number;
   savedAt: string;
@@ -93,6 +95,7 @@ export function newSession(quests: readonly QuestDef[]): GameSession {
 export function toSaveFile(session: GameSession, savedAt: Date = new Date()): SaveFile {
   return {
     ...(session.dungeon?{dungeon:snapshotDungeon(session.dungeon)}:{}),
+    ...(session.trackedQuestId ? {trackedQuestId:session.trackedQuestId} : {}),
     version: SAVE_VERSION,
     savedAt: savedAt.toISOString(),
     world: session.world.snapshot(),
@@ -119,6 +122,7 @@ export function parseSave(raw: string): SaveFile {
   if (!isRecord(data)) throw new SaveError('存档结构错误');
   if (data.version !== SAVE_VERSION) throw new SaveError(`不支持的存档版本：${String(data.version)}`);
 
+  if(data.trackedQuestId!==undefined && (typeof data.trackedQuestId!=='string' || !data.trackedQuestId.length || data.trackedQuestId.length>200))throw new SaveError('追踪任务数据错误');
   const player = data.player;
   if (!isRecord(player) || !isFiniteNumber(player.tileX) || !isFiniteNumber(player.tileY) || !isFiniteNumber(player.hp)) {
     throw new SaveError('玩家数据缺失');
@@ -185,6 +189,7 @@ export function parseSave(raw: string): SaveFile {
     ...(dungeon?{dungeon}:{}),
     version: SAVE_VERSION,
     savedAt: typeof data.savedAt === 'string' ? data.savedAt : '',
+    ...(typeof data.trackedQuestId==='string'?{trackedQuestId:data.trackedQuestId}:{}),
     world: world as unknown as WorldSnapshot,
     player: { tileX: player.tileX, tileY: player.tileY, hp: player.hp, exp, gold, equipment, skills, ...(mana===undefined?{}:{mana:mana as number}),...(consumableReadyAt===undefined?{}:{consumableReadyAt:consumableReadyAt as number}) },
     elapsedMs: data.elapsedMs,
@@ -200,6 +205,7 @@ export function fromSaveFile(file: SaveFile, quests: readonly QuestDef[]): GameS
   return {
     ...(file.dungeon?{dungeon:restoreDungeon(file.dungeon)}:{}),
     world,
+    ...(file.trackedQuestId ? {trackedQuestId:file.trackedQuestId} : {}),
     quests: new QuestManager(quests, world),
     player: { ...file.player, equipment: { ...file.player.equipment }, skills: { ...file.player.skills, unlocked: [...file.player.skills.unlocked], ...(file.player.skills.equipped?{equipped:[...file.player.skills.equipped]}:{}) } },
     elapsedMs: file.elapsedMs,
