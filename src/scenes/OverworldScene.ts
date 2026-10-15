@@ -1,3 +1,4 @@
+import { claimCampSupplies, CAMP_SUPPLIES_FLAG } from '../state/campSupplies';
 import { useConsumable } from '../state/consumables';
 import Phaser from 'phaser';
 import { bufferSceneKeys, pressed } from '../input/bufferedKeys';
@@ -179,6 +180,7 @@ export class OverworldScene extends Phaser.Scene {
   private transitioning = false;
   private toast!: Phaser.GameObjects.Text;
   private toastUntil = 0;
+  private campSupplyLabel!: Phaser.GameObjects.Text;
   private npcRegistry!: NpcRegistry;
   private npcPositions = new Map<string, PlacedNpc>();
   private npcLabels = new Map<string, Phaser.GameObjects.Text>();
@@ -437,6 +439,7 @@ export class OverworldScene extends Phaser.Scene {
     } else this.player.setAngle(0);
 
     this.checkArrivals();
+    this.checkCampSupplies();
     this.checkEncounters();
     if (this.toast.visible && this.time.now > this.toastUntil) this.toast.setVisible(false);
     if (this.questPanelOpen) this.refreshQuestPanel();
@@ -733,11 +736,23 @@ export class OverworldScene extends Phaser.Scene {
       const px = p.x * TILE_PX;
       const py = p.y * TILE_PX;
       this.add.image(px, py-12, /rift|core|whisper|gate/.test(p.id) ? 'portal' : 'house').setDisplaySize(80,80).setOrigin(.5,.85).setDepth(5);
+      if(p.id==='ash_road_camp')this.campSupplyLabel=this.add.text(px,py+32,'营地中心 · 首次补给',{
+        fontFamily:UI.font,fontSize:11,color:'#d8d4a4',backgroundColor:'#10252bdd',padding:{x:4,y:2},
+      }).setOrigin(.5,0).setDepth(6).setVisible(false);
       this.add.text(px, py - TILE_PX * 5, p.name, {
         fontFamily: 'sans-serif', fontSize: '12px', color: '#fff3c4',
         backgroundColor: '#00000088', padding: { x: 4, y: 2 },
       }).setOrigin(0.5, 1).setDepth(6);
     }
+  }
+
+  private checkCampSupplies():void {
+    const camp=this.places.find(p=>p.id==='ash_road_camp');
+    const supplies=claimCampSupplies(this.session,camp,{x:this.tileX,y:this.tileY});
+    if(!supplies.claimed)return;
+    const lines=this.rewardLines([]);
+    this.persistProgress();
+    this.showToast([`营地首次补给：裂隙碎片 ×${supplies.shards} · 治疗药剂 ×${supplies.potions}`,...lines].join('\n'));
   }
 
   /** 玩家走近未访问的地点时，上报一次 reach 事件并提示。 */
@@ -1220,6 +1235,7 @@ export class OverworldScene extends Phaser.Scene {
   private updateInterface(): void {
     if(!this.status)return;
     this.updateNpcLabels();
+    this.campSupplyLabel?.setVisible(this.world.questStatus('main_02_ash_road')==='active' && !this.world.hasFlag(CAMP_SUPPLIES_FLAG) && !this.anyPanel() && !this.talk);
     this.modalBackdrop?.setVisible(this.anyPanel());this.modalFrame?.setVisible(this.anyPanel());
     this.children.getByName("scrollHint")?.setActive(this.anyPanel());
     const hint=this.children.getByName("scrollHint") as Phaser.GameObjects.Text|undefined;hint?.setVisible(false);
