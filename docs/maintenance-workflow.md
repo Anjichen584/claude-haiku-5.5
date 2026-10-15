@@ -2,7 +2,7 @@
 
 ## 默认工作方式
 
-一轮先给出可验收目标，在同一轮连续完成多个相关里程碑，不为每个小改动要求再次确认。每个里程碑验证后独立提交并推送。涉及重写、破坏性迁移、发布到默认分支或改动既定产品方向时再确认。
+一轮先给出可验收目标，在同一轮连续完成多个相关里程碑，不为每个小改动要求再次确认。按用户最新授权，不再自动创建优化分支：在 `main` 上完成相关修改，验证通过后统一提交并直接推送 `main`，无需用户手动合并。重要阶段仍创建并推送不可变的 `backup/` 标签。涉及破坏性迁移或改动既定产品方向时再确认。
 
 一次回复结束后不会自行后台执行下一轮；需要持续后台运行的自动维护系统并未部署。本文件是后续维护约定，不是后台守护进程。
 
@@ -38,12 +38,14 @@ git switch -c restore/quest-checkpoint backup/quest-guidance-732adb4
 - `npm run build:standalone`
 - `npm audit`
 - 涉及 UI/交互时运行相关 Playwright 回归。浏览器依赖：`pip install -r scripts/e2e/requirements.txt`，然后 `python -m playwright install --with-deps chromium`。
-- 分支/PR 的 CI 还会在生产预览上运行任务和离线冒烟。
+- main、其他工作分支及 PR 的 CI 还会在生产预览上运行真实开局路线、任务和离线冒烟。
 - 不把脚本夹具当作真实长线游玩，也不把内存崩溃后的未完成用例标为通过。
 
 ## 发布边界
 
-当前批次在 `optimize/quest-journey`，累积包含此前优化。推送该分支不直接发布 Pages；合并 main 后才触发现有发布流程。合并前检查 main 是否有并行修改，不覆盖其他人的工作。
+2026-10-15 用户授权将此前所有优化统一纳入 main，后续默认直接交付 main，不再自动新建优化分支。此前 12 个累积提交从 `optimize/early-route` 快进纳入，保留原提交与标签，不强推、不改写已发布历史。推送 main 会触发现有 Pages 构建/部署。每次推送前 fetch 并检查远端是否有并行修改；如已分叉先正常整合并验证，不覆盖他人的工作。
+
+整合前恢复点：`backup/main-before-optimizations-20261015`（原 main `443b7c6`）。整合后恢复点：`backup/main-optimizations-integrated-20261015`。已发布主线需要回退时，优先用新的 revert 提交，不重置并强推。旧优化分支保留作历史，不要求用户逐个合并。
 
 ## 后续默认优先级
 

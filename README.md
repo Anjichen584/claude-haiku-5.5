@@ -163,3 +163,5 @@ git clone git@github.com:Anjichen584/claude-haiku-5.5.git
 分阶段提交、远端备份标签与回退约定见 [维护与备份流程](docs/maintenance-workflow.md)。
 
 新手前两章的营地首次补给、队长初见/回访与真实输入路线验证见 [新手路线修复记录](docs/early-route.md)。第二章靠近营地中心会一次性补足所需碎片；已完成章节的旧档不补发，旧档仍在第二章时可返营领取。
+
+维护约定更新：按仓库所有者授权，后续验证通过后直接提交并推送 `main`，不再自动创建优化分支；重要版本保留备份标签。推送 `main` 会触发 CI 和现有 Pages 发布。

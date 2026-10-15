@@ -1,7 +1,7 @@
-name: Verify branches and pull requests
+name: Verify main, branches and pull requests
 on:
   push:
-    branches-ignore: [main, gh-pages]
+    branches-ignore: [gh-pages]
   pull_request:
     branches: [main]
 permissions:
