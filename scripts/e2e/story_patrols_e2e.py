@@ -20,20 +20,19 @@ async def main():
         }}""")
         await page.wait_for_timeout(600)
         assert await page.evaluate(f'{O}.scene.isActive()'),'pre-quest patrol entered combat'
-        markers=f"[...{O}.chunks.values()].flatMap(c=>c.markers).filter(m=>m.spawn.key==='snow-gate-patrol-0')"
-        assert await page.evaluate(f'{markers}.length>0')
-        assert await page.evaluate(f'{markers}.every(m=>m.objs.every(o=>!o.visible))'),'pre-quest marker visible'
+        markers=f"{O}.surface.targets().filter(e=>e.spawn.key==='snow-gate-patrol-0')"
+        assert await page.evaluate(f'{markers}.length===0'),'pre-quest marker visible'
         await page.evaluate(f"() => {{{O}.graceMs=100000;{O}.session.trackedQuestId='main_03';{O}.world.setQuest('main_03',{{status:'active',progress:[0,0]}});}}")
-        await page.wait_for_function(f'{markers}.every(m=>m.objs.every(o=>o.visible))')
+        await page.wait_for_function(f'{markers}.length===2')
         await page.wait_for_function(f"{O}.tracker.text.includes('剧情巡逻队')")
         await page.evaluate(f"() => {{{O}.world.setQuest('main_03',{{status:'completed',progress:[6,1]}});{O}.graceMs=0;}}")
-        await page.wait_for_function(f'{markers}.every(m=>m.objs.every(o=>!o.visible))')
+        await page.wait_for_function(f'{markers}.length===0')
         await page.wait_for_timeout(400)
         assert await page.evaluate(f'{O}.scene.isActive()'),'completed patrol entered combat'
         await page.evaluate(f"{O}.world.setQuest('main_03',{{status:'active',progress:[0,0]}})")
-        await page.wait_for_function(f'{C}.scene.isActive()')
-        assert await page.evaluate(f"{C}.encounter.spawnKey==='snow-gate-patrol-0'")
+        await page.wait_for_function(f'{O}.surface.engaged')
+        assert await page.evaluate(f"{O}.scene.isActive() && {markers}.some(e=>e.engaged)")
         assert not errors,errors
-        print('PASS: already-loaded patrols hidden/non-hostile before quest, activate without chunk reload, hide after completion, active patrol enters combat; explicit lifecycle fixtures')
+        print('PASS: already-loaded patrols hidden/non-hostile before quest, activate without chunk reload, hide after completion, active patrol fights without scene transition; explicit lifecycle fixtures')
         await browser.close()
 asyncio.run(main())

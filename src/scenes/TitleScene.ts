@@ -1,3 +1,4 @@
+import {audio} from '../audio/AudioDirector';
 import Phaser from 'phaser';
 import { landscape, panel, text, UI } from '../ui/theme';
 import { loadGameData } from '../data/loader';
@@ -37,9 +38,9 @@ export class TitleScene extends Phaser.Scene {
     this.add.graphics().lineStyle(1,UI.gold,.5).lineBetween(95,305,450,305);
     text(this, 94, 332, '第一卷   /   灰烬之路', 14, '#cfbd8d');
     panel(this, 88, 382, 365, 156, 0);
-    text(this, 94, 590, '探索世界  ·  深入裂隙  ·  作出抉择', 14, '#b6c8b7');
+    text(this, 94, 590, '地图砍怪  ·  深入裂隙  ·  原创配乐', 14, '#b6c8b7');
     text(this, 94, 663, '离线单人冒险', 12, '#87a496');
-    text(this, 1100, 663, '原型 · 0.1', 12, '#a7b6a1');
+    text(this, 1100, 663, '无缝战斗 · 0.2', 12, '#a7b6a1');
 
     const saved=readSaveState(),raw=saved.raw;
     this.continueFloor=null;
@@ -117,6 +118,7 @@ export class TitleScene extends Phaser.Scene {
 
   private activate(index: number): void {
     if (this.newGamePrompt) return;
+    if (audio.panelOpen) return;
     const choice = this.choices[index];
     if (!choice) return;
     const quests = loadGameData().quests;

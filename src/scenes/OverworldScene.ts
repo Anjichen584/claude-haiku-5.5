@@ -1,3 +1,8 @@
+import {roamingPacks} from '../world/roamingPacks';
+import {audio} from '../audio/AudioDirector';
+import {SurfaceCombat} from '../combat/SurfaceCombat';
+import {enemyTactics} from '../combat/enemyTactics';
+import {settleSurfaceKill} from '../state/surfaceRewards';
 import { claimCampSupplies, CAMP_SUPPLIES_FLAG } from '../state/campSupplies';
 import { useConsumable } from '../state/consumables';
 import Phaser from 'phaser';
@@ -14,7 +19,7 @@ import { display } from '../config/display';
 import { CHUNK_SIZE, FLAG_RIVER, FLAG_ROAD, chunkOf, generateChunk, type Chunk } from '../world/chunk';
 import { DAY_LENGTH_MS, getDayState } from '../world/time';
 import { rollWeather, type Weather } from '../world/weather';
-import { BASE_SIGHT_TILES, detectMultiplier, sightRadius } from '../world/modifiers';
+import { BASE_SIGHT_TILES, sightRadius } from '../world/modifiers';
 import { loadGameData } from '../data/loader';
 import type { BiomeDef } from '../data/schema';
 import { WorldState } from '../state/WorldState';
@@ -27,7 +32,7 @@ import { placeLocations, REGION_ANCHORS, type PlacedLocation } from '../world/pl
 /** 地牢传送门位于裂隙区域的锚点上 */
 const GATE_TILE = REGION_ANCHORS['裂隙'];
 const GATE_RADIUS = 2;
-import { surfaceSpawnsForChunk, type EncounterRequest, type SurfaceSpawn } from '../world/encounters';
+import { surfaceSpawnsForChunk, type SurfaceSpawn } from '../world/encounters';
 import {snowGatePatrols,spawnAvailable} from '../world/storyPatrols';
 import { questGuidance, directionHint, npcQuestState } from '../narrative/questGuidance';
 import { trackedQuest, trackedObjective, questPage } from '../narrative/questTracking';
@@ -69,8 +74,6 @@ const UNLOAD_RADIUS = 2;
 /** 玩家与地点中心的距离（瓦片）小于该值即视为抵达 */
 const ARRIVE_RADIUS = 1.5;
 const TOAST_MS = 2600;
-/** 玩家与地表敌人的距离（瓦片）小于该值即进入战斗 */
-const ENCOUNTER_RADIUS = 1.2;
 /** 战败返回地表后的脱离保护时间（毫秒），避免立刻再次进入同一场战斗 */
 const RETREAT_GRACE_MS = 3000;
 /** 玩家与 NPC 的距离小于该值时可以按 E 对话 */
@@ -201,6 +204,18 @@ export class OverworldScene extends Phaser.Scene {
     super('OverworldScene');
   }
 
+  private surface!: SurfaceCombat;
+  private surfaceVisuals=new Map<string,{body:Phaser.GameObjects.Image;label:Phaser.GameObjects.Text;bar:Phaser.GameObjects.Graphics;warning:Phaser.GameObjects.Graphics}>();
+  private keyJ!:Phaser.Input.Keyboard.Key;
+  private keyZ!:Phaser.Input.Keyboard.Key;
+  private facing={x:1,y:0};
+  private dodgeMs=0;
+  private dodgeDirection={x:1,y:0};
+  private autoAttack=false;
+  private surfaceSavePending=false;
+  private combatHud!:Phaser.GameObjects.Text;
+  private surfaceSlots:{bg:Phaser.GameObjects.Rectangle;label:Phaser.GameObjects.Text}[]=[];
+
   private saveWarning!: Phaser.GameObjects.Text;
   private readonly loadoutSignature = new RenderSignature();
 
@@ -284,6 +299,7 @@ export class OverworldScene extends Phaser.Scene {
     if (!keyboard) throw new Error('Keyboard input is not available');
     this.keyE = keyboard.addKey('E');
     this.keySpace = keyboard.addKey('SPACE');
+    this.keyJ=keyboard.addKey('J');this.keyZ=keyboard.addKey('Z');
     this.keyQ = keyboard.addKey('Q');
     this.keyR = keyboard.addKey('R');
     this.keyG = keyboard.addKey('G');
@@ -357,6 +373,7 @@ export class OverworldScene extends Phaser.Scene {
     this.equipPanelOpen = false;
 
     this.player.setPosition(this.tileX * TILE_PX, this.tileY * TILE_PX);
+    this.initSurfaceCombat();
     this.syncChunks();
     this.events.once('shutdown',()=>{for(const c of this.chunks.values())if(this.textures.exists(c.textureKey))this.textures.remove(c.textureKey);});
     this.createInterface();
@@ -365,7 +382,7 @@ export class OverworldScene extends Phaser.Scene {
   }
 
   update(_time: number, deltaMs: number): void {
-    if (this.transitioning) return;
+    if (audio.panelOpen || this.transitioning) return;
     if (this.shop.visible) {
       if (pressed(this.keyE) || pressed(this.esc)) this.shop.hide();
       return;
@@ -378,7 +395,7 @@ export class OverworldScene extends Phaser.Scene {
     }
     deltaMs=Math.min(Math.max(0,deltaMs),100);
     const profile=combatProfile(this.session.player.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs);
-    if(this.session.player.mana!==undefined)this.session.player.mana=Math.min(profile.maxMana,this.session.player.mana+profile.manaRegen*deltaMs/1000);
+    this.surface.syncProfile(profile,this.session.player.skills.unlocked,this.session.player.hp,this.session.player.mana??profile.maxMana);
     this.elapsedMs += deltaMs;
     this.graceMs = Math.max(0, this.graceMs - deltaMs);
     const dt = deltaMs / 1000;
@@ -431,10 +448,20 @@ export class OverworldScene extends Phaser.Scene {
     if (this.keys.D.isDown) mx += 1;
     if (this.keys.W.isDown) my -= 1;
     if (this.keys.S.isDown) my += 1;
-    const len = Math.hypot(mx, my);
+    let len = Math.hypot(mx, my);
+    if(len>0)this.facing={x:mx/len,y:my/len};
+    if(pressed(this.keySpace)&&this.surface.runtime.tryDodge()){
+      this.dodgeMs=220;this.dodgeDirection={...this.facing};audio.play('dodge');
+    }
+    if(this.dodgeMs>0){mx=this.dodgeDirection.x;my=this.dodgeDirection.y;len=1;this.dodgeMs=Math.max(0,this.dodgeMs-deltaMs);}
+    else if(len===0&&this.keyJ.isDown&&!this.safeSurface(this.player.x,this.player.y)){
+      const target=this.surface.nearest(this.player.x,this.player.y,200);
+      if(target&&Math.hypot(target.x-this.player.x,target.y-this.player.y)>55){mx=target.x-this.player.x;my=target.y-this.player.y;len=Math.hypot(mx,my);}
+    }
+    const moveBoost=this.dodgeMs>0?2.8:1;
     if (len > 0) {
-      this.tileX += (mx / len) * MOVE_TILES_PER_SEC * profile.speedMultiplier * dt;
-      this.tileY += (my / len) * MOVE_TILES_PER_SEC * profile.speedMultiplier * dt;
+      this.tileX += (mx / len) * MOVE_TILES_PER_SEC * this.surface.runtime.speedMultiplier * dt * moveBoost;
+      this.tileY += (my / len) * MOVE_TILES_PER_SEC * this.surface.runtime.speedMultiplier * dt * moveBoost;
       this.player.setPosition(this.tileX * TILE_PX, this.tileY * TILE_PX);
       this.player.setFlipX(mx < 0 || (mx === 0 && this.player.flipX));
       this.player.setAngle(Math.sin(this.time.now / 90) * 4);
@@ -443,7 +470,7 @@ export class OverworldScene extends Phaser.Scene {
 
     this.checkArrivals();
     this.checkCampSupplies();
-    this.checkEncounters();
+    this.updateSurface(deltaMs);
     if (this.toast.visible && this.time.now > this.toastUntil) this.toast.setVisible(false);
     if (this.questPanelOpen) this.refreshQuestPanel();
     if (this.invPanelOpen) this.refreshInventoryPanel();
@@ -475,6 +502,7 @@ export class OverworldScene extends Phaser.Scene {
   private saveGame(): boolean {
     this.syncToSession();
     const ok = this.persistProgress();
+    if(ok)audio.play('save');
     this.showToast(ok ? '已存档' : '存档失败：浏览器拒绝写入（可能存储空间已满）');
     return ok;
   }
@@ -510,7 +538,6 @@ export class OverworldScene extends Phaser.Scene {
     this.choicePrompt.setText(`关键抉择：${c.question}\n${opts}`).setVisible(true);
   }
 
-  private detectMult = 1;
   /** 当前视野（格），由时段和天气决定 */
   private sightTiles = BASE_SIGHT_TILES;
 
@@ -671,7 +698,7 @@ export class OverworldScene extends Phaser.Scene {
     const p=this.session.player,profile=combatProfile(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs);
     const result=useConsumable(this.session,item,profile,{hp:p.hp,mana:p.mana??profile.maxMana});
     this.showToast(result.message);if(!result.ok)return;
-    p.hp=result.hp;p.mana=result.mana;this.persistProgress();if(this.invPanelOpen)this.refreshInventoryPanel();
+    audio.play('pickup');p.hp=result.hp;p.mana=result.mana;this.surface?.syncProfile(profile,p.skills.unlocked,p.hp,p.mana);this.persistProgress();if(this.invPanelOpen)this.refreshInventoryPanel();
   }
 
   private refreshInventoryPanel(): void {
@@ -702,37 +729,106 @@ export class OverworldScene extends Phaser.Scene {
 
   // ---------- 地表遭遇 ----------
 
-  /** 玩家走到未击败的刷新点附近时，切换到战斗场景。 */
-  private checkEncounters(): void {
-    if (this.graceMs > 0) return;
-    for (const loaded of this.chunks.values()) {
-      for (const spawn of loaded.spawns) {
-        if(!spawnAvailable(spawn,this.world))continue;
-        const d = Math.hypot(this.tileX - spawn.tileX, this.tileY - spawn.tileY);
-        if (d > ENCOUNTER_RADIUS * this.detectMult) continue;
-        this.transitioning = true;
-        this.syncToSession();
-        const request: EncounterRequest = { enemyIds: spawn.enemyIds, spawnKey: spawn.key };
-        this.scene.start('TestRoomScene', { encounter: request });
-        return;
-      }
+  // ---------- Seamless surface combat ----------
+  private initSurfaceCombat(): void {
+    const p=this.session.player,profile=combatProfile(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs);
+    this.surface=new SurfaceCombat(profile,this.skillDefs,p.skills.unlocked,this.comboDefs,p.hp,p.mana??profile.maxMana);
+    this.surfaceVisuals=new Map();this.facing={x:1,y:0};this.dodgeMs=0;this.autoAttack=false;this.surfaceSavePending=false;
+    this.surface.onHit=(enemy,damage)=>{
+      this.floatWorld(enemy.x,enemy.y-40,`−${damage}`,'#ffe4a1');audio.play('hit');
+      const view=this.surfaceVisuals.get(enemy.id);if(view){view.body.setTintFill(0xffe8bc);this.time.delayedCall(70,()=>{if(view.body.active)view.body.clearTint();});}
+    };
+    this.surface.onKill=enemy=>{
+      const oldLevel=levelForExp(p.exp),lines=settleSurfaceKill(this.session,enemy,this.surface.runtime.profile.bonuses,id=>this.itemNames.get(id)??id);
+      if(!lines.length)return;this.showToast(lines.slice(0,4).join('\n'));audio.play(levelForExp(p.exp)>oldLevel?'level':'pickup');
+      this.floatWorld(enemy.x,enemy.y-12,'✦ 已拾取','#c7ecad');
+      this.surfaceSavePending=true;
+    };
+    this.surface.onHurt=damage=>{audio.play('hurt');this.floatWorld(this.player.x,this.player.y-50,`−${damage}`,'#ff9c86');this.cameras.main.shake(90,.002);};
+    this.combatHud=text(this,640,510,'',13,'#d8d9b2').setOrigin(.5).setBackgroundColor('#10252be6').setPadding(10,5);
+    this.surfaceSlots=[];
+    for(let i=0;i<4;i++){
+      const x=407+i*155,bg=this.add.rectangle(x,559,147,51,0x132e33,.94).setScrollFactor(0).setDepth(215).setStrokeStyle(1,0x68877a).setInteractive({useHandCursor:true});
+      const label=text(this,x,559,'',12).setOrigin(.5).setDepth(216);
+      bg.on('pointerdown',()=>this.castSurfaceSkill(i));this.surfaceSlots.push({bg,label});
     }
   }
 
-  private drawSpawnMarker(spawn: SurfaceSpawn): Phaser.GameObjects.GameObject[] {
-    const px = spawn.tileX * TILE_PX;
-    const py = spawn.tileY * TILE_PX;
-    const names = spawn.enemyIds
-      .map((id) => this.enemyDefs.find((e) => e.id === id)?.name ?? id)
-      .join('、');
-    const dot = this.add.image(px,py,`enemy-${spawn.enemyIds[0]}`).setDisplaySize(48,48).setOrigin(.5,.85).setDepth(8);
-    const label = this.add.text(px, py - TILE_PX * 3.1, names, {
-      fontFamily: 'sans-serif', fontSize: '11px', color: '#ffd6d1',
-      backgroundColor: '#00000088', padding: { x: 3, y: 1 },
-    }).setOrigin(0.5, 1).setDepth(8);
-    const visible=spawnAvailable(spawn,this.world);
-    return [dot.setVisible(visible), label.setVisible(visible)];
+  private floatWorld(x:number,y:number,value:string,color:string):void{
+    const t=this.add.text(x,y,value,{fontFamily:UI.font,fontSize:15,color,stroke:'#12282d',strokeThickness:3}).setOrigin(.5).setDepth(25);
+    this.tweens.add({targets:t,y:y-32,alpha:0,duration:750,onComplete:()=>t.destroy()});
   }
+
+  private surfaceBlocked():boolean{return audio.panelOpen||!!this.talk||this.anyPanel()||!!this.pendingChoice||this.endingPanel.visible||this.shop.visible||this.transitioning;}
+  private safeSurface(x:number,y:number):boolean{
+    return Math.hypot(x/16,y/16)<7||Math.hypot(x/16-4,y/16-4)<5||inSettlement({x:x/16,y:y/16},this.places,this.npcPositions);
+  }
+  private aimSurface():void{
+    const target=this.surface.nearest(this.player.x,this.player.y,320);
+    if(target){const dx=target.x-this.player.x,dy=target.y-this.player.y,d=Math.hypot(dx,dy)||1;this.facing={x:dx/d,y:dy/d};}
+  }
+  private castSurfaceSkill(index:number):void{
+    if(!this.surface||this.surfaceBlocked())return;
+    if(this.safeSurface(this.player.x,this.player.y)){this.showToast('安全区内不能攻击');return;}
+    const skill=this.skillDefs.find(s=>s.id===skillLoadout(this.session.player.skills,this.skillDefs)[index]);
+    if(!skill){this.showToast('按 G 学习并装配主动技能');return;}
+    this.aimSurface();
+    const r=this.surface.runtime,result=r.cast(skill.id,this.player,this.facing,this.surface.targets());
+    if(result.ok){audio.play('skill');this.surfaceRing(result.center?.x??this.player.x,result.center?.y??this.player.y,skill.combat?.radius??65,0x9fdaf0);this.showToast(result.combo?`组合技 · ${result.combo.name}`:skill.name);}
+    else this.showToast(({mana:'魔力不足',stamina:'耐力不足',cooldown:'技能冷却中',busy:'动作尚未结束',locked:'尚未学会',passive:'被动技能无需释放','no-target':'范围内没有目标',unknown:'技能不可用',dead:'当前无法施法'} as Record<string,string>)[result.reason??'']??'当前无法施法');
+    this.session.player.hp=r.actor.hp;this.session.player.mana=r.mana;
+  }
+  private surfaceRing(x:number,y:number,radius:number,color:number):void{
+    const ring=this.add.circle(x,y,radius,color,.08).setStrokeStyle(3,color,.8).setDepth(20);
+    this.tweens.add({targets:ring,scale:1.2,alpha:0,duration:240,onComplete:()=>ring.destroy()});
+  }
+  private updateSurface(deltaMs:number):void{
+    const r=this.surface.runtime,p=this.session.player;
+    const available=new Set<string>();
+    for(const c of this.chunks.values())for(const spawn of c.spawns){
+      if(spawnAvailable(spawn,this.world)&&!this.session.defeated.has(spawn.key)&&Math.hypot(spawn.tileX*16-this.player.x,spawn.tileY*16-this.player.y)<720){available.add(spawn.key);this.surface.addPack(spawn,this.enemyDefs,this.session.defeated);}
+    }
+    for(const enemy of this.surface.enemies.values())if(!available.has(enemy.spawn.key))this.surface.removePack(enemy.spawn.key);
+    const safe=this.safeSurface(this.player.x,this.player.y);
+    this.surface.tick(deltaMs,{x:this.player.x,y:this.player.y,safe,protected:this.graceMs>0},(x,y)=>this.safeSurface(x,y));
+    if(pressed(this.keyZ)){this.autoAttack=!this.autoAttack;this.showToast(`自动攻击${this.autoAttack?'开启：附近有怪时挥砍':'关闭'}`);}
+    if(!safe&&(this.keyJ.isDown||this.autoAttack)&&!r.actor.isDead&&r.basicCooldownMs===0){
+      this.aimSurface();const before=r.basicCooldownMs;r.basicAttack(this.player,this.facing,this.surface.targets());
+      if(r.basicCooldownMs>before){audio.play('swing');const x=this.player.x+this.facing.x*34,y=this.player.y+this.facing.y*34;this.surfaceRing(x,y,36,0xf0d58c);}
+    }
+    p.hp=r.actor.hp;p.mana=r.mana;
+    if(r.actor.isDead){
+      // Rescue to a known safe start. Completed/partial kills stay settled; no gold penalty.
+      audio.play('defeat');p.hp=Math.max(1,Math.ceil(r.profile.maxHp*.5));r.actor.hp=p.hp;
+      this.tileX=0;this.tileY=0;this.player.setPosition(0,0);this.graceMs=6000;this.autoAttack=false;this.dodgeMs=0;
+      for(const enemy of this.surface.enemies.values()){enemy.engaged=false;enemy.windup=0;}
+      this.syncChunks();this.surfaceSavePending=true;this.showToast('旅人将你救回营地 · 恢复一半生命 · 已获得的奖励保留');
+    }
+    for(const [id,v]of this.surfaceVisuals)if(!this.surface.enemies.has(id)||this.surface.enemies.get(id)!.actor.isDead){v.body.destroy();v.label.destroy();v.bar.destroy();v.warning.destroy();this.surfaceVisuals.delete(id);}
+    for(const e of this.surface.targets()){
+      let v=this.surfaceVisuals.get(e.id);
+      if(!v){
+        const body=this.add.image(e.x,e.y,`enemy-${e.def.id}`).setDisplaySize(44,44).setOrigin(.5,.85).setDepth(8);
+        const label=this.add.text(e.x,e.y-48,e.def.name,{fontFamily:UI.font,fontSize:11,color:'#f3d7b8',backgroundColor:'#10252bb0'}).setOrigin(.5).setDepth(9);
+        v={body,label,bar:this.add.graphics().setDepth(10),warning:this.add.graphics().setDepth(7)};this.surfaceVisuals.set(e.id,v);
+      }
+      const visible=Math.hypot(e.x-this.player.x,e.y-this.player.y)<Math.max(16,this.sightTiles)*16;
+      v.body.setPosition(e.x,e.y).setVisible(visible).setFlipX(e.engaged&&e.x>this.player.x);
+      v.label.setPosition(e.x,e.y-48).setVisible(visible);
+      v.bar.clear();v.warning.clear();
+      if(visible){v.bar.fillStyle(0x172b2b,.9).fillRect(e.x-20,e.y-39,40,4).fillStyle(e.engaged?0xe58b72:0x9cbb8c).fillRect(e.x-20,e.y-39,40*Math.max(0,e.actor.hp/e.actor.maxHp),4);
+        if(e.windup>0){const radius=enemyTactics(e.def).hitRadius*.65;v.warning.fillStyle(0xff795b,.22).fillCircle(e.aimX,e.aimY,radius).lineStyle(2,0xffaa78,.9).strokeCircle(e.aimX,e.aimY,radius);}
+      }
+    }
+    this.player.setAlpha(r.actor.isInvulnerable?.55:1);
+    const hidden=this.surfaceBlocked();this.combatHud.setVisible(!hidden);
+    this.combatHud.setText(`${safe?'安全区':this.surface.engaged?'交战中 · 红圈为攻击预警':'荒野探索'}  ·  魔力 ${Math.floor(r.mana)}  耐力 ${Math.floor(r.stamina)}  ·  J 挥砍  Space 闪避  Z 自动攻击${this.autoAttack?'●':'○'}`);
+    const slots=skillLoadout(p.skills,this.skillDefs).map(id=>this.skillDefs.find(s=>s.id===id));
+    this.surfaceSlots.forEach((v,i)=>{const s=slots[i],cd=s?r.cooldowns.get(s.id)??0:0;v.bg.setVisible(!hidden);v.label.setVisible(!hidden).setText(s?`${i+1}  ${s.name}\n${cd>0?`冷却 ${(cd/1000).toFixed(1)} 秒`:`${s.manaCost??0} 魔力`}`:`${i+1}  空技能槽\nG 学习 / 装配`);v.bg.setFillStyle(s&&!r.canCast(s.id)?0x2a5047:0x132e33);});
+    if(this.surfaceSavePending){this.surfaceSavePending=false;this.rewardLines([]);this.persistProgress();}
+  }
+
+  private drawSpawnMarker(_spawn:SurfaceSpawn):Phaser.GameObjects.GameObject[]{return [];}
 
   // ---------- 地点 ----------
 
@@ -913,6 +1009,7 @@ export class OverworldScene extends Phaser.Scene {
   }
 
   private onDigitKey(e: KeyboardEvent): void {
+    if(audio.panelOpen || e.repeat)return;
     if (this.shop.visible) { if (/^[1-9]$/.test(e.key)) this.shop.buy(Number(e.key)-1); return; }
     // 有待选的关键抉择且不在对话中：数字键选择选项
     const option = this.pendingChoice && !this.talk && !this.anyPanel() ? this.pendingChoice.options[Number(e.key) - 1] : undefined;
@@ -942,6 +1039,7 @@ export class OverworldScene extends Phaser.Scene {
       this.refreshEquipPanel();
       return;
     }
+    if(!this.surfaceBlocked()&&/^[1-4]$/.test(e.key)){this.castSurfaceSkill(Number(e.key)-1);return;}
     if (!this.talk || !/^[1-9]$/.test(e.key)) return;
     const visible = this.talk.runner.choices();
     const pick = visible[Number(e.key) - 1];
@@ -1013,6 +1111,7 @@ export class OverworldScene extends Phaser.Scene {
     for (const [key, loaded] of this.chunks) {
       const { cx, cy } = loaded.chunk;
       if (Math.abs(cx - center.cx) > UNLOAD_RADIUS || Math.abs(cy - center.cy) > UNLOAD_RADIUS) {
+        for(const spawn of loaded.spawns)this.surface.removePack(spawn.key);
         loaded.image.destroy();
         for (const d of loaded.decor) d.destroy();
         for (const m of loaded.markers) for (const o of m.objs) o.destroy();
@@ -1071,6 +1170,7 @@ export class OverworldScene extends Phaser.Scene {
       const key=`camp-wolves-${i}`;
       if(Math.floor(t[0]/64)===cx && Math.floor(t[1]/64)===cy && !this.session.defeated.has(key))spawns.push({key,tileX:t[0],tileY:t[1],enemyIds:i===2?['ash_wolf']:['ash_wolf','ash_wolf']});
     }
+    spawns.push(...roamingPacks(WORLD_SEED,chunk,this.biomes,this.enemyDefs).filter(s=>!this.session.defeated.has(s.key)));
     spawns.push(...this.snowPatrols.filter(s=>Math.floor(s.tileX/64)===cx&&Math.floor(s.tileY/64)===cy&&!this.session.defeated.has(s.key)));
     spawns = spawns.filter(spawn => !inSettlement({x: spawn.tileX, y: spawn.tileY}, this.places, this.npcPositions));
     const markers = spawns.map((s) => ({ spawn: s, objs: this.drawSpawnMarker(s) }));
@@ -1272,7 +1372,7 @@ export class OverworldScene extends Phaser.Scene {
     const atGate=Math.hypot(this.tileX-GATE_TILE.x,this.tileY-GATE_TILE.y)<=GATE_RADIUS;
     const npcState=npc?npcQuestState(npc,this.questDefs,this.world):undefined;
     const npcAction=npcState?.ready?'交付任务':npcState?.available?'接取任务':npcState?.active?'交谈（任务进行中）':'交谈';
-    this.contextHint.setText(this.anyPanel()?'Esc 关闭面板':merchant?'E  与行旅商人交易':npc?`E  与 ${this.npcRegistry.get(npc)?.name} ${npcAction}`:atGate?'E  进入裂隙地牢':'WASD 移动 · E 互动 · H/M 药剂 · T 试炼');
+    this.contextHint.setText(this.anyPanel()?'Esc 关闭面板':merchant?'E  与行旅商人交易':npc?`E  与 ${this.npcRegistry.get(npc)?.name} ${npcAction}`:atGate?'E  进入裂隙地牢':'WASD 移动 · J 砍怪 · Space 闪避 · E 互动 · H/M 药剂');
     if(this.time.now<this.miniTimer)return;this.miniTimer=this.time.now+150;
     const g=this.mini;g.clear();
     g.lineStyle(1,0x56746a,.25);for(let i=0;i<5;i++){g.lineBetween(980+i*65,65,980+i*65,205);g.lineBetween(980,65+i*35,1240,65+i*35);}
@@ -1302,6 +1402,10 @@ export class OverworldScene extends Phaser.Scene {
       };
     }
     const weather = this.weatherCache.weather;
+    audio.setWeather(weather);
+    const combatHidden=this.surfaceBlocked();
+    this.combatHud?.setVisible(!combatHidden);
+    this.surfaceSlots.forEach(v=>{v.bg.setVisible(!combatHidden);v.label.setVisible(!combatHidden);});
 
     // 光照：夜晚越暗，覆盖层越不透明
     this.lightOverlay.setAlpha((1 - time.light) * 0.6);
@@ -1311,7 +1415,6 @@ export class OverworldScene extends Phaser.Scene {
 
     // 视野：只显示视野内的敌人刷新点；夜晚侦测距离变大
     this.sightTiles = sightRadius(time.phase, weather)+this.skillDefs.filter(s=>s.combat?.kind==='passive'&&this.session.player.skills.unlocked.includes(s.id)).reduce((n,s)=>n+(s.combat?.sightBonus??0),0);
-    this.detectMult = detectMultiplier(time.phase);
     for (const loaded of this.chunks.values()) {
       for (const m of loaded.markers) {
         const d = Math.hypot(this.tileX - m.spawn.tileX, this.tileY - m.spawn.tileY);

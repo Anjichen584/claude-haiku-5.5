@@ -1,3 +1,4 @@
+import {audio} from '../audio/AudioDirector';
 import { openDungeon } from '../dungeon/checkpoint';
 import { useConsumable } from '../state/consumables';
 import Phaser from 'phaser';
@@ -122,6 +123,7 @@ export class DungeonScene extends Phaser.Scene {
   }
 
   update(_time:number,deltaMs:number): void {
+    if (audio.panelOpen) return;
     if(this.session.player.mana!==undefined){const d=loadGameData(),p=combatProfile(this.session.player.equipment,d.items,d.affixes,d.itemSets);this.session.player.mana=Math.min(p.maxMana,this.session.player.mana+p.manaRegen*Math.min(100,Math.max(0,deltaMs))/1000);}
     if(!this.shopOpen&&pressed(this.keyK)&&this.saveCheckpoint())this.say('地牢进度已保存');
     if(!this.shopOpen)for(let i=0;i<this.supplyKeys.length;i++)if(pressed(this.supplyKeys[i]))this.useSupply(i);

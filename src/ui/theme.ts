@@ -1,3 +1,4 @@
+import {audio} from '../audio/AudioDirector';
 import Phaser from 'phaser';
 export const UI = { ink: 0x10252b, edge: 0x64796b, gold: 0xd7bd80, cream: '#e6e6cf', muted: '#a2b7aa', font: '"Noto Sans CJK SC", "Microsoft YaHei", sans-serif' };
 export function panel(scene: Phaser.Scene, x: number, y: number, w: number, h: number, depth=190): Phaser.GameObjects.Graphics {
@@ -18,7 +19,7 @@ export function button(scene: Phaser.Scene,x:number,y:number,w:number,label:stri
   const bg=scene.add.rectangle(0,0,w,38,0x19353a).setStrokeStyle(1,0x637c70,.8);
   const labelObj=scene.add.text(0,0,label,{fontFamily:UI.font,fontSize:14,color:UI.cream}).setOrigin(.5);
   const c=scene.add.container(x,y,[bg,labelObj]).setDepth(220).setScrollFactor(0).setSize(w,38).setInteractive({useHandCursor:true});
-  c.on('pointerover',()=>{bg.setFillStyle(0x31514c);bg.setStrokeStyle(1,UI.gold);});c.on('pointerout',()=>{bg.setFillStyle(0x19353a);bg.setStrokeStyle(1,0x637c70,.8);});c.on('pointerdown',fn);
+  c.on('pointerover',()=>{bg.setFillStyle(0x31514c);bg.setStrokeStyle(1,UI.gold);});c.on('pointerout',()=>{bg.setFillStyle(0x19353a);bg.setStrokeStyle(1,0x637c70,.8);});c.on('pointerdown',()=>{audio.play('ui');fn();});
   return c;
 }
 /** Deterministic scenery, no external art or network dependency. */

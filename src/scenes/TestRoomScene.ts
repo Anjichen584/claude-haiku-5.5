@@ -1,3 +1,4 @@
+import {audio} from '../audio/AudioDirector';
 import { retreatDungeon } from '../dungeon/checkpoint';
 import { useConsumable } from '../state/consumables';
 import Phaser from 'phaser';
@@ -148,6 +149,7 @@ export class TestRoomScene extends Phaser.Scene {
   }
 
   update(_time: number, deltaMs: number): void {
+    if (audio.panelOpen) return;
     deltaMs = Math.min(deltaMs,50);
     if(!this.encounter && pressed(this.exitKey)){this.scene.start('OverworldScene');return;}
     if (this.finished) {
@@ -379,6 +381,7 @@ export class TestRoomScene extends Phaser.Scene {
 
     // 闪避：位移 + 无敌帧
     if (pressed(this.keys.SPACE) && this.dodgeLeftMs === 0 && this.runtime.tryDodge()) {
+      audio.play('dodge');
       const dir = len > 0 ? { x: mx, y: my } : this.facing;
       this.dodgeDir = dir;
       this.dodgeLeftMs = PLAYER.dodgeDurationMs;
@@ -425,6 +428,7 @@ export class TestRoomScene extends Phaser.Scene {
   }
 
   private performPlayerAttack(): void {
+    audio.play('swing');
     const angle=Math.atan2(this.facing.y,this.facing.x);
     const slash=this.add.graphics().setDepth(25).setPosition(this.px,this.py-12);
     slash.lineStyle(5,0xe5d4a4,.9);slash.beginPath();slash.arc(0,0,59,angle-.9,angle+.9);slash.strokePath();
@@ -448,6 +452,7 @@ export class TestRoomScene extends Phaser.Scene {
     const item=loadGameData().items.find(i=>i.id===(index?'mana_potion':'health_potion'));if(!item)return;
     const result=useConsumable(this.session,item,this.runtime.profile,{hp:this.playerActor.hp,mana:this.runtime.mana});
     this.pushLog(result.message);if(!result.ok)return;
+    audio.play('pickup');
     this.playerActor.hp=result.hp;this.runtime.mana=result.mana;this.floatText(this.px,this.py-82,result.message,'#b6dcab');
     // Save together with encounter settlement, never save partial kill rewards mid-fight.
   }
@@ -463,6 +468,7 @@ export class TestRoomScene extends Phaser.Scene {
     }
     const result=this.runtime.cast(skill.id,{x:this.px,y:this.py},this.facing,this.targets(),this.lockedTargetId ?? undefined);
     if(!result.ok){const messages:Record<string,string>={'no-target':'前方没有射程内目标',mana:'魔力不足',stamina:'耐力不足',cooldown:'技能冷却中',busy:'正在硬直或施法间隔中'};this.pushLog(`${skill.name}：${messages[result.reason??'']??'无法施放'}`);return;}
+    audio.play('skill');
     const colors:Record<string,number>={fire:0xf3ae73,ice:0xa9e5ec,lightning:0xe8cf89,dark:0xbca1dc,holy:0xeae8ae,none:0xcdddab};
     const color=colors[skill.element??'none']??0xcdddab;
     const effect=this.add.graphics().setDepth(28);
@@ -483,11 +489,13 @@ export class TestRoomScene extends Phaser.Scene {
   private damageEnemy(enemy: EnemyUnit, amount: number): number {
     const applied = enemy.actor.receiveDamage(amount);
     if(applied>0){
+      audio.play('hit');
       this.floatText(enemy.x,enemy.y-70,`−${applied}`,'#f2df9d');
       enemy.body.setTintFill(0xf7dfb2);this.time.delayedCall(90,()=>{if(enemy.body.active)enemy.body.clearTint();});
       if(enemy.actor.isStaggered)enemy.windup=0;
     }
     if (applied > 0 && enemy.actor.isDead) {
+      audio.play('pickup');
       enemy.alive = false;
       enemy.body.disableInteractive();
       enemy.label.setVisible(false);
@@ -549,6 +557,7 @@ export class TestRoomScene extends Phaser.Scene {
           if(Math.hypot(this.px-enemy.aimX,this.py-enemy.aimY)<enemy.tactics.hitRadius && !enemy.actor.isStaggered){
             enemy.combat.x=enemy.x;enemy.combat.y=enemy.y;
             const applied=this.runtime.receiveAttack(enemy.def.attack,(enemy.def.element??'none') as Element,enemy.combat);
+            if(applied>0)audio.play('hurt');
             if(applied>0){this.floatText(this.px,this.py-62,`−${applied}`,'#f0aa8b');this.cameras.main.shake(90,.002);this.pushLog(`${enemy.def.name} 造成 ${applied} 点伤害`);}
           }
         }

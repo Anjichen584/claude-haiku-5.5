@@ -1,3 +1,4 @@
+import {installAudio} from './audio/installAudio';
 import Phaser from 'phaser';
 import { display } from './config/display';
 import { BootScene } from './scenes/BootScene';
@@ -21,3 +22,5 @@ const game = new Phaser.Game({
 
 // 便于调试时在控制台访问
 (window as unknown as { __game: Phaser.Game }).__game = game;
+
+installAudio(game);

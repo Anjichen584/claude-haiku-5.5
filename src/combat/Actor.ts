@@ -9,7 +9,14 @@ export interface ActorOptions {
 }
 
 export class Actor {
-  readonly maxHp: number;
+  private _maxHp: number;
+  get maxHp(): number { return this._maxHp; }
+  /** Equipment can change capacity without resetting combat cooldowns or healing. */
+  setMaxHp(value: number): void {
+    if (!Number.isFinite(value) || value <= 0) return;
+    this._maxHp = value;
+    this.hp = Math.min(this.hp, value);
+  }
   readonly staggerMs: number;
   hp: number;
   /** 剩余无敌时间（毫秒） */
@@ -18,7 +25,7 @@ export class Actor {
   staggerLeftMs = 0;
 
   constructor(options: ActorOptions) {
-    this.maxHp = options.maxHp;
+    this._maxHp = options.maxHp;
     this.hp = options.maxHp;
     this.staggerMs = options.staggerMs ?? 200;
   }

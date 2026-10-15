@@ -1,6 +1,6 @@
 """Real-input early route: no teleport, HP/items/stats/quest-event injection.
 Reads positions to drive WASD, uses J/H/Space, visits the camp and completes a dialogue side quest.
-Requires production preview on localhost:5173. This is an early-route check, not an hour-long playthrough.
+Requires production preview on localhost:5173. Surface combat stays in OverworldScene. This is an early-route check, not an hour-long playthrough.
 """
 import asyncio
 import sys
@@ -23,25 +23,23 @@ async def main():
             nonlocal battles
             await movement(set());battles+=1
             await page.keyboard.down('j')
-            while not await page.evaluate(f'{C}.finished'):
+            while await page.evaluate(f'{O}.surface.engaged'):
                 if time.monotonic()-started>budget:raise AssertionError(f'early route exceeded {budget} seconds')
-                status=await page.evaluate(f"""() => {{const s={C};return {{hp:s.playerActor.hp,
+                status=await page.evaluate(f"""() => {{const s={O};return {{hp:s.session.player.hp,
                     potionReady:Date.now()>=(s.session.player.consumableReadyAt??0),
-                    dodge:s.runtime.dodgeCooldownMs===0&&s.runtime.stamina>=24,
-                    danger:s.enemies.some(e=>e.alive&&e.windup>0&&Math.hypot(s.px-e.aimX,s.py-e.aimY)<e.tactics.hitRadius)}};}}""")
+                    dodge:s.surface.runtime.dodgeCooldownMs===0&&s.surface.runtime.stamina>=24,
+                    danger:s.surface.targets().some(e=>e.windup>0&&Math.hypot(s.player.x-e.aimX,s.player.y-e.aimY)<42)}};}}""")
                 if status['hp']<55 and status['potionReady']:await page.keyboard.press('h')
                 if status['dodge'] and status['danger']:await page.keyboard.press('Space')
+                assert await page.evaluate(f'{O}.scene.isActive()'), 'surface fight changed scene'
                 await page.wait_for_timeout(100)
             await page.keyboard.up('j')
-            assert await page.evaluate(f'{C}.won'),f'player lost encounter {battles}'
-            await page.wait_for_function(f'{C}.resultInputGate.ready')
-            await page.keyboard.press('Space');await page.wait_for_function(f'{O}.scene.isActive()')
             resources=await page.evaluate(f"[ {O}.session.player.hp,{O}.world.getItemCount('health_potion') ]")
-            print(f'encounter {battles}: hp={resources[0]}, health potions={resources[1]}',flush=True)
+            print(f'surface fight {battles}: hp={resources[0]}, health potions={resources[1]}',flush=True)
         async def walk(x,y):
             while True:
                 if time.monotonic()-started>budget:raise AssertionError('walk timeout')
-                state=await page.evaluate(f"""() => ({{combat:{C}.scene.isActive(),x:{O}.tileX,y:{O}.tileY}})""")
+                state=await page.evaluate(f"""() => ({{combat:{O}.surface.engaged,x:{O}.tileX,y:{O}.tileY}})""")
                 if state['combat']:await battle();continue
                 dx=x-state['x'];dy=y-state['y']
                 if (dx*dx+dy*dy)**.5<1.1:await movement(set());return
@@ -59,7 +57,7 @@ async def main():
             assert point,f'starter encounter {pack} missing'
             await walk(point['tileX'],point['tileY'])
             if not await page.evaluate(f"{O}.session.defeated.has('camp-wolves-{pack}')"):
-                await page.wait_for_function(f'{C}.scene.isActive()')
+                await page.wait_for_function(f'{O}.surface.engaged')
                 await battle()
             print(f'starter pack {pack}: defeated',flush=True)
         assert await page.evaluate(f"{O}.world.questStatus('main_01_first_rift')==='completed'")
@@ -104,13 +102,13 @@ async def main():
                 if await page.evaluate(f"{O}.world.questStatus('main_03')==='completed'"):break
                 await walk(patrol['tileX'],patrol['tileY'])
                 if not await page.evaluate(f"{O}.session.defeated.has('{patrol['key']}')"):
-                    await page.wait_for_function(f'{C}.scene.isActive()');await battle()
+                    await page.wait_for_function(f'{O}.surface.engaged');await battle()
                 print('patrol defeated:',patrol['key'],flush=True)
             gate=await page.evaluate(f"{O}.places.find(p=>p.id==='snow_gate')")
             await walk(gate['x'],gate['y'])
             await page.wait_for_function(f"{O}.world.questStatus('main_03')==='completed'")
             assert await page.evaluate(f"{O}.world.getQuest('main_03').progress[0]===6")
-            print('chapter three complete; real encounters:',battles,flush=True)
+            print('chapter three complete; real surface fights:',battles,flush=True)
             snapshot=await page.evaluate(f"[...{O}.session.defeated]")
             await page.keyboard.press('k');await page.reload()
             await page.wait_for_function("window.__game?.scene.isActive('TitleScene')")

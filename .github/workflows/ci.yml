@@ -60,6 +60,7 @@ jobs:
           else:
               raise SystemExit('Production preview did not start')
           PY
+          python scripts/e2e/audio_surface_e2e.py
           python scripts/e2e/new_game_guard_e2e.py
           python scripts/e2e/early_route_e2e.py --snow
           python scripts/e2e/story_patrols_e2e.py
