@@ -13,6 +13,8 @@ import { ARENA_BOUNDS, separateEnemies } from '../combat/crowd';
 import { combatProfile } from '../combat/profile';
 import { skillLoadout } from '../combat/loadout';
 import { BattleHotbar } from '../ui/BattleHotbar';
+import { BattleResultView } from '../ui/BattleResultView';
+import { battleSnapshot, battleSummary, ResultInputGate, type BattleSnapshot } from '../combat/results';
 import { hashSeed } from '../core/Rng';
 import { enemyTactics, type EnemyTactics } from '../combat/enemyTactics';
 import type { SkillDef } from '../data/schema';
@@ -109,6 +111,10 @@ export class TestRoomScene extends Phaser.Scene {
   private lockedTargetId: string | null = null;
   private targetKey!: Phaser.Input.Keyboard.Key;
   private targetLabel!: Phaser.GameObjects.Text;
+  private resultView: BattleResultView | null = null;
+  private resultInputGate: ResultInputGate | null = null;
+  private resultKeys!: Phaser.Input.Keyboard.Key[];
+  private battleBefore: BattleSnapshot | null = null;
 
   constructor() {
     super('TestRoomScene');
@@ -135,6 +141,7 @@ export class TestRoomScene extends Phaser.Scene {
     kb.addCapture(Phaser.Input.Keyboard.KeyCodes.TAB);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => kb.removeCapture(Phaser.Input.Keyboard.KeyCodes.TAB));
     this.supplyKeys=[kb.addKey('H'),kb.addKey('M')];
+    this.resultKeys=[kb.addKey('P'),kb.addKey('N')];
     this.skillKeys=[1,2,3,4].map(n=>kb.addKey(48+n));
     bufferSceneKeys(this);
     this.resetRoom();
@@ -144,7 +151,11 @@ export class TestRoomScene extends Phaser.Scene {
     deltaMs = Math.min(deltaMs,50);
     if(!this.encounter && pressed(this.exitKey)){this.scene.start('OverworldScene');return;}
     if (this.finished) {
-      if (pressed(this.keys.SPACE)) this.returnToOverworld();
+      if (pressed(this.resultKeys[0])) this.resultView?.turn(-1);
+      if (pressed(this.resultKeys[1])) this.resultView?.turn(1);
+      if (pressed(this.keys.R)) this.retryResultSave();
+      if (this.resultInputGate?.update(this.time.now,this.keys.SPACE.isDown,pressed(this.keys.SPACE))) this.returnToOverworld();
+      this.resultView?.setReady(this.resultInputGate?.ready ?? false);
       this.render();
       return;
     }
@@ -182,30 +193,49 @@ export class TestRoomScene extends Phaser.Scene {
     // 地牢战斗不写入地表的击败记录
     if (won && this.encounter && this.session && !this.encounter.dungeon) this.session.defeated.add(this.encounter.spawnKey);
 
-    const lines = [won ? '胜利！' : '你倒下了……', ...this.loot.slice(0, 8)];
-    if (this.loot.length > 8) lines.push(`…另有 ${this.loot.length - 8} 条记录`);
-    if (this.encounter?.dungeon) lines.push(...this.settleDungeonRoom(this.encounter.dungeon, won));
+    const milestones = this.encounter?.dungeon ? this.settleDungeonRoom(this.encounter.dungeon, won) : [];
     const session = this.session;
+    let completed:QuestCompletion[]=[];
     if (session) {
-      const items = loadGameData().items;
-      lines.push(
-        ...settleQuestRewards(
-          session,
-          this.completions,
-          (id) => session.quests.def(id)?.title ?? id,
-          (id) => items.find((i) => i.id === id)?.name ?? id,
-        ).lines,
-      );
+      const items=loadGameData().items;
+      const settled=settleQuestRewards(session,this.completions,
+        id=>session.quests.def(id)?.title??id,id=>items.find(i=>i.id===id)?.name??id);
+      completed=settled.completed;
+      session.player.hp=won?Math.max(1,this.playerActor.hp):Math.max(1,Math.ceil(this.stats.maxHp*.3));
+      session.player.mana=this.runtime.mana;
     }
-    if(session){session.player.hp=won?Math.max(1,this.playerActor.hp):Math.max(1,Math.ceil(this.stats.maxHp*.3));session.player.mana=this.runtime.mana;if(!persistSession(session))lines.push('保存失败：请勿刷新，进度目前仅保留在本页面');}
-    lines.push(won ? (this.encounter?.dungeon?'按 Space 返回地牢':'按 Space 返回地表') : '按 Space 返回地表（生命恢复少量）');
-    this.add
-      .text(display.baseWidth / 2, display.baseHeight / 2 - 60, lines.join('\n'), {
-        fontFamily: 'sans-serif', fontSize: '24px', color: '#fff3c4',
-        backgroundColor: '#00000099', padding: { x: 16, y: 12 }, align: 'center',
-      })
-      .setOrigin(0.5)
-      .setDepth(50);
+    const saved=session?persistSession(session):false;
+    const summary=session && this.battleBefore ? battleSummary(this.battleBefore,battleSnapshot(session)) : null;
+    const data=loadGameData();
+    const signed=(n:number)=>`${n>=0?'+':''}${n}`;
+    const details:string[]=[];
+    if(summary){
+      for(const item of summary.items)details.push(`背包净变化：${data.items.find(i=>i.id===item.id)?.name??item.id} ${signed(item.delta)}`);
+      for(const faction of summary.reputation)details.push(`声望：${data.factions.find(f=>f.id===faction.id)?.name??faction.id} ${signed(faction.delta)}`);
+      if(summary.stability)details.push(`裂隙稳定度 ${signed(summary.stability)}`);
+      if(summary.skillPoints)details.push(`技能点 ${signed(summary.skillPoints)}`);
+    }
+    for(const id of new Set(completed.map(c=>c.questId)))details.push(`任务完成：${session?.quests.def(id)?.title??id}`);
+    details.push(...milestones);
+    if(!won)details.push(`战败恢复至 ${session?.player.hp??0} 生命；本次已结算的进度保留。`);
+    const destination=won && this.encounter?.dungeon?'返回地牢':'返回地表';
+    const seconds=Math.floor(this.runtime.elapsedMs/1000);
+    const totals=summary?`经验 ${signed(summary.exp)}    金币 ${signed(summary.gold)}    等级 ${summary.levelBefore} → ${summary.levelAfter}`:'';
+    const info=`击败 ${this.enemies.filter(e=>!e.alive).length}/${this.enemies.length} 名敌人 · 用时 ${Math.floor(seconds/60)}分${seconds%60}秒\n${totals}\n返回生命 ${session?.player.hp??0}/${this.stats.maxHp} · 魔力 ${Math.floor(this.runtime.mana)}`;
+    this.resultInputGate=new ResultInputGate(this.time.now);
+    pressed(this.keys.SPACE); // discard a buffered dodge; holding Space must be released before confirmation
+    pressed(this.keys.R);
+    for(const key of this.resultKeys)pressed(key);
+    this.effects.clear();
+    this.resultView=new BattleResultView(this,won?'战斗胜利':'战败撤回',info,details,destination,
+      ()=>{if(this.resultInputGate?.ready)this.returnToOverworld();},()=>this.retryResultSave());
+    this.resultView.setSaved(saved);
+  }
+
+  private retryResultSave(): boolean {
+    const saved=!!this.session && persistSession(this.session);
+    this.resultView?.setSaved(saved);
+    return saved;
   }
 
   /** 地牢房间战斗结算：胜利发放奖励、标记清理、Boss 通关后推进层数；战败结束探索。 */
@@ -235,7 +265,7 @@ export class TestRoomScene extends Phaser.Scene {
         : Math.max(1, Math.ceil(this.stats.maxHp * 0.3));
     }
     if (this.session && this.encounter) this.session.player.mana=this.runtime.mana;
-    if(this.session&&!persistSession(this.session)){this.pushLog('保存失败：请检查浏览器存储空间，再按 Space 重试');return;}
+    if(this.session && !this.retryResultSave())return;
     if (this.encounter?.dungeon) {
       // 地牢：胜利回到地牢继续探索；战败则结束本次探索，回到地表
       if (this.won && getRun()) this.scene.start('DungeonScene', { resume: true });
@@ -254,6 +284,9 @@ export class TestRoomScene extends Phaser.Scene {
     this.enemies = [];
     this.log = [];
     this.lockedTargetId = null;
+    this.resultView = null;
+    this.resultInputGate = null;
+    this.battleBefore = this.session ? battleSnapshot(this.session) : null;
 
     landscape(this,true);
     const floor=this.add.graphics().setDepth(-2);

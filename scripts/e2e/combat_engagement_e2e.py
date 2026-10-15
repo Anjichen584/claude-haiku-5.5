@@ -48,6 +48,7 @@ async def main():
         gold=await page.evaluate(f'{C}.session.player.gold')
         await page.wait_for_timeout(200)
         assert await page.evaluate(f'{C}.session.player.gold==={gold}'), 'settlement repeated'
+        await page.wait_for_function(f'{C}.resultInputGate.ready')
         await page.keyboard.press('Space')
         await page.wait_for_function(f'{O}.scene.isActive()')
         assert await page.evaluate(f"{O}.session.defeated.has('e2e-engagement')"), 'victory not retained'

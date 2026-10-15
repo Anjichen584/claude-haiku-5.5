@@ -155,3 +155,5 @@ git clone git@github.com:Anjichen584/claude-haiku-5.5.git
 战斗接敌优化：遭遇战有短暂入场缓冲，敌人随后主动接近；按住 J 无需另按方向键即可接近并普攻。静止施放攻击型技能会辅助朝向最近敌人，但仍受射程、魔力与冷却限制。见 [战斗接敌优化](docs/combat-engagement.md)。
 
 目标锁定、群怪间距和蓄力进度预警见 [战斗第二轮优化](docs/combat-targeting.md)。
+
+战斗结算会显示经验、金币与背包净变化；N/P 翻阅详情，R 重试保存，松开 Space 后重新按下或点击返回。保存失败时请勿刷新。详见 [战斗结算优化](docs/combat-results.md)。
