@@ -95,7 +95,7 @@ claude-haiku-5.5/
 
 ## 开发环境
 
-环境要求：Node.js 20 LTS 或更高版本。
+环境要求：Node.js 20.19+ 或 22.12+（建议 Node.js 22 LTS）。
 
 ```bash
 npm install            # 安装依赖
@@ -144,3 +144,9 @@ git clone git@github.com:Anjichen584/claude-haiku-5.5.git
 ## 说明
 
 本项目在开发期间使用 Claude Haiku 辅助编写代码。这只属于开发阶段的工程辅助，**游戏运行时不包含任何 AI 组件或 API 调用**。
+
+### 沙箱开发预览
+
+默认开发服务器仅绑定本机。需要 Arena/e2b 托管预览时运行 `SANDBOX_PREVIEW=1 npm run dev`，显式绑定 `0.0.0.0` 并仅额外放行 `.e2b.app` 主机名。不要将开发服务器用于正式发布。
+
+优化实施与验证见 [可靠性和界面优化](docs/optimization-implementation.md)。

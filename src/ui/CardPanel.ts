@@ -1,14 +1,18 @@
 import Phaser from 'phaser';
+import { RenderSignature } from './renderSignature';
 import { UI, pinToScreen } from './theme';
 export interface PanelCard { title:string; subtitle:string; key?:string; accent?:number; onClick?:()=>void }
 /** Screen-space card board, shared by inventory, equipment, factions and skills. */
 export class CardPanel {
+ private readonly signature = new RenderSignature();
  readonly root:Phaser.GameObjects.Container;
  constructor(private scene:Phaser.Scene){this.root=scene.add.container(0,0).setScrollFactor(0).setDepth(290).setVisible(false);}
- hide():void{this.root.setVisible(false);}
+ hide():void{this.root.setVisible(false);this.signature.reset();}
  private label(x:number,y:number,t:string,size:number,color:string){const o=this.scene.add.text(x,y,t,{fontFamily:UI.font,fontSize:size,color});this.root.add(o);return o;}
  show(title:string,subtitle:string,cards:PanelCard[],columns:number,footer:string,actions:{label:string;run:()=>void}[]=[]):void{
-  this.root.removeAll(true);this.root.setVisible(true);
+  this.root.setVisible(true);
+  if (!this.signature.changed([title, subtitle, cards.map(c => [c.title,c.subtitle,c.key,c.accent,!!c.onClick]), columns, footer, actions.map(a => a.label)])) return;
+  this.root.removeAll(true);
   this.label(306,159,title,25,'#e5d5a5');this.label(306,202,subtitle,14,'#9eb8a5');
   const line=this.scene.add.graphics();line.lineStyle(1,UI.edge,.5).lineBetween(306,235,974,235);this.root.add(line);
   const rows=Math.ceil(cards.length/columns),gap=12,w=(668-gap*(columns-1))/columns,h=Math.min(84,(282-gap*(rows-1))/Math.max(1,rows));

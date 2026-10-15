@@ -5,6 +5,7 @@ import { npcRole } from '../art/sprites';
 import { pinToScreen, UI, panel, text, button, styleModal } from '../ui/theme';
 import { ShopView } from '../ui/ShopView';
 import { CardPanel } from '../ui/CardPanel';
+import { RenderSignature } from '../ui/renderSignature';
 import { skillLoadout, bindSkill } from '../combat/loadout';
 import { combatProfile, isSupportedModifier } from '../combat/profile';
 import { settleQuestRewards } from '../state/rewards';
@@ -187,6 +188,9 @@ export class OverworldScene extends Phaser.Scene {
     super('OverworldScene');
   }
 
+  private saveWarning!: Phaser.GameObjects.Text;
+  private readonly loadoutSignature = new RenderSignature();
+
   create(init?: { retreated?: boolean }): void {
     const data = loadGameData();
     this.biomes = data.biomes;
@@ -206,6 +210,7 @@ export class OverworldScene extends Phaser.Scene {
 
     // 场景实例会被复用，所有运行时状态都要在这里重置
     this.chunks = new Map();
+    this.loadoutSignature.reset();
     this.talk = null;
     this.transitioning = false;
     this.questPanelOpen = false;
@@ -229,6 +234,11 @@ export class OverworldScene extends Phaser.Scene {
 
     this.locationRegistry = new LocationRegistry(data.locations);
     this.places = placeLocations(data.locations, WORLD_SEED);
+    this.saveWarning = this.add.text(display.baseWidth / 2, 52,
+      '保存失败：进度仅在当前页面保留，请释放存储空间后按 K 重试', {
+        fontFamily: 'sans-serif', fontSize: '14px', color: '#ffb99b', backgroundColor: '#271b1bee',
+        padding: {x: 8, y: 6},
+      }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(500).setVisible(false);
     this.toast = this.add.text(display.baseWidth / 2, 80, '', {
       fontFamily: 'sans-serif', fontSize: '16px', color: '#ffe9a8',
       backgroundColor: '#00000088', padding: { x: 10, y: 6 },
@@ -422,9 +432,16 @@ export class OverworldScene extends Phaser.Scene {
   }
 
   /** 写入浏览器存档；成功与否都给出提示。 */
-  private saveGame(): boolean {
+  private persistProgress(): boolean {
     this.syncToSession();
     const ok = persistSession(this.session);
+    this.saveWarning.setVisible(!ok);
+    return ok;
+  }
+
+  private saveGame(): boolean {
+    this.syncToSession();
+    const ok = this.persistProgress();
     this.showToast(ok ? '已存档' : '存档失败：浏览器拒绝写入（可能存储空间已满）');
     return ok;
   }
@@ -519,7 +536,7 @@ export class OverworldScene extends Phaser.Scene {
     if (reason === 'already') {
       if(target.combat?.kind==='passive'){this.showToast(`${target.name}：被动已生效 · ${target.combat.description}`);return;}
       bindSkill(this.session.player.skills,this.skillDefs,target.id,this.bindSlot);
-      persistSession(this.session);this.refreshSkillPanel();this.showToast(`技能栏 ${this.bindSlot+1}：${target.name}`);return;
+      this.persistProgress();this.refreshSkillPanel();this.showToast(`技能栏 ${this.bindSlot+1}：${target.name}`);return;
     }
     if (reason !== null) {
       const text = { already: '已经学会了', 'missing-prereq': '需要先学习前置技能', 'no-points': '技能点不足', unknown: '未知技能' }[reason];
@@ -533,7 +550,7 @@ export class OverworldScene extends Phaser.Scene {
     if(before.length<4 && target.combat?.kind!=='passive')bindSkill(this.session.player.skills,this.skillDefs,target.id,before.length);
     this.showToast(`学会了 ${target.name}`);
     this.syncToSession();
-    persistSession(this.session);
+    this.persistProgress();
     this.refreshSkillPanel();
   }
 
@@ -556,7 +573,7 @@ export class OverworldScene extends Phaser.Scene {
     storeTree(this.session.player, state);
     this.showToast(`已重置${BRANCH_LABEL[branch]}分支，返还 ${refunded} 点技能点（-${cost} 金币）`);
     this.syncToSession();
-    persistSession(this.session);
+    this.persistProgress();
     this.refreshSkillPanel();
   }
 
@@ -614,14 +631,14 @@ export class OverworldScene extends Phaser.Scene {
   }
   private useInventoryItem(item:ItemDef):void{
     if(item.consumable){this.useSupply(item.id);return;}
-    if(equipItem(this.session,item.id,this.itemDefs,this.affixDefs,this.itemSetDefs)){persistSession(this.session);this.showToast(`已装备 ${item.name}`);this.refreshInventoryPanel();}
+    if(equipItem(this.session,item.id,this.itemDefs,this.affixDefs,this.itemSetDefs)){this.persistProgress();this.showToast(`已装备 ${item.name}`);this.refreshInventoryPanel();}
   }
   private useSupply(id:string):void{
     const item=this.itemDefs.find(i=>i.id===id);if(!item)return;
     const p=this.session.player,profile=combatProfile(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs);
     const result=useConsumable(this.session,item,profile,{hp:p.hp,mana:p.mana??profile.maxMana});
     this.showToast(result.message);if(!result.ok)return;
-    p.hp=result.hp;p.mana=result.mana;persistSession(this.session);if(this.invPanelOpen)this.refreshInventoryPanel();
+    p.hp=result.hp;p.mana=result.mana;this.persistProgress();if(this.invPanelOpen)this.refreshInventoryPanel();
   }
 
   private refreshInventoryPanel(): void {
@@ -708,7 +725,7 @@ export class OverworldScene extends Phaser.Scene {
       this.showToast(lines.join('\n'));
       // 抵达新地点时自动存档（写入失败不打断游戏）
       this.syncToSession();
-      persistSession(this.session);
+      this.persistProgress();
     }
   }
 
@@ -814,7 +831,7 @@ export class OverworldScene extends Phaser.Scene {
       this.showToast(`你选择了：${option.text}`);
       this.syncToSession();
       this.refreshKeyChoice();
-      persistSession(this.session);
+      this.persistProgress();
       return;
     }
     // 技能面板打开且不在对话中：数字键学习列表中的技能
@@ -826,7 +843,7 @@ export class OverworldScene extends Phaser.Scene {
     // 装备面板打开且不在对话中：数字键 1–6 切换对应槽位
     if (!this.talk && this.equipPanelOpen && /^[1-6]$/.test(e.key)) {
       cycleSlot(this.session, EQUIP_SLOTS[Number(e.key) - 1], this.itemDefs, this.affixDefs, this.itemSetDefs);
-      persistSession(this.session);
+      this.persistProgress();
       this.refreshEquipPanel();
       return;
     }
@@ -987,8 +1004,10 @@ export class OverworldScene extends Phaser.Scene {
   }
 
   private renderLoadout():void{
-    if(!this.loadoutUI)return;this.loadoutUI.removeAll(true);this.loadoutUI.setVisible(true);
+    if(!this.loadoutUI)return;this.loadoutUI.setVisible(true);
     const slots=skillLoadout(this.session.player.skills,this.skillDefs);
+    if (!this.loadoutSignature.changed([slots, this.bindSlot])) return;
+    this.loadoutUI.removeAll(true);
     for(let i=0;i<4;i++){
       const x=365+i*182,y=631,chosen=i===this.bindSlot;
       const bg=this.add.rectangle(x,y,172,30,chosen?0x385347:0x172e32).setStrokeStyle(1,chosen?0xd6bf88:0x4e6c60).setInteractive({useHandCursor:true});
@@ -1017,7 +1036,7 @@ export class OverworldScene extends Phaser.Scene {
     }
     if(this.equipPanelOpen){
       const p=this.session.player,stats=combatProfile(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs);
-      const cards=EQUIP_SLOTS.map((slot,i)=>{const item=this.itemDefs.find(t=>t.id===p.equipment[slot]);return {title:`${SLOT_LABEL[slot]}  /  ${item?.name??'未装备'}`,key:`${i+1}`,subtitle:item?`基础攻击 +${item.baseDamage??0} 防御 +${item.defense??0}\n${itemAffixes(item,this.affixDefs).map(a=>`${a.name}+${Math.round(a.value*100)/100}${isSupportedModifier(a.stat)?'':'(预留)'}`).join(' · ')}`:'点击从背包中切换装备',accent:item?0xd6bb7c:0x536b62,onClick:()=>{cycleSlot(this.session,slot,this.itemDefs,this.affixDefs,this.itemSetDefs);persistSession(this.session);this.refreshEquipPanel();}};});
+      const cards=EQUIP_SLOTS.map((slot,i)=>{const item=this.itemDefs.find(t=>t.id===p.equipment[slot]);return {title:`${SLOT_LABEL[slot]}  /  ${item?.name??'未装备'}`,key:`${i+1}`,subtitle:item?`基础攻击 +${item.baseDamage??0} 防御 +${item.defense??0}\n${itemAffixes(item,this.affixDefs).map(a=>`${a.name}+${Math.round(a.value*100)/100}${isSupportedModifier(a.stat)?'':'(预留)'}`).join(' · ')}`:'点击从背包中切换装备',accent:item?0xd6bb7c:0x536b62,onClick:()=>{cycleSlot(this.session,slot,this.itemDefs,this.affixDefs,this.itemSetDefs);this.persistProgress();this.refreshEquipPanel();}};});
       this.cards.show('旅人装备',`攻击 ${stats.attack} · 防御 ${stats.defense} · 生命 ${stats.maxHp} · 魔力 ${stats.maxMana} · 暴击 ${Math.round(stats.critChance*100)}%`,cards,2,this.itemSetDefs.map(set=>{const count=Object.values(p.equipment).filter(id=>this.itemDefs.find(i=>i.id===id)?.setId===set.id).length;return `${set.name} ${count}/6 件`;}).join(' · ')+'\n'+(activeSetBonuses(this.itemSetDefs,Object.values(p.equipment).map(id=>this.itemDefs.find(i=>i.id===id)!).filter(Boolean)).map(b=>`${b.pieces}件：${b.text}`).join('；')||'数字键 1–6 切换槽位 · 行囊中点击装备可直接穿戴'));return;
     }
     if(this.invPanelOpen){

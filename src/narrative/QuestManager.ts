@@ -42,6 +42,18 @@ export class QuestManager {
     for (const id of this.defs.keys()) {
       if (!world.getQuest(id)) {
         world.setQuest(id, { status: 'locked', progress: [] });
+      } else {
+        const rec = world.getQuest(id)!;
+        const def = this.defs.get(id)!;
+        if (rec.status === 'active' || rec.status === 'completed' || rec.status === 'failed') {
+          const progress = def.objectives.map((obj, index) => {
+            const value = rec.progress[index];
+            const need = obj.count ?? 1;
+            if (rec.status === 'completed') return need;
+            return Number.isFinite(value) && value >= 0 ? Math.min(need, Math.floor(value)) : 0;
+          });
+          world.setQuest(id, { ...rec, progress });
+        }
       }
     }
     this.refreshAvailability();
@@ -112,6 +124,7 @@ export class QuestManager {
    */
   report(event: QuestEvent): QuestCompletion[] {
     const completed: QuestCompletion[] = [];
+    if (event.amount !== undefined && (!Number.isSafeInteger(event.amount) || event.amount <= 0)) return completed;
     for (const def of this.defs.values()) {
       const rec = this.world.getQuest(def.id);
       if (!rec || rec.status !== 'active') continue;
@@ -132,7 +145,9 @@ export class QuestManager {
           changed = true;
         }
       });
-      if (!changed) continue;
+      // A migrated active record can already be at its cap. A matching event
+      // must still settle it exactly once, even if no counter increases.
+      if (!changed && !def.objectives.some(obj => obj.type === event.type && obj.target === event.target)) continue;
 
       const allDone = def.objectives.every((obj, i) => progress[i] >= (obj.count ?? 1));
       if (allDone) {
