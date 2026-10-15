@@ -20,6 +20,7 @@ import { WorldState } from '../state/WorldState';
 import { QuestManager } from '../narrative/QuestManager';
 import { LocationRegistry, arriveAt } from '../world/locations';
 import { NpcRegistry, startTalk, type TalkSession } from '../world/npcs';
+import { placeNpcs, nearestNpc, inSettlement, type PlacedNpc } from '../world/npcPlacement';
 import { placeLocations, REGION_ANCHORS, type PlacedLocation } from '../world/placement';
 
 /** 地牢传送门位于裂隙区域的锚点上 */
@@ -69,7 +70,7 @@ const ENCOUNTER_RADIUS = 1.2;
 /** 战败返回地表后的脱离保护时间（毫秒），避免立刻再次进入同一场战斗 */
 const RETREAT_GRACE_MS = 3000;
 /** 玩家与 NPC 的距离小于该值时可以按 E 对话 */
-const TALK_RADIUS = 2.5;
+
 const RIVER_RGB = 0x3a6ea5;
 const ROAD_RGB = 0x8a7a5c;
 
@@ -176,6 +177,10 @@ export class OverworldScene extends Phaser.Scene {
   private toast!: Phaser.GameObjects.Text;
   private toastUntil = 0;
   private npcRegistry!: NpcRegistry;
+  private npcPositions = new Map<string, PlacedNpc>();
+  private npcLabels = new Map<string, Phaser.GameObjects.Text>();
+  private npcHighlights = new Map<string, Phaser.GameObjects.Ellipse>();
+  private npcLabelTimer = 0;
   private npcDialogues = new Map<string, import('../data/schema').DialogueDef>();
   private talk: TalkSession | null = null;
   private dialogueBox!: Phaser.GameObjects.Rectangle;
@@ -247,6 +252,15 @@ export class OverworldScene extends Phaser.Scene {
     this.drawGate();
 
     this.npcRegistry = new NpcRegistry(data.npcs);
+    this.npcPositions = placeNpcs(data.npcs, this.places, [
+      {x: 4, y: 4, radius: 7}, {x: -5, y: -2, radius: 6},
+      {x: -5, y: 4, radius: 4}, {x: 0, y: 0, radius: 4},
+      {...GATE_TILE, radius: 7},
+    ]);
+    this.npcLabels.clear();
+    this.npcHighlights.clear();
+    this.npcDialogues.clear();
+    this.npcLabelTimer = 0;
     for (const d of data.dialogues) this.npcDialogues.set(d.id, d);
     this.drawNpcMarkers();
 
@@ -729,40 +743,53 @@ export class OverworldScene extends Phaser.Scene {
     }
   }
 
-  /** NPC 在地表上的瓦片坐标：地点旁边按序号横向错开，避免重叠。 */
-  private npcTile(npcId: string): { x: number; y: number } | null {
-    const npc = this.npcRegistry.get(npcId);
-    const place = npc && this.places.find((p) => p.id === npc.location);
-    if (!npc || !place) return null;
-    const index = this.npcRegistry.atLocation(place.id).findIndex((n) => n.id === npcId);
-    return { x: place.x + 2 + index * 2, y: place.y };
+  /** One authoritative layout for sprites, interaction, labels and navigation. */
+  private npcTile(npcId: string): PlacedNpc | null {
+    return this.npcPositions.get(npcId) ?? null;
   }
 
   private drawNpcMarkers(): void {
     for (const npc of this.npcRegistry.list()) {
       const tile = this.npcTile(npc.id);
       if (!tile) continue;
-      const px = tile.x * TILE_PX;
-      const py = tile.y * TILE_PX;
-      this.add.image(px,py,`actor-${npcRole(npc)}`).setDisplaySize(45,45).setOrigin(.5,.85).setDepth(7);
-      // 同一地点的 NPC 名字交替抬高，避免标签重叠
-      const index = this.npcRegistry.atLocation(npc.location).findIndex((n) => n.id === npc.id);
-      this.add.text(px, py - TILE_PX * 3 - (index % 2) * 14, npc.name, {
-        fontFamily: 'sans-serif', fontSize: '12px', color: '#d8f2ff',
-        backgroundColor: '#00000088', padding: { x: 4, y: 2 },
-      }).setOrigin(0.5, 1).setDepth(7);
+      const px = tile.x * TILE_PX, py = tile.y * TILE_PX;
+      const highlight = this.add.ellipse(px, py, 40, 15, 0xe0c786, .28)
+        .setStrokeStyle(1, 0xe0c786, .8).setDepth(6).setVisible(false);
+      this.npcHighlights.set(npc.id, highlight);
+      this.add.image(px, py, `actor-${npcRole(npc)}`).setDisplaySize(45,45).setOrigin(.5,.85).setDepth(7);
+      const label = this.add.text(px, py - 44, npc.name, {
+        fontFamily: UI.font, fontSize: '12px', color: '#d8f2ff',
+        backgroundColor: '#10252bee', padding: { x: 5, y: 3 },
+      }).setOrigin(.5, 1).setDepth(9).setVisible(false);
+      this.npcLabels.set(npc.id, label);
     }
   }
 
   private nearestNpcId(): string | null {
-    let best: { id: string; d: number } | null = null;
-    for (const npc of this.npcRegistry.list()) {
-      const tile = this.npcTile(npc.id);
-      if (!tile) continue;
-      const d = Math.hypot(this.tileX - tile.x, this.tileY - tile.y);
-      if (d <= TALK_RADIUS && (!best || d < best.d)) best = { id: npc.id, d };
+    return nearestNpc(this.npcPositions, {x: this.tileX, y: this.tileY});
+  }
+
+  private updateNpcLabels(): void {
+    if (this.time.now < this.npcLabelTimer) return;
+    this.npcLabelTimer = this.time.now + 100;
+    const selected = this.nearestNpcId();
+    const hidden = this.anyPanel() || !!this.talk;
+    for (const [id, ring] of this.npcHighlights) ring.setVisible(!hidden && id === selected);
+    for (const label of this.npcLabels.values()) label.setVisible(false);
+    if (hidden) return;
+    const nearby = [...this.npcPositions.values()]
+      .map(n => ({...n, distance: Math.hypot(n.x-this.tileX, n.y-this.tileY)}))
+      .filter(n => n.distance <= 12)
+      .sort((a,b) => Number(b.id === selected)-Number(a.id === selected) || a.distance-b.distance || (a.id < b.id ? -1 : 1));
+    const occupied: Phaser.Geom.Rectangle[] = [];
+    for (const npc of nearby) {
+      const label = this.npcLabels.get(npc.id)!;
+      const bounds = label.getBounds();
+      Phaser.Geom.Rectangle.Inflate(bounds, 5, 4);
+      if (occupied.some(rect => Phaser.Geom.Intersects.RectangleToRectangle(rect, bounds))) continue;
+      label.setVisible(true).setColor(npc.id === selected ? '#ffe5a2' : '#c1d5ca');
+      occupied.push(bounds);
     }
-    return best?.id ?? null;
   }
 
   /** 靠近地牢传送门时按 E 进入地牢。 */
@@ -968,18 +995,19 @@ export class OverworldScene extends Phaser.Scene {
       .setOrigin(0, 0)
       .setScale(TILE_PX/4)
       .setDepth(0);
-    const spawns = surfaceSpawnsForChunk(WORLD_SEED, chunk, this.biomes, this.enemyDefs)
+    let spawns = surfaceSpawnsForChunk(WORLD_SEED, chunk, this.biomes, this.enemyDefs)
       .filter((s) => !this.session.defeated.has(s.key));
     for(const [i,t] of [[18,-5],[-17,13],[8,22]].entries()){
       const key=`camp-wolves-${i}`;
       if(Math.floor(t[0]/64)===cx && Math.floor(t[1]/64)===cy && !this.session.defeated.has(key))spawns.push({key,tileX:t[0],tileY:t[1],enemyIds:i===2?['ash_wolf']:['ash_wolf','ash_wolf']});
     }
+    spawns = spawns.filter(spawn => !inSettlement({x: spawn.tileX, y: spawn.tileY}, this.places, this.npcPositions));
     const markers = spawns.map((s) => ({ spawn: s, objs: this.drawSpawnMarker(s) }));
     const decor: Phaser.GameObjects.Image[] = [];
     for (let i=0; i<80; i++) {
       const lx=(i*23+Math.abs(cx*17))%64,ly=(i*37+Math.abs(cy*11))%64;
       const wx=cx*64+lx,wy=cy*64+ly;
-      if (chunk.flags[ly*64+lx] || (Math.abs(wx)<8 && Math.abs(wy)<8) || this.places.some(p=>Math.hypot(wx-p.x,wy-p.y)<5)) continue;
+      if (chunk.flags[ly*64+lx] || (Math.abs(wx)<8 && Math.abs(wy)<8) || inSettlement({x: wx, y: wy}, this.places, this.npcPositions)) continue;
       const snowy = this.biomes[chunk.biome[ly*64+lx]]?.id === 'snow';
       decor.push(this.add.image(wx*TILE_PX,wy*TILE_PX,i%5===0?'rock':i%3===0?'bush':'tree').setDisplaySize(i%5===0?36:i%3===0?40:60,i%5===0?32:i%3===0?40:82).setOrigin(.5,.9).setTint(snowy?0xc7ded0:0xffffff).setDepth(3));
     }
@@ -1107,6 +1135,7 @@ export class OverworldScene extends Phaser.Scene {
 
   private updateInterface(): void {
     if(!this.status)return;
+    this.updateNpcLabels();
     this.modalBackdrop?.setVisible(this.anyPanel());this.modalFrame?.setVisible(this.anyPanel());
     this.children.getByName("scrollHint")?.setActive(this.anyPanel());
     const hint=this.children.getByName("scrollHint") as Phaser.GameObjects.Text|undefined;hint?.setVisible(this.questPanelOpen);
@@ -1119,7 +1148,8 @@ export class OverworldScene extends Phaser.Scene {
     const objective=active?.objectives[oi];
     const target=objective?.type==='reach'?this.places.find(x=>x.id===objective.target):undefined;
     const enemyTarget=objective?.type==='kill'?[...this.chunks.values()].flatMap(c=>c.spawns).filter(s=>s.enemyIds.includes(objective.target??'')).sort((a,b)=>Math.hypot(a.tileX-this.tileX,a.tileY-this.tileY)-Math.hypot(b.tileX-this.tileX,b.tileY-this.tileY))[0]:undefined;
-    const nav=target??(enemyTarget?{x:enemyTarget.tileX,y:enemyTarget.tileY}:undefined);
+    const talkTarget=objective?.type==='talk' ? this.npcTile(objective.target ?? '') : undefined;
+    const nav=target??talkTarget??(enemyTarget?{x:enemyTarget.tileX,y:enemyTarget.tileY}:undefined);
     const directions=nav?`\n${Math.round(Math.hypot(nav.x-this.tileX,nav.y-this.tileY))} 格 · ${nav.x>this.tileX?'东':'西'}${nav.y>this.tileY?'南':'北'}方向`:'';
     this.tracker.setText(active?`${active.title}\n${objective?.text??'目标已达成'} ${oi>=0?`${record?.progress[oi]??0}/${objective?.count??1}`:''}${directions}`:'旅程未完，继续探索世界。');
     const npc=this.nearestNpcId();
