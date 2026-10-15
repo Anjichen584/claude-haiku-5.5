@@ -181,8 +181,12 @@ export class QuestManager {
           changed = true;
         }
       });
-      if (!changed) continue;
+      // Restored active quests may already have capped collection progress.
+      // Settle them once even when inventory sync does not change a counter,
+      // without settling unrelated quests or bypassing unfinished delivery.
+      if (!changed && !def.objectives.some(obj => obj.type === 'collect')) continue;
       const allDone = def.objectives.every((obj, i) => progress[i] >= (obj.count ?? 1));
+      if (!changed && !allDone) continue;
       if (allDone) {
         this.world.setQuest(def.id, { status: 'completed', progress });
         completed.push({ questId: def.id, rewards: def.rewards ?? {} });
