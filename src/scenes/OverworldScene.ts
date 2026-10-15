@@ -27,6 +27,7 @@ import { placeLocations, REGION_ANCHORS, type PlacedLocation } from '../world/pl
 const GATE_TILE = REGION_ANCHORS['裂隙'];
 const GATE_RADIUS = 2;
 import { surfaceSpawnsForChunk, type EncounterRequest, type SurfaceSpawn } from '../world/encounters';
+import { questGuidance, directionHint, npcQuestState } from '../narrative/questGuidance';
 import { trackedQuest, trackedObjective, questPage } from '../narrative/questTracking';
 import { activeQuestLog, formatQuestLog } from '../narrative/questLog';
 import { formatInventory, inventoryLines } from '../state/inventory';
@@ -180,6 +181,7 @@ export class OverworldScene extends Phaser.Scene {
   private npcRegistry!: NpcRegistry;
   private npcPositions = new Map<string, PlacedNpc>();
   private npcLabels = new Map<string, Phaser.GameObjects.Text>();
+  private npcQuestMarkers = new Map<string, Phaser.GameObjects.Text>();
   private npcHighlights = new Map<string, Phaser.GameObjects.Ellipse>();
   private npcLabelTimer = 0;
   private npcDialogues = new Map<string, import('../data/schema').DialogueDef>();
@@ -259,6 +261,7 @@ export class OverworldScene extends Phaser.Scene {
       {...GATE_TILE, radius: 7},
     ]);
     this.npcLabels.clear();
+    this.npcQuestMarkers.clear();
     this.npcHighlights.clear();
     this.npcDialogues.clear();
     this.npcLabelTimer = 0;
@@ -776,6 +779,9 @@ export class OverworldScene extends Phaser.Scene {
         backgroundColor: '#10252bee', padding: { x: 5, y: 3 },
       }).setOrigin(.5, 1).setDepth(9).setVisible(false);
       this.npcLabels.set(npc.id, label);
+      this.npcQuestMarkers.set(npc.id,this.add.text(px+24,py-30,'',{
+        fontFamily:UI.font,fontSize:20,color:'#edcc85',stroke:'#10252b',strokeThickness:4,
+      }).setOrigin(.5).setDepth(10).setVisible(false));
     }
   }
 
@@ -790,6 +796,13 @@ export class OverworldScene extends Phaser.Scene {
     const hidden = this.anyPanel() || !!this.talk;
     for (const [id, ring] of this.npcHighlights) ring.setVisible(!hidden && id === selected);
     for (const label of this.npcLabels.values()) label.setVisible(false);
+    for (const [id,marker] of this.npcQuestMarkers) {
+      const tile=this.npcPositions.get(id)!;
+      const visible=!hidden && Math.hypot(tile.x-this.tileX,tile.y-this.tileY)<=20;
+      const state=visible?npcQuestState(id,this.questDefs,this.world):null;
+      marker.setVisible(visible && state?.kind!=='none');
+      if(state)marker.setText(state.kind==='ready'?'?':state.kind==='available'?'!':'·').setColor(state.kind==='active'?'#a4b9ad':'#f0d08a');
+    }
     if (hidden) return;
     const nearby = [...this.npcPositions.values()]
       .map(n => ({...n, distance: Math.hypot(n.x-this.tileX, n.y-this.tileY)}))
@@ -798,6 +811,9 @@ export class OverworldScene extends Phaser.Scene {
     const occupied: Phaser.Geom.Rectangle[] = [];
     for (const npc of nearby) {
       const label = this.npcLabels.get(npc.id)!;
+      const state=npcQuestState(npc.id,this.questDefs,this.world);
+      const name=this.npcRegistry.get(npc.id)?.name??npc.id;
+      label.setText(name+(npc.id===selected?(state.kind==='ready'?' · 可交付':state.kind==='available'?' · 可接取':state.kind==='active'?' · 任务进行中':''):''));
       const bounds = label.getBounds();
       Phaser.Geom.Rectangle.Inflate(bounds, 5, 4);
       if (occupied.some(rect => Phaser.Geom.Intersects.RectangleToRectangle(rect, bounds))) continue;
@@ -836,7 +852,8 @@ export class OverworldScene extends Phaser.Scene {
     }
     const npc = this.npcRegistry.get(npcId)!;
     // 先接取该 NPC 发布的任务（不进入对话）；再次按 E 才开始对话
-    const offered = this.quests.acceptFromNpc(npcId);
+    const state=npcQuestState(npcId,this.questDefs,this.world);
+    const offered = state.ready>0?[]:this.quests.acceptFromNpc(npcId);
     this.rewardLines([]);
     if (offered.length > 0) {
       const titles = offered.map((id) => this.quests.def(id)?.title ?? id).join('、');
@@ -1137,9 +1154,9 @@ export class OverworldScene extends Phaser.Scene {
     panel(this,960,20,300,207);
     text(this,979,36,'区域图',13,'#d5bd84');
     this.mini=this.add.graphics().setScrollFactor(0).setDepth(201);
-    panel(this,960,242,300,170);
+    panel(this,960,242,300,230);
     text(this,980,260,'当前旅程',14,'#d7bd80');
-    this.tracker=text(this,980,292,'',14,'#d5dfc8').setWordWrapWidth(256).setLineSpacing(8);
+    this.tracker=text(this,980,292,'',13,'#d5dfc8').setWordWrapWidth(256).setLineSpacing(5);
     panel(this,230,650,820,52);
     const actions:[string,()=>void][]=[['Q 任务',()=>this.toggleQuestPanel()],['I 背包',()=>this.toggleInventoryPanel()],['C 装备',()=>this.toggleEquipPanel()],['G 技能',()=>this.toggleSkillPanel()],['R 声望',()=>this.toggleRepPanel()],['K 存档',()=>this.saveGame()]];
     actions.forEach(([label,fn],i)=>button(this,303+i*135,676,124,label,()=>{if(!this.shop.visible && !this.talk && !this.pendingChoice && !this.endingPanel.visible)fn();}));
@@ -1182,16 +1199,25 @@ export class OverworldScene extends Phaser.Scene {
     const record=active?this.quests.progressOf(active.id):undefined;
     const oi=active?trackedObjective(active,this.world):-1;
     const objective=active?.objectives[oi];
-    const target=objective?.type==='reach'?this.places.find(x=>x.id===objective.target):undefined;
-    const enemyTarget=objective?.type==='kill'?[...this.chunks.values()].flatMap(c=>c.spawns).filter(s=>s.enemyIds.includes(objective.target??'')).sort((a,b)=>Math.hypot(a.tileX-this.tileX,a.tileY-this.tileY)-Math.hypot(b.tileX-this.tileX,b.tileY-this.tileY))[0]:undefined;
-    const talkTarget=objective?.type==='talk' ? this.npcTile(objective.target ?? '') : undefined;
-    const nav=target??talkTarget??(enemyTarget?{x:enemyTarget.tileX,y:enemyTarget.tileY}:undefined);
-    const directions=nav?`\n${Math.round(Math.hypot(nav.x-this.tileX,nav.y-this.tileY))} 格 · ${nav.x>this.tileX?'东':'西'}${nav.y>this.tileY?'南':'北'}方向`:'';
-    this.tracker.setText(active?`${active.title}\n${objective?.text??'目标已达成'} ${oi>=0?`${record?.progress[oi]??0}/${objective?.count??1}`:''}${directions}`:'旅程未完，继续探索世界。');
+    const guidance=active?questGuidance(active,this.world,{x:this.tileX,y:this.tileY},this.places,this.npcRegistry.list(),this.npcPositions,
+      [...this.chunks.values()].flatMap(c=>c.spawns),this.enemyDefs):undefined;
+    const nav=guidance?.point;
+    const destination=guidance?.label?`目标：${guidance.label}`:'';
+    const directions=nav?directionHint({x:this.tileX,y:this.tileY},nav):guidance?.hint??'';
+    const location=guidance?.location?this.locationRegistry.get(guidance.location):undefined;
+    const blocked=location && objective?.type==='reach'?blockReason(this.world,location.region,this.regionGates,this.factionDefs):null;
+    const shorten=(s:string,n=21)=>s.length>n?s.slice(0,n-1)+'…':s;
+    this.tracker.setText(active?[
+      `${active.type==='main'?'主线':active.type==='side'?'支线':'隐藏'} · ${shorten(active.title)}`,
+      `${shorten(objective?.text??'目标已达成')} ${oi>=0?`${record?.progress[oi]??0}/${objective?.count??1}`:''}`,
+      shorten(destination),directions,blocked?'区域受限：需提升对应阵营声望':objective?.type==='collect'&&nav?'可能掉落所需物品，并非必掉':'Q 打开日志切换追踪',
+    ].filter(Boolean).join('\n'):'暂无进行中的任务 · 靠近 ! NPC 按 E 接取');
     const npc=this.nearestNpcId();
     const merchant=Math.hypot(this.tileX-4,this.tileY-4)<=3;
     const atGate=Math.hypot(this.tileX-GATE_TILE.x,this.tileY-GATE_TILE.y)<=GATE_RADIUS;
-    this.contextHint.setText(this.anyPanel()?'Esc 关闭面板':merchant?'E  与行旅商人交易':npc?`E  与 ${this.npcRegistry.get(npc)?.name} 交谈`:atGate?'E  进入裂隙地牢':'WASD 移动 · E 互动 · H/M 药剂 · T 试炼');
+    const npcState=npc?npcQuestState(npc,this.questDefs,this.world):undefined;
+    const npcAction=npcState?.ready?'交付任务':npcState?.available?'接取任务':npcState?.active?'交谈（任务进行中）':'交谈';
+    this.contextHint.setText(this.anyPanel()?'Esc 关闭面板':merchant?'E  与行旅商人交易':npc?`E  与 ${this.npcRegistry.get(npc)?.name} ${npcAction}`:atGate?'E  进入裂隙地牢':'WASD 移动 · E 互动 · H/M 药剂 · T 试炼');
     if(this.time.now<this.miniTimer)return;this.miniTimer=this.time.now+150;
     const g=this.mini;g.clear();
     g.lineStyle(1,0x56746a,.25);for(let i=0;i<5;i++){g.lineBetween(980+i*65,65,980+i*65,205);g.lineBetween(980,65+i*35,1240,65+i*35);}
