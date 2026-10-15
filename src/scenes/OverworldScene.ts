@@ -1,3 +1,5 @@
+import {placeHunts,huntState,huntProgress,startHunt,type HuntSpawn} from '../world/hunts';
+import {KillStreak} from '../combat/KillStreak';
 import {roamingPacks} from '../world/roamingPacks';
 import {audio} from '../audio/AudioDirector';
 import {SurfaceCombat} from '../combat/SurfaceCombat';
@@ -204,6 +206,13 @@ export class OverworldScene extends Phaser.Scene {
     super('OverworldScene');
   }
 
+  private hunts:HuntSpawn[]=[];
+  private huntMarkers=new Map<string,{root:Phaser.GameObjects.Container;label:Phaser.GameObjects.Text}>();
+  private huntHud!:Phaser.GameObjects.Text;
+  private hudHunt:HuntSpawn|undefined;
+  private streakHud!:Phaser.GameObjects.Text;
+  private streak=new KillStreak();
+  private surfaceEffects!:Phaser.GameObjects.Graphics;
   private surface!: SurfaceCombat;
   private surfaceVisuals=new Map<string,{body:Phaser.GameObjects.Image;label:Phaser.GameObjects.Text;bar:Phaser.GameObjects.Graphics;warning:Phaser.GameObjects.Graphics}>();
   private keyJ!:Phaser.Input.Keyboard.Key;
@@ -281,6 +290,7 @@ export class OverworldScene extends Phaser.Scene {
       {...GATE_TILE, radius: 7},
     ]);
     this.snowPatrols=snowGatePatrols(this.places,this.npcPositions);
+    this.hunts=placeHunts(this.places,this.npcPositions,this.biomes,WORLD_SEED);
     this.npcLabels.clear();
     this.npcQuestMarkers.clear();
     this.npcHighlights.clear();
@@ -374,6 +384,7 @@ export class OverworldScene extends Phaser.Scene {
 
     this.player.setPosition(this.tileX * TILE_PX, this.tileY * TILE_PX);
     this.initSurfaceCombat();
+    this.createHuntMarkers();
     this.syncChunks();
     this.events.once('shutdown',()=>{for(const c of this.chunks.values())if(this.textures.exists(c.textureKey))this.textures.remove(c.textureKey);});
     this.createInterface();
@@ -442,6 +453,7 @@ export class OverworldScene extends Phaser.Scene {
       this.syncToSession();this.updateEnvironment();return;
     }
 
+    if(pressed(this.keyF))this.startNearbyHunt();
     let mx = 0;
     let my = 0;
     if (this.keys.A.isDown) mx -= 1;
@@ -731,6 +743,8 @@ export class OverworldScene extends Phaser.Scene {
 
   // ---------- Seamless surface combat ----------
   private initSurfaceCombat(): void {
+    this.streak=new KillStreak();
+    this.surfaceEffects=this.add.graphics().setDepth(12);
     const p=this.session.player,profile=combatProfile(p.equipment,this.itemDefs,this.affixDefs,this.itemSetDefs);
     this.surface=new SurfaceCombat(profile,this.skillDefs,p.skills.unlocked,this.comboDefs,p.hp,p.mana??profile.maxMana);
     this.surfaceVisuals=new Map();this.facing={x:1,y:0};this.dodgeMs=0;this.autoAttack=false;this.surfaceSavePending=false;
@@ -740,7 +754,7 @@ export class OverworldScene extends Phaser.Scene {
     };
     this.surface.onKill=enemy=>{
       const oldLevel=levelForExp(p.exp),lines=settleSurfaceKill(this.session,enemy,this.surface.runtime.profile.bonuses,id=>this.itemNames.get(id)??id);
-      if(!lines.length)return;this.showToast(lines.slice(0,4).join('\n'));audio.play(levelForExp(p.exp)>oldLevel?'level':'pickup');
+      if(!lines.length)return;this.streak.kill();this.showToast(lines.slice(0,4).join('\n'));audio.play(levelForExp(p.exp)>oldLevel?'level':'pickup');
       this.floatWorld(enemy.x,enemy.y-12,'✦ 已拾取','#c7ecad');
       this.surfaceSavePending=true;
     };
@@ -774,7 +788,17 @@ export class OverworldScene extends Phaser.Scene {
     if(!skill){this.showToast('按 G 学习并装配主动技能');return;}
     this.aimSurface();
     const r=this.surface.runtime,result=r.cast(skill.id,this.player,this.facing,this.surface.targets());
-    if(result.ok){audio.play('skill');this.surfaceRing(result.center?.x??this.player.x,result.center?.y??this.player.y,skill.combat?.radius??65,0x9fdaf0);this.showToast(result.combo?`组合技 · ${result.combo.name}`:skill.name);}
+    if(result.ok){
+      audio.play('skill');
+      const color=({fire:0xf1a363,ice:0x9fe3ec,lightning:0xf1df84,dark:0xc5a3ed,holy:0xf4efb3,none:0xa8d7af} as Record<string,number>)[skill.element??'none']??0x9fdaf0;
+      const center=result.center??this.player;
+      this.surfaceRing(center.x,center.y,skill.combat?.radius??65,color);
+      if(['bolt','blast'].includes(skill.combat?.kind??'')){
+        const beam=this.add.graphics().setDepth(23).lineStyle(5,color,.8).lineBetween(this.player.x,this.player.y-16,center.x,center.y-16);
+        this.tweens.add({targets:beam,alpha:0,duration:230,onComplete:()=>beam.destroy()});
+      }
+      this.showToast(result.combo?`组合技 · ${result.combo.name}`:skill.name);
+    }
     else this.showToast(({mana:'魔力不足',stamina:'耐力不足',cooldown:'技能冷却中',busy:'动作尚未结束',locked:'尚未学会',passive:'被动技能无需释放','no-target':'范围内没有目标',unknown:'技能不可用',dead:'当前无法施法'} as Record<string,string>)[result.reason??'']??'当前无法施法');
     this.session.player.hp=r.actor.hp;this.session.player.mana=r.mana;
   }
@@ -784,6 +808,7 @@ export class OverworldScene extends Phaser.Scene {
   }
   private updateSurface(deltaMs:number):void{
     const r=this.surface.runtime,p=this.session.player;
+    this.streak.tick(deltaMs);
     const available=new Set<string>();
     for(const c of this.chunks.values())for(const spawn of c.spawns){
       if(spawnAvailable(spawn,this.world)&&!this.session.defeated.has(spawn.key)&&Math.hypot(spawn.tileX*16-this.player.x,spawn.tileY*16-this.player.y)<720){available.add(spawn.key);this.surface.addPack(spawn,this.enemyDefs,this.session.defeated);}
@@ -800,6 +825,7 @@ export class OverworldScene extends Phaser.Scene {
     if(r.actor.isDead){
       // Rescue to a known safe start. Completed/partial kills stay settled; no gold penalty.
       audio.play('defeat');p.hp=Math.max(1,Math.ceil(r.profile.maxHp*.5));r.actor.hp=p.hp;
+      this.streak.reset();
       this.tileX=0;this.tileY=0;this.player.setPosition(0,0);this.graceMs=6000;this.autoAttack=false;this.dodgeMs=0;
       for(const enemy of this.surface.enemies.values()){enemy.engaged=false;enemy.windup=0;}
       this.syncChunks();this.surfaceSavePending=true;this.showToast('旅人将你救回营地 · 恢复一半生命 · 已获得的奖励保留');
@@ -808,8 +834,8 @@ export class OverworldScene extends Phaser.Scene {
     for(const e of this.surface.targets()){
       let v=this.surfaceVisuals.get(e.id);
       if(!v){
-        const body=this.add.image(e.x,e.y,`enemy-${e.def.id}`).setDisplaySize(44,44).setOrigin(.5,.85).setDepth(8);
-        const label=this.add.text(e.x,e.y-48,e.def.name,{fontFamily:UI.font,fontSize:11,color:'#f3d7b8',backgroundColor:'#10252bb0'}).setOrigin(.5).setDepth(9);
+        const body=this.add.image(e.x,e.y,`enemy-${e.def.id}`).setDisplaySize(e.elite?64:44,e.elite?64:44).setOrigin(.5,.85).setDepth(8);
+        const label=this.add.text(e.x,e.y-48,`${e.elite?'◆ 精英 · ':''}${e.def.name}`,{fontFamily:UI.font,fontSize:11,color:e.elite?'#ffd17c':'#f3d7b8',backgroundColor:'#10252bb0'}).setOrigin(.5).setDepth(9);
         v={body,label,bar:this.add.graphics().setDepth(10),warning:this.add.graphics().setDepth(7)};this.surfaceVisuals.set(e.id,v);
       }
       const visible=Math.hypot(e.x-this.player.x,e.y-this.player.y)<Math.max(16,this.sightTiles)*16;
@@ -820,12 +846,58 @@ export class OverworldScene extends Phaser.Scene {
         if(e.windup>0){const radius=enemyTactics(e.def).hitRadius*.65;v.warning.fillStyle(0xff795b,.22).fillCircle(e.aimX,e.aimY,radius).lineStyle(2,0xffaa78,.9).strokeCircle(e.aimX,e.aimY,radius);}
       }
     }
+    this.surfaceEffects.clear();
+    for(const trap of r.traps){
+      this.surfaceEffects.lineStyle(2,0x9bdcbd,.75).strokeCircle(trap.x,trap.y,trap.radius).fillStyle(0x8cddbb,.08).fillCircle(trap.x,trap.y,trap.radius);
+      this.surfaceEffects.lineStyle(2,0x9bdcbd,.8).lineBetween(trap.x-8,trap.y,trap.x+8,trap.y).lineBetween(trap.x,trap.y-8,trap.x,trap.y+8);
+    }
+    if(r.shield>0)this.surfaceEffects.lineStyle(3,0xaed7f1,.65).strokeCircle(this.player.x,this.player.y-15,32);
     this.player.setAlpha(r.actor.isInvulnerable?.55:1);
     const hidden=this.surfaceBlocked();this.combatHud.setVisible(!hidden);
     this.combatHud.setText(`${safe?'安全区':this.surface.engaged?'交战中 · 红圈为攻击预警':'荒野探索'}  ·  魔力 ${Math.floor(r.mana)}  耐力 ${Math.floor(r.stamina)}  ·  J 挥砍  Space 闪避  Z 自动攻击${this.autoAttack?'●':'○'}`);
     const slots=skillLoadout(p.skills,this.skillDefs).map(id=>this.skillDefs.find(s=>s.id===id));
     this.surfaceSlots.forEach((v,i)=>{const s=slots[i],cd=s?r.cooldowns.get(s.id)??0:0;v.bg.setVisible(!hidden);v.label.setVisible(!hidden).setText(s?`${i+1}  ${s.name}\n${cd>0?`冷却 ${(cd/1000).toFixed(1)} 秒`:`${s.manaCost??0} 魔力`}`:`${i+1}  空技能槽\nG 学习 / 装配`);v.bg.setFillStyle(s&&!r.canCast(s.id)?0x2a5047:0x132e33);});
     if(this.surfaceSavePending){this.surfaceSavePending=false;this.rewardLines([]);this.persistProgress();}
+  }
+
+  private createHuntMarkers():void {
+    this.huntMarkers=new Map();
+    for(const hunt of this.hunts){
+      const flag=this.add.graphics().lineStyle(3,0xd8bb79).lineBetween(0,0,0,-44);
+      flag.fillStyle(0xe6b963).fillTriangle(1,-44,29,-34,1,-24);
+      const label=this.add.text(0,14,'',{fontFamily:UI.font,fontSize:12,color:'#f2d79c',backgroundColor:'#142a2bdc',align:'center',padding:{x:6,y:4}}).setOrigin(.5,0);
+      const root=this.add.container(hunt.tileX*16,hunt.tileY*16,[flag,label]).setDepth(6).setVisible(false);
+      this.huntMarkers.set(hunt.key,{root,label});
+    }
+    this.huntHud=text(this,700,26,'',12,'#e4cea0').setOrigin(.5,0).setAlign('center').setWordWrapWidth(416).setLineSpacing(4).setBackgroundColor('#12282de8').setPadding(12,8).setInteractive({useHandCursor:true});
+    this.huntHud.on('pointerdown',()=>{if(!this.surfaceBlocked()&&this.hudHunt&&huntState(this.session,this.hudHunt)==='ready')this.startNearbyHunt(this.hudHunt);});
+    this.streakHud=text(this,640,118,'',19,'#f4d18c').setOrigin(.5,0).setVisible(false);
+  }
+  private startNearbyHunt(requested?:HuntSpawn):void {
+    const hunt=requested??this.hunts.filter(h=>huntState(this.session,h)==='ready').sort((a,b)=>Math.hypot(a.tileX-this.tileX,a.tileY-this.tileY)-Math.hypot(b.tileX-this.tileX,b.tileY-this.tileY))[0];
+    if(!hunt||Math.hypot(hunt.tileX-this.tileX,hunt.tileY-this.tileY)>5){this.showToast('靠近金色讨伐旗帜后，按 F 开始挑战');return;}
+    if(this.surface.engaged){this.showToast('请先脱离当前战斗，再开始讨伐');return;}
+    if(startHunt(this.session,hunt,{x:this.tileX,y:this.tileY})){
+      this.persistProgress();audio.play('skill');this.showToast(`讨伐开始：${hunt.hunt.title} · 击败首领与全部护卫`);
+    }
+  }
+  private updateHunts():void {
+    if(!this.huntHud)return;
+    for(const h of this.hunts){
+      const view=this.huntMarkers.get(h.key)!,state=huntState(this.session,h);
+      view.root.setVisible(state!=='locked'&&Math.hypot(h.tileX-this.tileX,h.tileY-this.tileY)<36);
+      view.label.setText(state==='completed'?`${h.hunt.title}\n✓ 已完成`: `${h.hunt.title} · 推荐 Lv.${h.hunt.level}\n${state==='active'?`${huntProgress(this.session,h)}/${h.enemyIds.length} 已击败`:'靠近按 F 接受 · 可选挑战'}`);
+      view.root.setAlpha(state==='completed'?.45:1);
+    }
+    const done=this.hunts.filter(h=>huntState(this.session,h)==='completed').length;
+    const choices=this.hunts.filter(h=>['ready','active'].includes(huntState(this.session,h))).sort((a,b)=>Number(huntState(this.session,b)==='active')-Number(huntState(this.session,a)==='active')||Math.hypot(a.tileX-this.tileX,a.tileY-this.tileY)-Math.hypot(b.tileX-this.tileX,b.tileY-this.tileY));
+    const hunt=choices[0],hidden=this.surfaceBlocked();
+    this.hudHunt=hunt;
+    this.huntHud.setVisible(!hidden&&!!hunt);
+    if(hunt){const active=huntState(this.session,hunt)==='active',near=Math.hypot(hunt.tileX-this.tileX,hunt.tileY-this.tileY)<=5;
+      this.huntHud.setText(`可选讨伐 ${done}/${this.hunts.length} · ${hunt.hunt.title} · 推荐 Lv.${hunt.hunt.level}\n${active?`击败首领与护卫 ${huntProgress(this.session,hunt)}/${hunt.enemyIds.length}`:near?'F / 点击此处接受挑战（不会自动开战）':directionHint({x:this.tileX,y:this.tileY},{x:hunt.tileX,y:hunt.tileY})}\n奖励 ${hunt.hunt.reward.gold} 金币 · ${this.itemNames.get(hunt.hunt.reward.items[0])??'装备'}`);
+    }
+    this.streakHud.setVisible(!hidden&&this.streak.count>=2).setText(`${this.streak.label} ×${this.streak.count}  ${(this.streak.remainingMs/1000).toFixed(1)}s`);
   }
 
   private drawSpawnMarker(_spawn:SurfaceSpawn):Phaser.GameObjects.GameObject[]{return [];}
@@ -1171,6 +1243,7 @@ export class OverworldScene extends Phaser.Scene {
       if(Math.floor(t[0]/64)===cx && Math.floor(t[1]/64)===cy && !this.session.defeated.has(key))spawns.push({key,tileX:t[0],tileY:t[1],enemyIds:i===2?['ash_wolf']:['ash_wolf','ash_wolf']});
     }
     spawns.push(...roamingPacks(WORLD_SEED,chunk,this.biomes,this.enemyDefs).filter(s=>!this.session.defeated.has(s.key)));
+    spawns.push(...this.hunts.filter(h=>Math.floor(h.tileX/64)===cx&&Math.floor(h.tileY/64)===cy&&!this.session.defeated.has(h.key)));
     spawns.push(...this.snowPatrols.filter(s=>Math.floor(s.tileX/64)===cx&&Math.floor(s.tileY/64)===cy&&!this.session.defeated.has(s.key)));
     spawns = spawns.filter(spawn => !inSettlement({x: spawn.tileX, y: spawn.tileY}, this.places, this.npcPositions));
     const markers = spawns.map((s) => ({ spawn: s, objs: this.drawSpawnMarker(s) }));
@@ -1379,6 +1452,7 @@ export class OverworldScene extends Phaser.Scene {
     const scale=.25;
     for(const place of this.places){const x=1110+(place.x-this.tileX)*scale,y=135+(place.y-this.tileY)*scale;if(x<985||x>1235||y<65||y>201)continue;g.fillStyle(this.session.visited.has(place.id)?0x8bad87:0xd4ba7e).fillCircle(x,y,3);}
     if(nav){const dx=(nav.x-this.tileX)*scale,dy=(nav.y-this.tileY)*scale;const ratio=Math.min(1,115/Math.max(1,Math.abs(dx)),64/Math.max(1,Math.abs(dy)));g.lineStyle(1,0xe1c282,.6).lineBetween(1110,135,1110+dx*ratio,135+dy*ratio);g.fillStyle(0xe1c282).fillCircle(1110+dx*ratio,135+dy*ratio,4);}
+    for(const h of this.hunts){if(['locked','completed'].includes(huntState(this.session,h)))continue;const x=1110+(h.tileX-this.tileX)*scale,y=135+(h.tileY-this.tileY)*scale;if(x>985&&x<1235&&y>65&&y<201)g.fillStyle(0xf0b85e).fillRect(x-3,y-3,6,6);}
     g.fillStyle(0xdce7cf).fillTriangle(1110,128,1105,140,1115,140);
   }
 
@@ -1403,6 +1477,7 @@ export class OverworldScene extends Phaser.Scene {
     }
     const weather = this.weatherCache.weather;
     audio.setWeather(weather);
+    this.updateHunts();
     const combatHidden=this.surfaceBlocked();
     this.combatHud?.setVisible(!combatHidden);
     this.surfaceSlots.forEach(v=>{v.bg.setVisible(!combatHidden);v.label.setVisible(!combatHidden);});

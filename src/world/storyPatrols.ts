@@ -25,5 +25,7 @@ export function snowGatePatrols(places:readonly PlacedLocation[],npcs:ReadonlyMa
 }
 /** Keep pre-quest and completed saves safe; markers, collision and tracking share this predicate. */
 export function spawnAvailable(spawn:SurfaceSpawn,world:WorldState):boolean {
-  return !spawn.requiredQuest || world.questStatus(spawn.requiredQuest)==='active';
+  return (!spawn.requiredQuest || world.questStatus(spawn.requiredQuest)==='active')
+    && (!spawn.unlockQuest || world.questStatus(spawn.unlockQuest)==='completed')
+    && (!spawn.requiredFlag || world.hasFlag(spawn.requiredFlag));
 }

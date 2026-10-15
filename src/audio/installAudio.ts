@@ -25,7 +25,7 @@ export function installAudio(game:Phaser.Game):void{
  document.addEventListener('visibilitychange',()=>audio.visibility());
  let last=0;game.events.on('step',(time:number)=>{if(time-last<500)return;last=time;
   let mood:MusicMood='title';
-  if(game.scene.isActive('OverworldScene')){const s=game.scene.getScene('OverworldScene') as Phaser.Scene&{surface?:{engaged:boolean}};mood=s.surface?.engaged?'battle':'explore';}
+  if(game.scene.isActive('OverworldScene')){const s=game.scene.getScene('OverworldScene') as Phaser.Scene&{surface?:{engaged:boolean;targets:()=>{engaged:boolean;elite?:boolean;boss?:boolean}[]}};mood=s.surface?.targets().some(e=>e.engaged&&(e.elite||e.boss))?'boss':s.surface?.engaged?'battle':'explore';}
   else if(game.scene.isActive('DungeonScene'))mood='dungeon';
   else if(game.scene.isActive('TestRoomScene')){const s=game.scene.getScene('TestRoomScene') as Phaser.Scene&{encounter?:{dungeon?:{boss?:boolean}}};mood=s.encounter?.dungeon?.boss?'boss':'battle';}
   audio.setMood(mood);

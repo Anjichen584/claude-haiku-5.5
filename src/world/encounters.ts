@@ -13,6 +13,10 @@ import { hashString } from './placement';
 export interface SurfaceSpawn {
   /** Story encounters are available only while this quest is active. Not serialized. */
   requiredQuest?: string;
+  /** Optional event prerequisites: quest completed AND explicitly accepted. */
+  unlockQuest?: string;
+  requiredFlag?: string;
+  hunt?: import('./hunts').HuntInfo;
   /** 形如 `cx,cy,序号`，在会话的 defeated 集合中使用 */
   key: string;
   /** 世界瓦片坐标 */
