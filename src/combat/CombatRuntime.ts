@@ -88,21 +88,21 @@ export class CombatRuntime {
     if((this.cooldowns.get(id)??0)>0)return 'cooldown';if(this.globalCooldownMs>0||(this.actor.isStaggered&&id!=='purify'))return 'busy';
     if(this.mana<(skill.manaCost??0))return 'mana';if(this.stamina<Math.max(0,skill.combat.staminaCost??0))return 'stamina';
   }
-  private select(effect:SkillCombatDef,origin:{x:number;y:number},direction:{x:number;y:number},targets:readonly CombatTarget[]):{hits:CombatTarget[];center:{x:number;y:number}}{
+  private select(effect:SkillCombatDef,origin:{x:number;y:number},direction:{x:number;y:number},targets:readonly CombatTarget[],preferredId?:string):{hits:CombatTarget[];center:{x:number;y:number}}{
     const living=targets.filter(e=>!e.actor.isDead);
     if(effect.kind==='nova')return{hits:living.filter(e=>Math.hypot(e.x-origin.x,e.y-origin.y)<=(effect.radius??120)),center:origin};
     if(effect.kind==='buff'||effect.kind==='heal'||effect.kind==='passive'||effect.kind==='trap')return{hits:[],center:origin};
     const norm=Math.hypot(direction.x,direction.y)||1;
-    const front=living.filter(e=>{const dx=e.x-origin.x,dy=e.y-origin.y,dist=Math.hypot(dx,dy);return dist<=(effect.range??100)&&(dist<24||(dx*direction.x+dy*direction.y)/norm/dist>.4);}).sort((a,b)=>Math.hypot(a.x-origin.x,a.y-origin.y)-Math.hypot(b.x-origin.x,b.y-origin.y));
+    const front=living.filter(e=>{const dx=e.x-origin.x,dy=e.y-origin.y,dist=Math.hypot(dx,dy);return dist<=(effect.range??100)&&(dist<24||(dx*direction.x+dy*direction.y)/norm/dist>.4);}).sort((a,b)=>Number(b.id===preferredId)-Number(a.id===preferredId) || Math.hypot(a.x-origin.x,a.y-origin.y)-Math.hypot(b.x-origin.x,b.y-origin.y));
     if(!front.length)return{hits:[],center:origin};
     if(effect.kind==='blast')return{hits:living.filter(e=>Math.hypot(e.x-front[0].x,e.y-front[0].y)<=(effect.radius??100)),center:front[0]};
     if(effect.kind==='bolt' && effect.radius){const first=front[0];const others=living.filter(e=>e!==first && Math.hypot(e.x-first.x,e.y-first.y)<=effect.radius!).sort((a,b)=>Math.hypot(a.x-first.x,a.y-first.y)-Math.hypot(b.x-first.x,b.y-first.y));return{hits:[first,...others].slice(0,effect.targets??1),center:first};}
     return{hits:front.slice(0,effect.targets??99),center:front[0]};
   }
-  cast(id:string,origin:{x:number;y:number},direction:{x:number;y:number},targets:readonly CombatTarget[]):CastResult{
+  cast(id:string,origin:{x:number;y:number},direction:{x:number;y:number},targets:readonly CombatTarget[],preferredId?:string):CastResult{
     const reason=this.canCast(id);if(reason)return{ok:false,reason,targets:[]};
     const skill=this.skillById.get(id)!,effect=skill.combat!;
-    const selection=this.select(effect,origin,direction,targets);
+    const selection=this.select(effect,origin,direction,targets,preferredId);
     if(['strike','bolt','blast'].includes(effect.kind)&&!selection.hits.length)return{ok:false,reason:'no-target',skill,targets:[]};
     this.mana-=skill.manaCost??0;this.stamina=clamp(this.stamina-(effect.staminaCost??0),0,this.profile.maxStamina);
     this.cooldowns.set(id,Math.max(400,(skill.cooldown??0)*1000*this.profile.cooldownMultiplier));this.globalCooldownMs=350;

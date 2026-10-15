@@ -6,9 +6,10 @@ import { landscape, panel, UI } from '../ui/theme';
 import { settleQuestRewards } from '../state/rewards';
 import { display } from '../config/display';
 import { Actor } from '../combat/Actor';
-import { attackIntent, encounterFormation, BATTLE_PLAYER_START, ENCOUNTER_OPENING_MS } from '../combat/engagement';
+import { attackIntent, cycleTarget, encounterFormation, BATTLE_PLAYER_START, ENCOUNTER_OPENING_MS } from '../combat/engagement';
 import type { Element } from '../combat/damage';
 import { CombatRuntime, type CombatTarget } from '../combat/CombatRuntime';
+import { ARENA_BOUNDS, separateEnemies } from '../combat/crowd';
 import { combatProfile } from '../combat/profile';
 import { skillLoadout } from '../combat/loadout';
 import { BattleHotbar } from '../ui/BattleHotbar';
@@ -53,7 +54,7 @@ const PLAYER = {
 const ENEMY_SPAWNS: ReadonlyArray<{ id: string; x: number; y: number }> = [
   { id: 'ash_wolf', x: 900, y: 200 },
   { id: 'moss_golem', x: 1000, y: 480 },
-  { id: 'ember_hound', x: 700, y: 560 },
+  { id: 'ember_hound', x: 700, y: 480 },
 ];
 
 interface EnemyUnit {
@@ -105,6 +106,9 @@ export class TestRoomScene extends Phaser.Scene {
   private loot: string[] = [];
   private finished = false;
   private openingLeftMs = 0;
+  private lockedTargetId: string | null = null;
+  private targetKey!: Phaser.Input.Keyboard.Key;
+  private targetLabel!: Phaser.GameObjects.Text;
 
   constructor() {
     super('TestRoomScene');
@@ -127,6 +131,9 @@ export class TestRoomScene extends Phaser.Scene {
       SHIFT: 'SHIFT', SPACE: 'SPACE', J: 'J', R: 'R',
     }) as typeof this.keys;
     this.exitKey=kb.addKey("ESC");
+    this.targetKey=kb.addKey('TAB');
+    kb.addCapture(Phaser.Input.Keyboard.KeyCodes.TAB);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => kb.removeCapture(Phaser.Input.Keyboard.KeyCodes.TAB));
     this.supplyKeys=[kb.addKey('H'),kb.addKey('M')];
     this.skillKeys=[1,2,3,4].map(n=>kb.addKey(48+n));
     bufferSceneKeys(this);
@@ -151,6 +158,7 @@ export class TestRoomScene extends Phaser.Scene {
     this.runtime.tick(deltaMs,this.targets());
     this.checkEncounterEnd();
     if(this.finished){this.render();return;}
+    if (pressed(this.targetKey)) this.lockedTargetId = cycleTarget({x:this.px,y:this.py},this.targets(),this.currentIntent()?.targetId ?? null);
     this.updatePlayer(deltaMs);
     if(this.finished){this.render();return;}
     if (this.openingLeftMs > 0) this.openingLeftMs = Math.max(0, this.openingLeftMs-deltaMs);
@@ -245,6 +253,7 @@ export class TestRoomScene extends Phaser.Scene {
     this.children.removeAll(true);
     this.enemies = [];
     this.log = [];
+    this.lockedTargetId = null;
 
     landscape(this,true);
     const floor=this.add.graphics().setDepth(-2);
@@ -253,7 +262,8 @@ export class TestRoomScene extends Phaser.Scene {
     for(let i=0;i<30;i++){const x=110+(i*131)%1060,y=173+(i*79)%390;floor.lineStyle(1,0x9fb18b,.12).strokeCircle(x,y,12+(i%4)*5);}
     panel(this,24,22,1232,90);
     this.add.text(48,39,this.encounter?.dungeon?'裂隙深处  /  房间战斗':this.encounter?'荒野遭遇':'战斗试炼', {fontFamily:UI.font,fontSize:23,color:'#e7dbb6'}).setDepth(200);
-    this.add.text(48,79,'按住 J 追击/普攻 · WASD 手动走位优先 · Shift 冲刺 · Space 闪避', {fontFamily:UI.font,fontSize:13,color:'#a4bcaa'}).setDepth(200);
+    this.add.text(48,79,'J 追击/普攻 · Tab/点击怪物换目标 · WASD 走位 · Shift 冲刺 · Space 闪避', {fontFamily:UI.font,fontSize:13,color:'#a4bcaa'}).setDepth(200);
+    this.targetLabel=this.add.text(455,40,'',{fontFamily:UI.font,fontSize:14,color:'#e6cc8b',wordWrap:{width:290}}).setDepth(210);
     panel(this,24,618,1232,78);
     this.hud = this.add.text(48,632,'',{fontFamily:UI.font,fontSize:15,color:'#d5dec2',lineSpacing:7}).setDepth(200);
     if(!this.encounter)this.add.text(1125,44,'Esc 返回',{fontFamily:UI.font,fontSize:15,color:'#e3cb93'}).setDepth(200).setInteractive({useHandCursor:true}).on('pointerdown',()=>this.scene.start('OverworldScene'));
@@ -303,6 +313,10 @@ export class TestRoomScene extends Phaser.Scene {
         hpBar: this.add.graphics(),
         alive: true,
       });
+      const unit = this.enemies[this.enemies.length-1];
+      unit.body.setInteractive({useHandCursor:true}).on('pointerdown',()=>{
+        if(!this.finished && unit.alive) this.lockedTargetId=unit.combat.id;
+      });
     }
     this.supplyLabels=['治疗药剂','魔力药剂'].map((name,i)=>this.add.text(925,520+i*34,`${i?'M':'H'} ${name}`,{fontFamily:UI.font,fontSize:12,color:'#dfd3b2',backgroundColor:'#1b3638',padding:{x:10,y:7}}).setDepth(211).setInteractive({useHandCursor:true}).on('pointerdown',()=>this.useSupply(i)));
     this.hotbar=new BattleHotbar(this,this.equippedSkills,this.runtime,i=>this.castSkill(i));
@@ -351,7 +365,7 @@ export class TestRoomScene extends Phaser.Scene {
       this.movePlayer(this.facing.x * PLAYER.dashSpeed * dt, this.facing.y * PLAYER.dashSpeed * dt);
     } else if (!this.playerActor.isStaggered) {
       if (len === 0 && this.keys.J.isDown) {
-        const intent = attackIntent({x:this.px,y:this.py}, this.targets(), this.runtime.profile.weaponRange);
+        const intent = this.currentIntent();
         if (intent) {
           this.facing = intent.direction;
           const step = Math.min(intent.approach, PLAYER.speed * this.runtime.speedMultiplier * dt);
@@ -367,14 +381,14 @@ export class TestRoomScene extends Phaser.Scene {
 
     // 攻击
     if (this.keys.J.isDown && this.runtime.basicCooldownMs === 0 && this.runtime.globalCooldownMs===0 && !this.playerActor.isStaggered) {
-      const intent = attackIntent({x:this.px,y:this.py}, this.targets(), this.runtime.profile.weaponRange);
+      const intent = this.currentIntent();
       if (len > 0 || (intent && intent.distance <= this.runtime.profile.weaponRange)) this.performPlayerAttack();
     }
   }
 
   private movePlayer(dx: number, dy: number): void {
-    this.px = Phaser.Math.Clamp(this.px + dx, 110, display.baseWidth - 110);
-    this.py = Phaser.Math.Clamp(this.py + dy, 210, display.baseHeight - 150);
+    this.px = Phaser.Math.Clamp(this.px + dx, ARENA_BOUNDS.left, ARENA_BOUNDS.right);
+    this.py = Phaser.Math.Clamp(this.py + dy, ARENA_BOUNDS.top, ARENA_BOUNDS.bottom);
   }
 
   private performPlayerAttack(): void {
@@ -384,6 +398,12 @@ export class TestRoomScene extends Phaser.Scene {
     this.tweens.add({targets:slash,alpha:0,scale:1.2,duration:180,onComplete:()=>slash.destroy()});
     const hits=this.runtime.basicAttack({x:this.px,y:this.py},this.facing,this.targets());
     this.pushLog(hits.length?`攻击命中 ${hits.length} 个目标`:'攻击落空');
+  }
+
+  private currentIntent(): ReturnType<typeof attackIntent> {
+    const intent=attackIntent({x:this.px,y:this.py},this.targets(),this.runtime.profile.weaponRange,this.lockedTargetId);
+    this.lockedTargetId=intent?.targetId ?? null;
+    return intent;
   }
 
   private targets():CombatTarget[]{
@@ -405,10 +425,10 @@ export class TestRoomScene extends Phaser.Scene {
     if (!this.keys.W.isDown && !this.keys.A.isDown && !this.keys.S.isDown && !this.keys.D.isDown
       && this.dodgeLeftMs === 0 && this.dashLeftMs === 0
       && ['strike','bolt','blast'].includes(skill.combat?.kind ?? '')) {
-      const intent = attackIntent({x:this.px,y:this.py}, this.targets(), this.runtime.profile.weaponRange);
+      const intent = this.currentIntent();
       if (intent) this.facing = intent.direction;
     }
-    const result=this.runtime.cast(skill.id,{x:this.px,y:this.py},this.facing,this.targets());
+    const result=this.runtime.cast(skill.id,{x:this.px,y:this.py},this.facing,this.targets(),this.lockedTargetId ?? undefined);
     if(!result.ok){const messages:Record<string,string>={'no-target':'前方没有射程内目标',mana:'魔力不足',stamina:'耐力不足',cooldown:'技能冷却中',busy:'正在硬直或施法间隔中'};this.pushLog(`${skill.name}：${messages[result.reason??'']??'无法施放'}`);return;}
     const colors:Record<string,number>={fire:0xf3ae73,ice:0xa9e5ec,lightning:0xe8cf89,dark:0xbca1dc,holy:0xeae8ae,none:0xcdddab};
     const color=colors[skill.element??'none']??0xcdddab;
@@ -436,6 +456,7 @@ export class TestRoomScene extends Phaser.Scene {
     }
     if (applied > 0 && enemy.actor.isDead) {
       enemy.alive = false;
+      enemy.body.disableInteractive();
       enemy.label.setVisible(false);
       this.tweens.add({targets:enemy.body,alpha:0,angle:40,y:enemy.y+12,duration:400});
       this.pushLog(`${enemy.def.name} 被击败`);
@@ -473,8 +494,8 @@ export class TestRoomScene extends Phaser.Scene {
       const retreat=dist<enemy.tactics.retreatRange;
       if ((decision.moveTowardPlayer || retreat) && enemy.windup===0 && !enemy.actor.isStaggered && dist > 0) {
         const speed = enemy.def.speed * 0.5 * this.runtime.getSpeedMultiplier(enemy.combat)*(retreat?-1:1);
-        enemy.x = Phaser.Math.Clamp(enemy.x+((this.px - enemy.x) / dist) * speed * dt,105,1175);
-        enemy.y = Phaser.Math.Clamp(enemy.y+((this.py - enemy.y) / dist) * speed * dt,200,555);
+        enemy.x = Phaser.Math.Clamp(enemy.x+((this.px - enemy.x) / dist) * speed * dt,ARENA_BOUNDS.left,ARENA_BOUNDS.right);
+        enemy.y = Phaser.Math.Clamp(enemy.y+((this.py - enemy.y) / dist) * speed * dt,ARENA_BOUNDS.top,ARENA_BOUNDS.bottom);
       }
 
       if (decision.shouldAttack && enemy.windup===0 && !enemy.actor.isStaggered){
@@ -485,7 +506,11 @@ export class TestRoomScene extends Phaser.Scene {
       if(enemy.windup>0){
         enemy.windup-=deltaMs;
         this.effects.lineStyle(2,enemy.tactics.kind==='ranged'?0x9dc4d5:0xe8a273,.7).strokeCircle(enemy.aimX,enemy.aimY,enemy.tactics.hitRadius);
-        this.effects.fillStyle(0xdb845e,.12).fillCircle(enemy.aimX,enemy.aimY,enemy.tactics.hitRadius);
+        const progress = 1-Math.max(0,enemy.windup)/enemy.tactics.windupMs;
+        this.effects.fillStyle(0xdb845e,.08+.18*progress).fillCircle(enemy.aimX,enemy.aimY,enemy.tactics.hitRadius);
+        this.effects.lineStyle(5,0xffd18b,.95).beginPath();
+        this.effects.arc(enemy.aimX,enemy.aimY,enemy.tactics.hitRadius,-Math.PI/2,-Math.PI/2+Math.PI*2*progress);
+        this.effects.strokePath();
         if(enemy.windup<=0){
           enemy.windup=0;
           if(Math.hypot(this.px-enemy.aimX,this.py-enemy.aimY)<enemy.tactics.hitRadius && !enemy.actor.isStaggered){
@@ -500,6 +525,13 @@ export class TestRoomScene extends Phaser.Scene {
       else enemy.body.setAngle(0);
 
       enemy.body.setPosition(enemy.x, enemy.y);
+    }
+    const living=this.enemies.filter(e=>e.alive);
+    const positions=separateEnemies(living.map(e=>({id:e.combat.id,x:e.x,y:e.y,
+      anchored:e.windup>0 || e.actor.isStaggered || this.runtime.isStunned(e.combat)})));
+    for(let i=0;i<living.length;i++) {
+      const enemy=living[i],position=positions[i];
+      enemy.x=position.x;enemy.y=position.y;enemy.combat.x=position.x;enemy.combat.y=position.y;
     }
   }
 
@@ -521,8 +553,10 @@ export class TestRoomScene extends Phaser.Scene {
       enemy.hpBar.fillStyle(0xc18b62, 1).fillRect(enemy.x - 20, enemy.y - (enemy.def.boss?82:58), 40 * ratio, 5);
     }
 
-    if (!this.finished && this.keys.J.isDown) {
-      const intent = attackIntent({x:this.px,y:this.py}, this.targets(), this.runtime.profile.weaponRange);
+    const intent = this.finished ? null : this.currentIntent();
+    const selected = intent ? this.enemies.find(e=>e.combat.id===intent.targetId) : undefined;
+    this.targetLabel.setText(selected ? `目标：${selected.def.name}  ${Math.ceil(selected.actor.hp)}/${selected.actor.maxHp}` : '');
+    if (!this.finished) {
       const target = intent ? this.enemies.find(e => e.combat.id === intent.targetId) : undefined;
       if (target) this.effects.lineStyle(2,0xe5d4a4,.85).strokeEllipse(target.x,target.y+8,60,20);
     }

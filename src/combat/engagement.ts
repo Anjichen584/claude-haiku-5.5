@@ -9,12 +9,20 @@ export function encounterFormation(ids: readonly string[]): {id:string;x:number;
 }
 
 /** Movement assist only; damage and cooldowns still belong to CombatRuntime. */
-export function attackIntent(origin:CombatPoint,targets:readonly EngagementTarget[],range:number):
+export function attackIntent(origin:CombatPoint,targets:readonly EngagementTarget[],range:number,preferredId?:string|null):
   {targetId:string;direction:CombatPoint;distance:number;approach:number}|null {
   const target=targets.filter(t=>!t.dead).map(t=>({...t,distance:Math.hypot(t.x-origin.x,t.y-origin.y)}))
-    .sort((a,b)=>a.distance-b.distance || (a.id<b.id?-1:a.id>b.id?1:0))[0];
+    .sort((a,b)=>Number(b.id===preferredId)-Number(a.id===preferredId) || a.distance-b.distance || (a.id<b.id?-1:a.id>b.id?1:0))[0];
   if(!target)return null;
   const distance=target.distance;
   return {targetId:target.id,direction:distance>0?{x:(target.x-origin.x)/distance,y:(target.y-origin.y)/distance}:{x:1,y:0},
     distance,approach:Math.max(0,distance-Math.max(12,range-8))};
+}
+
+/** Distance-ordered cycle; retained id stays locked until death, click or another Tab. */
+export function cycleTarget(origin:CombatPoint,targets:readonly EngagementTarget[],currentId:string|null):string|null {
+  const living=targets.filter(t=>!t.dead).sort((a,b)=>Math.hypot(a.x-origin.x,a.y-origin.y)-Math.hypot(b.x-origin.x,b.y-origin.y) || (a.id<b.id?-1:a.id>b.id?1:0));
+  if(!living.length)return null;
+  const index=living.findIndex(t=>t.id===currentId);
+  return living[(index+1)%living.length].id;
 }
