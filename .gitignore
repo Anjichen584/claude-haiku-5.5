@@ -14,3 +14,10 @@ coverage/
 *.log
 .DS_Store
 Thumbs.db
+
+# 本地部署凭据不得进入提交或备份标签
+.ssh/
+.secrets/
+*.pem
+id_ed25519
+id_rsa

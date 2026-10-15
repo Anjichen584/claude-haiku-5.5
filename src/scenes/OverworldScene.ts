@@ -140,6 +140,7 @@ export class OverworldScene extends Phaser.Scene {
   private keyB!: Phaser.Input.Keyboard.Key;
   private keyN!: Phaser.Input.Keyboard.Key;
   private keyX!: Phaser.Input.Keyboard.Key;
+  private keyV!: Phaser.Input.Keyboard.Key;
   private keyF!: Phaser.Input.Keyboard.Key;
   private bindSlot=0;
   private loadoutUI!:Phaser.GameObjects.Container;
@@ -265,6 +266,7 @@ export class OverworldScene extends Phaser.Scene {
     this.npcHighlights.clear();
     this.npcDialogues.clear();
     this.npcLabelTimer = 0;
+    this.questPageIndex=0;this.questDetails=false;this.questDetailPage=0;
     for (const d of data.dialogues) this.npcDialogues.set(d.id, d);
     this.drawNpcMarkers();
 
@@ -284,6 +286,7 @@ export class OverworldScene extends Phaser.Scene {
     this.keyN = keyboard.addKey('N');
     this.keyX = keyboard.addKey('X');
     this.keyF = keyboard.addKey('F');
+    this.keyV = keyboard.addKey('V');
     this.bindSlot=0;
     this.skillPanel = this.add.text(16, 300, '', {
       fontFamily: 'sans-serif', fontSize: '14px', color: '#f4f0ff', lineSpacing: 4,
@@ -397,8 +400,9 @@ export class OverworldScene extends Phaser.Scene {
       if (pressed(this.keyF)) {this.bindSlot=(this.bindSlot+1)%4;this.refreshSkillPanel();}
     }
     if(this.questPanelOpen){
-      if(pressed(this.keyN)){this.questPageIndex++;this.refreshQuestPanel();}
-      if(pressed(this.keyB)){this.questPageIndex--;this.refreshQuestPanel();}
+      if(pressed(this.keyN)){this.turnQuestPage(1);}
+      if(pressed(this.keyB)){this.turnQuestPage(-1);}
+      if(pressed(this.keyV)){this.questDetails=!this.questDetails;this.refreshQuestPanel();}
     }
     if(this.invPanelOpen){if(pressed(this.keyN)){this.inventoryPage++;this.refreshInventoryPanel();}if(pressed(this.keyB)){this.inventoryPage--;this.refreshInventoryPanel();}}
     if(!this.talk&&!this.pendingChoice&&!this.endingPanel.visible){if(pressed(this.keys.H))this.useSupply('health_potion');if(pressed(this.keys.M))this.useSupply('mana_potion');}
@@ -456,6 +460,7 @@ export class OverworldScene extends Phaser.Scene {
   /** 写入浏览器存档；成功与否都给出提示。 */
   private persistProgress(): boolean {
     this.syncToSession();
+    this.session.trackedQuestId=trackedQuest(this.questDefs,this.world,this.session.trackedQuestId)?.id;
     const ok = persistSession(this.session);
     this.saveWarning.setVisible(!ok);
     return ok;
@@ -676,6 +681,11 @@ export class OverworldScene extends Phaser.Scene {
     this.renderCards();
   }
 
+  private turnQuestPage(delta:number):void {
+    if(this.questDetails)this.questDetailPage+=delta;else this.questPageIndex+=delta;
+    this.refreshQuestPanel();
+  }
+
   private trackQuest(id:string):void {
     if(this.world.questStatus(id)!=='active')return;
     this.session.trackedQuestId=id;
@@ -856,8 +866,10 @@ export class OverworldScene extends Phaser.Scene {
     const offered = state.ready>0?[]:this.quests.acceptFromNpc(npcId);
     this.rewardLines([]);
     if (offered.length > 0) {
-      const titles = offered.map((id) => this.quests.def(id)?.title ?? id).join('、');
-      this.showToast(`${npc.name} 发布了任务：${titles}\n完成目标后再来交付（再次按 E 对话）`);
+      this.persistProgress();
+      this.npcLabelTimer=0;
+      const titles = offered.slice(0,2).map((id) => this.quests.def(id)?.title ?? id).join('、');
+      this.showToast(`${npc.name}：已接取 ${offered.length} 项任务\n${titles}${offered.length>2?'…':''} · Q 选择追踪，E 对话交付`);
       return;
     }
     const dialogue = this.npcDialogues.get(npc.dialogueId);
@@ -883,7 +895,7 @@ export class OverworldScene extends Phaser.Scene {
   private onDigitKey(e: KeyboardEvent): void {
     if (this.shop.visible) { if (/^[1-9]$/.test(e.key)) this.shop.buy(Number(e.key)-1); return; }
     // 有待选的关键抉择且不在对话中：数字键选择选项
-    const option = this.pendingChoice && !this.talk ? this.pendingChoice.options[Number(e.key) - 1] : undefined;
+    const option = this.pendingChoice && !this.talk && !this.anyPanel() ? this.pendingChoice.options[Number(e.key) - 1] : undefined;
     if (this.pendingChoice && option) {
       resolveKeyChoice(this.pendingChoice, option.id, this.world);
       this.showToast(`你选择了：${option.text}`);
@@ -892,7 +904,7 @@ export class OverworldScene extends Phaser.Scene {
       this.persistProgress();
       return;
     }
-    if(this.questPanelOpen && !this.talk && /^[1-3]$/.test(e.key)) {
+    if(this.questPanelOpen && !this.questDetails && !this.talk && /^[1-3]$/.test(e.key)) {
       const item=questPage(this.questDefs,this.world,this.questPageIndex).items[Number(e.key)-1];
       if(item)this.trackQuest(item.id);
       return;
@@ -924,6 +936,8 @@ export class OverworldScene extends Phaser.Scene {
       const done = this.talk.finish();
       this.quests.acceptAvailable((d) => d.type !== 'side');
       this.closeTalk(this.rewardLines(done).join('\n'));
+      this.persistProgress();
+      this.npcLabelTimer=0;
       return;
     }
     this.renderTalk();
@@ -1059,6 +1073,8 @@ export class OverworldScene extends Phaser.Scene {
 
   private inventoryPage=0;
   private questPageIndex=0;
+  private questDetails=false;
+  private questDetailPage=0;
 
   private anyPanel(): boolean { return this.questPanelOpen || this.invPanelOpen || this.equipPanelOpen || this.repPanelOpen || this.skillPanelOpen; }
 
@@ -1088,6 +1104,21 @@ export class OverworldScene extends Phaser.Scene {
     if(this.questPanelOpen){
       const page=questPage(this.questDefs,this.world,this.questPageIndex);this.questPageIndex=page.page;
       const selected=trackedQuest(this.questDefs,this.world,this.session.trackedQuestId);
+      if(this.questDetails && selected){
+        const pages=Math.max(1,Math.ceil(selected.objectives.length/3));
+        this.questDetailPage=(this.questDetailPage%pages+pages)%pages;
+        const cards=selected.objectives.slice(this.questDetailPage*3,(this.questDetailPage+1)*3).map((obj,i)=>{
+          const index=this.questDetailPage*3+i,have=this.world.getQuest(selected.id)?.progress[index]??0,need=obj.count??1;
+          return {identity:`${selected.id}:${index}`,title:`${have>=need?'✓':'·'} ${obj.text}`,
+            subtitle:`进度 ${Math.min(have,need)}/${need}${obj.type==='talk'?' · 完成其他目标后，对话结束才计入交付':''}`,accent:have>=need?0x91b888:0xd1bd86};
+        });
+        this.cards.show('任务详情',`${selected.title} · 目标第 ${this.questDetailPage+1}/${pages} 页`,cards,1,
+          `奖励：${selected.rewards?.exp??0} 经验 · ${selected.rewards?.gold??0} 金币 · ${selected.rewards?.items?.length??0} 件物品`,[
+            {label:'B 上一页',run:()=>this.turnQuestPage(-1)},
+            {label:'N 下一页',run:()=>this.turnQuestPage(1)},
+            {label:'V 返回列表',run:()=>{this.questDetails=false;this.refreshQuestPanel();}},
+          ]);return;
+      }
       const cards=page.items.map((q,i)=>{
         const oi=trackedObjective(q,this.world),obj=q.objectives[oi],progress=this.world.getQuest(q.id)?.progress[oi]??0;
         return {identity:q.id,title:`${selected?.id===q.id?'◆ ':''}${q.title}`,key:`${i+1}`,
@@ -1096,8 +1127,9 @@ export class OverworldScene extends Phaser.Scene {
       });
       this.cards.show('任务日志',`第 ${page.page+1}/${page.pages} 页 · 点击或数字键 1–3 追踪任务`,cards,1,
         selected?`当前追踪：${selected.title} · Esc 返回探索`:'暂无进行中的任务，靠近 NPC 按 E 接取任务。',[
-          {label:'B 上一页',run:()=>{this.questPageIndex--;this.refreshQuestPanel();}},
-          {label:'N 下一页',run:()=>{this.questPageIndex++;this.refreshQuestPanel();}},
+          {label:'B 上一页',run:()=>this.turnQuestPage(-1)},
+          {label:'N 下一页',run:()=>this.turnQuestPage(1)},
+          {label:'V 任务详情',run:()=>{this.questDetails=true;this.questDetailPage=0;this.refreshQuestPanel();}},
         ]);return;
     }
     if(this.skillPanelOpen){

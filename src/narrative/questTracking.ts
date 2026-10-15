@@ -18,6 +18,7 @@ export function trackedObjective(quest:QuestDef,world:WorldState):number {
   return action>=0?action:quest.objectives.findIndex((_,i)=>unfinished(i));
 }
 export function questPage(quests:readonly QuestDef[],world:WorldState,page:number,size=3):{items:QuestDef[];page:number;pages:number} {
+  if(!Number.isInteger(size)||size<1)throw new RangeError('Invalid quest page size');
   const active=trackableQuests(quests,world),pages=Math.max(1,Math.ceil(active.length/size));
   const normalized=((page%pages)+pages)%pages;
   return {items:active.slice(normalized*size,(normalized+1)*size),page:normalized,pages};

@@ -37,6 +37,14 @@ describe('quest tracking',()=>{
     const file=parseSave(serializeSave(toSaveFile(s))),restored=fromSaveFile(file,defs);
     expect(file.version).toBe(1);expect(restored.trackedQuestId).toBe('side');expect(JSON.stringify(restored.player)).toBe(before);
   });
+  it('rejects invalid page sizes',()=>{
+    const s=setup();
+    for(const size of [0,-1,1.5])expect(()=>questPage(defs,s.world,0,size)).toThrow(RangeError);
+  });
+  it('does not guide a completed objective as unfinished',()=>{
+    const s=setup();s.world.setQuest('side',{status:'completed',progress:[1,2]});
+    expect(trackedObjective(side,s.world)).toBe(-1);
+  });
   it('accepts old saves without tracking and rejects malformed tracking values',()=>{
     const raw=JSON.parse(serializeSave(toSaveFile(setup())));
     expect(parseSave(JSON.stringify(raw)).trackedQuestId).toBeUndefined();

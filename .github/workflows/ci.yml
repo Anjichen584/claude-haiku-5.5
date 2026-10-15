@@ -24,3 +24,48 @@ jobs:
       - run: npm test
       - run: npm run build:standalone
       - run: npm audit --audit-level=high
+  browser-smoke:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: scripts/e2e/requirements.txt
+      - run: npm ci
+      - run: pip install -r scripts/e2e/requirements.txt
+      - run: python -m playwright install --with-deps chromium
+      - run: npm run build:standalone
+      - name: Quest journey and offline browser smoke
+        shell: bash
+        run: |
+          npm run preview -- --port 5173 > "$RUNNER_TEMP/vite-smoke.log" 2>&1 &
+          vite_pid=$!
+          trap 'kill "$vite_pid" 2>/dev/null || true' EXIT
+          python - <<'PY'
+          import time, urllib.request
+          for attempt in range(30):
+              try:
+                  urllib.request.urlopen('http://localhost:5173/', timeout=2).close()
+                  break
+              except OSError:
+                  time.sleep(1)
+          else:
+              raise SystemExit('Production preview did not start')
+          PY
+          python scripts/e2e/quest_tracking_e2e.py
+          python scripts/e2e/quest_journey_e2e.py
+          python scripts/e2e/standalone_e2e.py
+      - name: Upload browser smoke server log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-smoke-server-log
+          path: ${{ runner.temp }}/vite-smoke.log
