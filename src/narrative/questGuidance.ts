@@ -44,6 +44,17 @@ export function questGuidance(quest:QuestDef,world:WorldState,player:TilePoint,p
     const ids=new Set(sources.map(e=>e.id));
     const near=spawns.filter(s=>s.enemyIds.some(id=>ids.has(id))).sort((a,b)=>Math.hypot(a.tileX-player.x,a.tileY-player.y)-Math.hypot(b.tileX-player.x,b.tileY-player.y) || (a.key<b.key?-1:1))[0];
     const names=sources.slice(0,2).map(e=>e.name).join('、');
+    // A kill objective must not hide an independently reachable objective forever.
+    // This is an exploration waypoint, not a claim that the enemy spawns there.
+    if(!near && objective.type==='kill'){
+      const record=world.getQuest(quest.id);
+      for(const [i,o] of quest.objectives.entries()){
+        if(o.type!=='reach' || (record?.progress[i]??0)>=(o.count??1))continue;
+        const place=places.find(p=>p.id===o.target);
+        if(place)return {point:place,label:`先探索：${place.name}`,hint:'先推进抵达目标；击杀目标仍需另寻',location:place.id};
+      }
+    }
+
     return {point:near?{x:near.tileX,y:near.tileY}:undefined,label:near?'附近目标':names||'探索与交易',
       hint:near?(objective.type==='collect'?'可能掉落所需物品，并非必掉':'前往遭遇目标'):
         sources.some(e=>e.boss||e.elite)?'目标可能出现在地牢或剧情遭遇':names?`附近未发现；寻找${names}`:'探索、交易或任务奖励获取'};

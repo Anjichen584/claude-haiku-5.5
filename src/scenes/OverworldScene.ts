@@ -1258,7 +1258,7 @@ export class OverworldScene extends Phaser.Scene {
     this.tracker.setText(active?[
       `${active.type==='main'?'主线':active.type==='side'?'支线':'隐藏'} · ${shorten(active.title)}`,
       `${shorten(objective?.text??'目标已达成')} ${oi>=0?`${record?.progress[oi]??0}/${objective?.count??1}`:''}`,
-      shorten(destination),directions,blocked?'区域受限：需提升对应阵营声望':(objective?.type==='collect'||objective?.type==='reach')&&nav?guidance?.hint??'':'Q 打开日志切换追踪',
+      shorten(destination),directions,blocked?'区域受限：需提升对应阵营声望':(objective?.type==='collect'||objective?.type==='reach'||objective?.type==='kill')&&nav?guidance?.hint??'':'Q 打开日志切换追踪',
     ].filter(Boolean).join('\n'):'暂无进行中的任务 · 靠近 ! NPC 按 E 接取');
     const npc=this.nearestNpcId();
     const merchant=Math.hypot(this.tileX-4,this.tileY-4)<=3;

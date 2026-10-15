@@ -74,3 +74,30 @@ describe('guaranteed chapter-two supplies guidance',()=>{
     expect(questGuidance(q,s.world,{x:0,y:0},[camp],[],new Map(),[],[]).point).toBeUndefined();
   });
 });
+
+
+describe('mixed kill and reach exploration guidance',()=>{
+  const q:QuestDef={...quest,id:'patrol',objectives:[
+    {type:'kill',target:'wolf',text:'kill',count:6},
+    {type:'reach',target:'camp',text:'reach'}]};
+  function setup(){const s=newSession([q]);s.quests.accept(q.id);return s;}
+  const guide=(q:QuestDef,s:ReturnType<typeof newSession>,loaded=spawns,places=[place])=>
+    questGuidance(q,s.world,{x:0,y:0},places,[],new Map(),loaded,[wolf]);
+  it('prefers an actual loaded enemy over a later destination',()=>{
+    expect(guide(q,setup()).point).toEqual({x:20,y:20});
+  });
+  it('offers the real unfinished destination without claiming enemies are there or advancing progress',()=>{
+    const s=setup(),before=JSON.stringify(s.world.snapshot());
+    expect(guide(q,s,[])).toMatchObject({point:place,label:'先探索：Camp',hint:'先推进抵达目标；击杀目标仍需另寻'});
+    expect(JSON.stringify(s.world.snapshot())).toBe(before);
+  });
+  it('stops pointing at a reached location and does not invent unknown coordinates',()=>{
+    const s=setup();s.quests.report({type:'reach',target:'camp'});
+    expect(guide(q,s,[]).point).toBeUndefined();
+    expect(guide(q,setup(),[],[]).point).toBeUndefined();
+  });
+  it('does not imply unrelated destinations supply missing collect items',()=>{
+    const collect:QuestDef={...q,objectives:[{type:'collect',target:'shard',text:'collect',count:6},q.objectives[1]]};
+    expect(guide(collect,setup(),[]).point).toBeUndefined();
+  });
+});
