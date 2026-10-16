@@ -149,6 +149,7 @@ export class OverworldScene extends Phaser.Scene {
   private keyN!: Phaser.Input.Keyboard.Key;
   private keyX!: Phaser.Input.Keyboard.Key;
   private keyV!: Phaser.Input.Keyboard.Key;
+  private keyY!:Phaser.Input.Keyboard.Key;
   private keyF!: Phaser.Input.Keyboard.Key;
   private bindSlot=0;
   private loadoutUI!:Phaser.GameObjects.Container;
@@ -318,6 +319,7 @@ export class OverworldScene extends Phaser.Scene {
     this.keyN = keyboard.addKey('N');
     this.keyX = keyboard.addKey('X');
     this.keyF = keyboard.addKey('F');
+    this.keyY = keyboard.addKey('Y');
     this.keyV = keyboard.addKey('V');
     this.bindSlot=0;
     this.skillPanel = this.add.text(16, 300, '', {
@@ -364,7 +366,7 @@ export class OverworldScene extends Phaser.Scene {
       fontFamily: 'monospace', fontSize: '14px', color: '#f4f0ff',
       backgroundColor: '#00000066', padding: { x: 8, y: 6 },
     }).setScrollFactor(0).setDepth(200);
-    this.add.text(16, display.baseHeight - 28, 'WASD 移动 · E 对话/进入 · Q 任务 · I 背包 · K 存档 · T 测试房间', {
+    this.add.text(16, display.baseHeight - 28, 'WASD 移动 · E 对话/进入 · Q 任务 · I 背包 · Y 试炼塔 · K 存档', {
       fontFamily: 'sans-serif', fontSize: '14px', color: '#c9c3dd',
       backgroundColor: '#00000066', padding: { x: 6, y: 3 },
     }).setScrollFactor(0).setDepth(200);
@@ -392,6 +394,8 @@ export class OverworldScene extends Phaser.Scene {
     const craftRefresh=()=>{const lines=this.rewardLines([]);if(lines.length)this.showToast(lines.join('\n'));if(this.equipPanelOpen)this.refreshEquipPanel();if(this.invPanelOpen)this.refreshInventoryPanel();};
     this.events.on('craft-updated',craftRefresh);
     this.events.once('shutdown',()=>this.events.off('craft-updated',craftRefresh));
+    const towerSign=this.add.text(160,64,'◇ 裂隙试炼塔\n营地附近按 Y',{fontFamily:'sans-serif',fontSize:'13px',color:'#d9c4ff',backgroundColor:'#15263cdd',padding:{x:8,y:6}}).setDepth(12).setOrigin(.5).setInteractive({useHandCursor:true});
+    towerSign.on('pointerdown',()=>this.enterTower());
     bufferSceneKeys(this);
     this.updateEnvironment();
   }
@@ -457,6 +461,7 @@ export class OverworldScene extends Phaser.Scene {
       this.syncToSession();this.updateEnvironment();return;
     }
 
+    if(pressed(this.keyY)){this.enterTower();if(this.transitioning)return;}
     if(pressed(this.keyF))this.startNearbyHunt();
     let mx = 0;
     let my = 0;
@@ -862,6 +867,14 @@ export class OverworldScene extends Phaser.Scene {
     const slots=skillLoadout(p.skills,this.skillDefs).map(id=>this.skillDefs.find(s=>s.id===id));
     this.surfaceSlots.forEach((v,i)=>{const s=slots[i],cd=s?r.cooldowns.get(s.id)??0:0;v.bg.setVisible(!hidden);v.label.setVisible(!hidden).setText(s?`${i+1}  ${s.name}\n${cd>0?`冷却 ${(cd/1000).toFixed(1)} 秒`:`${s.manaCost??0} 魔力`}`:`${i+1}  空技能槽\nG 学习 / 装配`);v.bg.setFillStyle(s&&!r.canCast(s.id)?0x2a5047:0x132e33);});
     if(this.surfaceSavePending){this.surfaceSavePending=false;this.rewardLines([]);this.persistProgress();}
+  }
+
+  private enterTower():void{
+    if(this.surfaceBlocked())return;
+    if(this.surface.engaged){this.showToast('请先脱战，再进入试炼塔');return;}
+    if(Math.hypot(this.tileX-4,this.tileY-4)>10){this.showToast('返回起始营地商人附近十格内，按 Y 进入试炼塔');return;}
+    this.syncToSession();if(!persistSession(this.session)){this.showToast('保存失败，未进入试炼塔，请按 K 重试');return;}
+    this.transitioning=true;this.scene.start('TowerScene');
   }
 
   /** Read-only snapshot used by the paused DOM journal; never accepts a hunt remotely. */

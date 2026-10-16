@@ -23,6 +23,7 @@ export function installAudio(game:Phaser.Game):void{
  <dt>Q 任务 · I 背包 · C 装备 · R 声望</dt><dd>任务面板可选追踪，B/N 翻页，V 查看详情。Esc 关闭面板。对话时数字键选择、空格继续。</dd>
  <dt>营地装备工坊</dt><dd>在起始营地商人附近打开“工坊”：可对比装备、精炼至 +5、重铸非隐藏词条、分解背包中的多余装备。同款共享图谱，碎片也是任务材料，操作前请看确认提示。</dd>
  <dt>K 存档 · 存档面板备份</dt><dd>导出的是最近成功保存的检查点。切换设备前先保存、再下载 JSON，在新设备标题界面导入；不需要清理浏览器数据。</dd>
+ <dt>Y 裂隙试炼塔</dt><dd>在起始营地商人附近十格内脱战后按 Y。30 层，每层胜利后三选一临时强化；每五层可撤离领取暂存奖励，战败或放弃失去暂存奖励。E 挑战、1–3 选强化、L 撤离/暂离、K 保存、X 二次确认放弃。临时强化仅塔内生效，药剂正常消耗。</dd>
  <dt>地牢与试炼</dt><dd>地牢数字键移动房间，E 探索、L 返回地表、K 保存。地牢和 T 试炼仍使用独立战斗界面；在战斗结束前不能通过此面板返回标题。</dd>
  <dt>安全与暂停</dt><dd>营地和 NPC 周围有安全区。地表倒下会被救回起始营地。设置面板打开时暂停操作与战斗；目前以键盘和鼠标为主，尚无完整手机触控方案。</dd>
  </dl></div></section>`;
@@ -58,8 +59,8 @@ export function installAudio(game:Phaser.Game):void{
  let last=0;game.events.on('step',(time:number)=>{if(time-last<500)return;last=time;
   let mood:MusicMood='title';
   if(game.scene.isActive('OverworldScene')){const s=game.scene.getScene('OverworldScene') as Phaser.Scene&{surface?:{engaged:boolean;targets:()=>{engaged:boolean;elite?:boolean;boss?:boolean}[]}};mood=s.surface?.targets().some(e=>e.engaged&&(e.elite||e.boss))?'boss':s.surface?.engaged?'battle':'explore';}
-  else if(game.scene.isActive('DungeonScene'))mood='dungeon';
-  else if(game.scene.isActive('TestRoomScene')){const s=game.scene.getScene('TestRoomScene') as Phaser.Scene&{encounter?:{dungeon?:{boss?:boolean}}};mood=s.encounter?.dungeon?.boss?'boss':'battle';}
+  else if(game.scene.isActive('DungeonScene')||game.scene.isActive('TowerScene'))mood='dungeon';
+  else if(game.scene.isActive('TestRoomScene')){const s=game.scene.getScene('TestRoomScene') as Phaser.Scene&{encounter?:{dungeon?:{boss?:boolean};tower?:{floor:number}}};mood=s.encounter?.dungeon?.boss||(s.encounter?.tower?.floor??0)>0&&(s.encounter!.tower!.floor%5===0)?'boss':'battle';}
   audio.setMood(mood);
  });
  (window as unknown as {__audio:typeof audio}).__audio=audio;

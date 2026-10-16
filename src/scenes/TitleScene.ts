@@ -133,7 +133,7 @@ export class TitleScene extends Phaser.Scene {
       const raw = readSaveRaw();
       if (raw === null) throw new SaveError('没有找到存档');
       const session=fromSaveFile(parseSave(raw),quests);setSession(session);
-      this.scene.start(session.dungeon?.activeFloor!=null?'DungeonScene':'OverworldScene',{resume:true});
+      this.scene.start(session.dungeon?.activeFloor!=null?'DungeonScene':session.tower?.run?'TowerScene':'OverworldScene',{resume:true});
     } catch (e) {
       this.message.setText(`无法继续：${e instanceof Error ? e.message : '未知错误'}`);
     }

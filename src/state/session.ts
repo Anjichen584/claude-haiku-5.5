@@ -1,3 +1,4 @@
+import {parseTower,towerProfile,type TowerProgress} from '../tower/run';
 import {parseCrafting,cloneCrafting,type GearCrafting} from '../items/gearCraft';
 import { parseDungeon, snapshotDungeon, restoreDungeon, type DungeonProgress, type DungeonSnapshot } from '../dungeon/checkpoint';
 /**
@@ -10,7 +11,7 @@ import { parseDungeon, snapshotDungeon, restoreDungeon, type DungeonProgress, ty
  * 本文件不依赖 Phaser，便于单元测试。存档的读写见 sessionStore.ts。
  */
 import type { QuestDef, ItemDef, AffixDef } from '../data/schema';
-import { combatStats, isEquipSlot } from './equipment';
+import { isEquipSlot } from './equipment';
 import { combatProfile } from '../combat/profile';
 import itemsData from '../../data/items.json';
 import affixesData from '../../data/affixes.json';
@@ -46,6 +47,7 @@ export interface PlayerState {
 }
 
 export interface GameSession {
+  tower?:TowerProgress;
   trackedQuestId?: string;
   dungeon?: DungeonProgress;
   world: WorldState;
@@ -62,6 +64,7 @@ export interface GameSession {
 export const SAVE_VERSION = 1;
 
 export interface SaveFile {
+  tower?:TowerProgress;
   trackedQuestId?: string;
   dungeon?: DungeonSnapshot;
   version: number;
@@ -97,6 +100,7 @@ export function newSession(quests: readonly QuestDef[]): GameSession {
 
 export function toSaveFile(session: GameSession, savedAt: Date = new Date()): SaveFile {
   return {
+    ...(session.tower?{tower:parseTower(session.tower)}:{}),
     ...(session.dungeon?{dungeon:snapshotDungeon(session.dungeon)}:{}),
     ...(session.trackedQuestId ? {trackedQuestId:session.trackedQuestId} : {}),
     version: SAVE_VERSION,
@@ -126,6 +130,8 @@ export function parseSave(raw: string): SaveFile {
   if (data.version !== SAVE_VERSION) throw new SaveError(`不支持的存档版本：${String(data.version)}`);
 
   if(data.trackedQuestId!==undefined && (typeof data.trackedQuestId!=='string' || !data.trackedQuestId.length || data.trackedQuestId.length>200))throw new SaveError('追踪任务数据错误');
+  let tower:TowerProgress|undefined;
+  if(data.tower!==undefined){try{tower=parseTower(data.tower);}catch(e){throw new SaveError(e instanceof Error?e.message:'试炼存档错误');}}
   const player = data.player;
   if (!isRecord(player) || !isFiniteNumber(player.tileX) || !isFiniteNumber(player.tileY) || !isFiniteNumber(player.hp)) {
     throw new SaveError('玩家数据缺失');
@@ -147,7 +153,9 @@ export function parseSave(raw: string): SaveFile {
   }
   let crafting:GearCrafting|undefined;
   try{crafting=parseCrafting(player.crafting,itemsData.items as ItemDef[]);}catch(e){throw new SaveError(e instanceof Error?e.message:'装备工坊记录错误');}
-  const maxHp = combatStats(equipment, itemsData.items as ItemDef[], affixesData.affixes as AffixDef[], setsData.sets as ItemSetDef[],crafting).maxHp;
+  const baseProfile=combatProfile(equipment,itemsData.items as ItemDef[],affixesData.affixes as AffixDef[],setsData.sets as ItemSetDef[],crafting);
+  const savedProfile=tower?.run?towerProfile(baseProfile,tower.run):baseProfile;
+  const maxHp=savedProfile.maxHp;
   if (player.hp < 0 || player.hp > maxHp) throw new SaveError('玩家生命值越界');
   // 旧存档没有技能，缺省为未解锁、0 点
   const skillsRaw: unknown = player.skills === undefined ? { unlocked: [], points: 0 } : player.skills;
@@ -162,7 +170,7 @@ export function parseSave(raw: string): SaveFile {
     skills.equipped=[...skillsRaw.equipped];
   }
   const mana=player.mana;
-  const maxMana=combatProfile(equipment,itemsData.items as ItemDef[],affixesData.affixes as AffixDef[],setsData.sets as ItemSetDef[],crafting).maxMana;
+  const maxMana=savedProfile.maxMana;
   if(mana!==undefined && (!isFiniteNumber(mana) || mana<0 || mana>maxMana))throw new SaveError('魔力数据错误');
   const consumableReadyAt=player.consumableReadyAt;
   if(consumableReadyAt!==undefined&&(!isFiniteNumber(consumableReadyAt)||consumableReadyAt<0))throw new SaveError('药剂冷却数据错误');
@@ -191,6 +199,7 @@ export function parseSave(raw: string): SaveFile {
   let dungeon:DungeonSnapshot|undefined;
   if(data.dungeon!==undefined){try{dungeon=parseDungeon(data.dungeon,dungeonFloor);}catch(error){throw new SaveError(`地牢进度错误：${error instanceof Error?error.message:'结构错误'}`);}}
   return {
+    ...(tower?{tower}:{}),
     ...(dungeon?{dungeon}:{}),
     version: SAVE_VERSION,
     savedAt: typeof data.savedAt === 'string' ? data.savedAt : '',
@@ -208,6 +217,7 @@ export function parseSave(raw: string): SaveFile {
 export function fromSaveFile(file: SaveFile, quests: readonly QuestDef[]): GameSession {
   const world = WorldState.restore(file.world);
   return {
+    ...(file.tower?{tower:parseTower(file.tower)}:{}),
     ...(file.dungeon?{dungeon:restoreDungeon(file.dungeon)}:{}),
     world,
     ...(file.trackedQuestId ? {trackedQuestId:file.trackedQuestId} : {}),

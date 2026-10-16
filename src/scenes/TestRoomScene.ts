@@ -1,3 +1,4 @@
+import {finishTowerFloor,towerProfile,towerEnemies} from '../tower/run';
 import {audio} from '../audio/AudioDirector';
 import { retreatDungeon } from '../dungeon/checkpoint';
 import { useConsumable } from '../state/consumables';
@@ -131,6 +132,9 @@ export class TestRoomScene extends Phaser.Scene {
   }
 
   create(): void {
+    if(this.encounter?.tower){const r=this.session?.tower?.run,t=this.encounter.tower;
+      if(!r||r.phase!=='ready'||r.id!==t.id||r.cleared+1!==t.floor){this.scene.start('TowerScene');return;}
+    }
     const kb = this.input.keyboard;
     if (!kb) throw new Error('Keyboard input is not available');
     this.keys = kb.addKeys({
@@ -193,9 +197,11 @@ export class TestRoomScene extends Phaser.Scene {
     this.finished = true;
     this.won = won;
     // 地牢战斗不写入地表的击败记录
-    if (won && this.encounter && this.session && !this.encounter.dungeon) this.session.defeated.add(this.encounter.spawnKey);
+    if (won && this.encounter && this.session && !this.encounter.dungeon && !this.encounter.tower) this.session.defeated.add(this.encounter.spawnKey);
 
-    const milestones = this.encounter?.dungeon ? this.settleDungeonRoom(this.encounter.dungeon, won) : [];
+    const tower=this.encounter?.tower;
+    if(tower&&this.session?.tower)finishTowerFloor(this.session.tower,tower.id,tower.floor,won);
+    const milestones = tower?[won?'试炼层已完成：奖励暂存于塔内，可在每五层撤离结算。':'试炼结束：未结算奖励与临时强化已失去，最高层记录保留。']:this.encounter?.dungeon ? this.settleDungeonRoom(this.encounter.dungeon, won) : [];
     const session = this.session;
     let completed:QuestCompletion[]=[];
     if (session) {
@@ -206,6 +212,7 @@ export class TestRoomScene extends Phaser.Scene {
       session.player.hp=won?Math.max(1,this.playerActor.hp):Math.max(1,Math.ceil(this.stats.maxHp*.3));
       session.player.mana=this.runtime.mana;
     }
+    if(session&&tower&&!session.tower?.run)this.clampTowerExit();
     const saved=session?persistSession(session):false;
     const summary=session && this.battleBefore ? battleSummary(this.battleBefore,battleSnapshot(session)) : null;
     const data=loadGameData();
@@ -219,8 +226,8 @@ export class TestRoomScene extends Phaser.Scene {
     }
     for(const id of new Set(completed.map(c=>c.questId)))details.push(`任务完成：${session?.quests.def(id)?.title??id}`);
     details.push(...milestones);
-    if(!won)details.push(`战败恢复至 ${session?.player.hp??0} 生命；本次已结算的进度保留。`);
-    const destination=won && this.encounter?.dungeon?'返回地牢':'返回地表';
+    if(!won)details.push(`战败恢复至 ${session?.player.hp??0} 生命；${tower?'本次暂存奖励已失去，最高层记录保留。':'本次已结算的进度保留。'}`);
+    const destination=this.encounter?.tower?'返回试炼塔':won && this.encounter?.dungeon?'返回地牢':'返回地表';
     const seconds=Math.floor(this.runtime.elapsedMs/1000);
     const totals=summary?`经验 ${signed(summary.exp)}    金币 ${signed(summary.gold)}    等级 ${summary.levelBefore} → ${summary.levelAfter}`:'';
     const info=`击败 ${this.enemies.filter(e=>!e.alive).length}/${this.enemies.length} 名敌人 · 用时 ${Math.floor(seconds/60)}分${seconds%60}秒\n${totals}\n返回生命 ${session?.player.hp??0}/${this.stats.maxHp} · 魔力 ${Math.floor(this.runtime.mana)}`;
@@ -267,7 +274,9 @@ export class TestRoomScene extends Phaser.Scene {
         : Math.max(1, Math.ceil(this.stats.maxHp * 0.3));
     }
     if (this.session && this.encounter) this.session.player.mana=this.runtime.mana;
+    if(this.encounter?.tower&&!this.session?.tower?.run)this.clampTowerExit();
     if(this.session && !this.retryResultSave())return;
+    if(this.encounter?.tower){this.scene.start('TowerScene');return;}
     if (this.encounter?.dungeon) {
       // 地牢：胜利回到地牢继续探索；战败则结束本次探索，回到地表
       if (this.won && getRun()) this.scene.start('DungeonScene', { resume: true });
@@ -275,6 +284,11 @@ export class TestRoomScene extends Phaser.Scene {
       return;
     }
     this.scene.start('OverworldScene', { retreated: !this.won });
+  }
+  private clampTowerExit():void{
+    if(!this.session)return;const d=loadGameData(),p=combatProfile(this.session.player.equipment,d.items,d.affixes,d.itemSets,this.session.player.crafting);
+    this.session.player.hp=Math.min(this.session.player.hp,p.maxHp);
+    this.session.player.mana=Math.min(this.session.player.mana??p.maxMana,p.maxMana);
   }
   private won = false;
 
@@ -296,7 +310,7 @@ export class TestRoomScene extends Phaser.Scene {
     floor.lineStyle(2,0xa6ac7b,.25).strokeRoundedRect(88,150,1104,432,24);
     for(let i=0;i<30;i++){const x=110+(i*131)%1060,y=173+(i*79)%390;floor.lineStyle(1,0x9fb18b,.12).strokeCircle(x,y,12+(i%4)*5);}
     panel(this,24,22,1232,90);
-    this.add.text(48,39,this.encounter?.dungeon?'裂隙深处  /  房间战斗':this.encounter?'荒野遭遇':'战斗试炼', {fontFamily:UI.font,fontSize:23,color:'#e7dbb6'}).setDepth(200);
+    this.add.text(48,39,this.encounter?.tower?`裂隙试炼塔 / 第 ${this.encounter.tower.floor} 层`:this.encounter?.dungeon?'裂隙深处  /  房间战斗':this.encounter?'荒野遭遇':'战斗试炼', {fontFamily:UI.font,fontSize:23,color:'#e7dbb6'}).setDepth(200);
     this.add.text(48,79,'J 追击/普攻 · Tab/点击怪物换目标 · WASD 走位 · Shift 冲刺 · Space 闪避', {fontFamily:UI.font,fontSize:13,color:'#a4bcaa'}).setDepth(200);
     this.targetLabel=this.add.text(455,40,'',{fontFamily:UI.font,fontSize:14,color:'#e6cc8b',wordWrap:{width:290}}).setDepth(210);
     panel(this,24,618,1232,78);
@@ -311,7 +325,8 @@ export class TestRoomScene extends Phaser.Scene {
     this.openingLeftMs = this.encounter ? ENCOUNTER_OPENING_MS : 0;
     // 战斗属性由装备决定（没有会话时为基础属性）
     const gameData = loadGameData();
-    const profile = combatProfile(this.session?.player.equipment ?? {}, gameData.items, gameData.affixes, gameData.itemSets,this.session?.player.crafting);
+    let profile = combatProfile(this.session?.player.equipment ?? {}, gameData.items, gameData.affixes, gameData.itemSets,this.session?.player.crafting);
+    if(this.encounter?.tower&&this.session?.tower?.run)profile=towerProfile(profile,this.session.tower.run);
     this.stats=profile;
     this.playerActor = new Actor({ maxHp: this.stats.maxHp, staggerMs: 150 });
     this.runtime=new CombatRuntime(this.playerActor,profile,gameData.skills,this.session?.player.skills.unlocked??[],gameData.combos,hashSeed('combat',this.encounter?.spawnKey??'training'));
@@ -332,7 +347,8 @@ export class TestRoomScene extends Phaser.Scene {
       ? encounterFormation(this.encounter.enemyIds)
       : ENEMY_SPAWNS;
     for (const [index,spawn] of spawns.entries()) {
-      const def = data.enemies.find((e) => e.id === spawn.id);
+      const towerRun=this.session?.tower?.run;
+      const def = this.encounter?.tower&&towerRun?towerEnemies(towerRun,data.enemies)[index]:data.enemies.find((e) => e.id === spawn.id);
       if (!def) continue;
       const actor = new Actor({ maxHp: def.hp, staggerMs: def.staggerImmune || def.boss || def.elite || def.id === 'moss_golem' ? 0 : 200 });
       this.enemies.push({
@@ -501,7 +517,7 @@ export class TestRoomScene extends Phaser.Scene {
       enemy.label.setVisible(false);
       this.tweens.add({targets:enemy.body,alpha:0,angle:40,y:enemy.y+12,duration:400});
       this.pushLog(`${enemy.def.name} 被击败`);
-      if (this.encounter && this.session) {
+      if (this.encounter && this.session && !this.encounter.tower) {
         // 遭遇战中的击杀计入 kill 任务
         this.completions.push(...this.session.quests.report({ type: 'kill', target: enemy.def.id, amount: 1 }));
         this.session.quests.acceptAvailable((d) => d.type !== 'side');

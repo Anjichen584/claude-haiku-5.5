@@ -1,3 +1,4 @@
+import {TowerScene} from './scenes/TowerScene';
 import {installAudio} from './audio/installAudio';
 import Phaser from 'phaser';
 import { display } from './config/display';
@@ -17,7 +18,7 @@ const game = new Phaser.Game({
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  scene: [BootScene, TitleScene, OverworldScene, TestRoomScene, DungeonScene],
+  scene: [BootScene, TitleScene, TowerScene, OverworldScene, TestRoomScene, DungeonScene],
 });
 
 // 便于调试时在控制台访问
