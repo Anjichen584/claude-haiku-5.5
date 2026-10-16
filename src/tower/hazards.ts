@@ -24,7 +24,7 @@ export class TowerHazards {
  elapsedMs=0;
  strikes=0;
  private nextWarningMs=2200;
- constructor(readonly floor:number){this.rule=towerHazardRule(floor);}
+ constructor(readonly floor:number,override?:HazardRule){this.rule=override?{...override}:towerHazardRule(floor);}
  tick(deltaMs:number,position:HazardPoint):HazardStrike|null{
   if(!this.rule||!Number.isFinite(deltaMs)||deltaMs<=0||!Number.isFinite(position.x)||!Number.isFinite(position.y))return null;
   // Bound a resumed/background frame: it must never skip the full telegraph.

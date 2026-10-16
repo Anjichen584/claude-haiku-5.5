@@ -1,3 +1,4 @@
+import {forgeBossHazards} from '../dungeon/forgeChallenge';
 import {finishForgeCombat,forgeEnemies,isForgeCombat} from '../dungeon/ashForge';
 import {TowerHazards,hazardContains} from '../tower/hazards';
 import {finishTowerFloor,towerProfile,towerEnemies} from '../tower/run';
@@ -157,7 +158,7 @@ export class TestRoomScene extends Phaser.Scene {
     this.skillKeys=[1,2,3,4].map(n=>kb.addKey(48+n));
     bufferSceneKeys(this);
     this.resetRoom();
-    this.hazards=this.encounter?.tower?new TowerHazards(this.encounter.tower.floor):this.encounter?.forge?.room==='boss'?new TowerHazards(10):null;
+    this.hazards=this.encounter?.tower?new TowerHazards(this.encounter.tower.floor):this.encounter?.forge?.room==='boss'&&this.session?.forge?.run?forgeBossHazards(this.session.forge.run):null;
     this.hazardGraphics=this.add.graphics().setDepth(2);
     if(this.hazards?.rule)this.add.text(640,124,`${this.hazards.rule.name}：${this.hazards.rule.hint}`,{fontFamily:UI.font,fontSize:14,color:'#f0c18b',backgroundColor:'#172f39',padding:{x:10,y:6}}).setOrigin(.5).setDepth(205);
   }
@@ -214,7 +215,7 @@ export class TestRoomScene extends Phaser.Scene {
       if(applied>0){audio.play('hurt');this.floatText(this.px,this.py-82,`场地 −${applied}`,'#edb799');this.pushLog(`${this.hazards.rule!.name} 命中：${applied}`);}
     }
     const warning=this.hazards.warning;if(!warning)return;
-    const color=this.hazards.floor===20?0x83c8ed:this.hazards.floor===30?0xdca6ff:0xf0a263;
+    const color=this.hazards.rule?.element==='fire'?0xf0a263:this.hazards.floor===20?0x83c8ed:0xdca6ff;
     const progress=1-warning.remainingMs/warning.durationMs,g=this.hazardGraphics;
     for(const zone of warning.zones){
       g.fillStyle(color,.08+progress*.22);g.lineStyle(3,color,.95);
