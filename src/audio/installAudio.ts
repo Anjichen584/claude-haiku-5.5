@@ -24,6 +24,7 @@ export function installAudio(game:Phaser.Game):void{
  <dt>营地装备工坊</dt><dd>在起始营地商人附近打开“工坊”：可对比装备、精炼至 +5、重铸非隐藏词条、分解背包中的多余装备。同款共享图谱，碎片也是任务材料，操作前请看确认提示。</dd>
  <dt>K 存档 · 存档面板备份</dt><dd>导出的是最近成功保存的检查点。切换设备前先保存、再下载 JSON，在新设备标题界面导入；不需要清理浏览器数据。</dd>
  <dt>U 灰烬熔炉</dt><dd>完成第二章后，在营地商人附近十格内脱战按 U。地图点击房间选择路线，E 战斗/最终宝匣，阀室 1–3 按铭文顺序操作；误操作提高 Boss 攻击。可选精英支库使 Boss 生命降低 20%，通关余烬从 3 增至 5。首次普通宝匣结算后，大厅 C 开始挑战：额外敌人、镜像双火圈，直接/支库路线结算 6/8 余烬，挑战次数单独记录；E 仍为普通难度。挑战建议强化装备与足量补给。大厅每件灰烬套装消耗 3 余烬，重复选择确认兑换；H/M 药剂、K 保存、L 暂离、X 二次确认放弃。不能同时保留塔和熔炉挑战。</dd>
+ <dt>O 霜潮档案馆</dt><dd>完成第三章「灰烬之路的哨兵」后，在营地商人十格内脱战按 O。E 开始远征，回廊 1/2 自选侧翼；战胜后 1 封存压潮位 / 2 搜掠提高后续潮位与终匣收益。完成两翼后 E 进中枢。潮位会带来增援和更频繁的冰潮封线，离开蓝色危险带或闪避。终匣结算 2–4 残页，每 3 残页兑换一件学者装备。R 二次确认提前撤离：只得少量经验金币，不得残页、不计通关；L 仅暂离，X 二次确认放弃。H/M 药剂、K 保存。档案馆与熔炉/试炼塔不能同时活动。</dd>
  <dt>Y 裂隙试炼塔</dt><dd>在起始营地商人附近十格内脱战后按 Y。30 层，每层胜利后三选一临时强化；每五层可撤离领取暂存奖励，战败或放弃失去暂存奖励。E 挑战、1–3 选强化、H/M 层间药剂、L 撤离/暂离、K 保存、X 二次确认放弃。第 10/20/30 层有带预警的落火、封线、双重裂隙；离开危险区或闪避可规避。临时强化仅塔内生效，药剂正常消耗。</dd>
  <dt>地牢与试炼</dt><dd>地牢数字键移动房间，E 探索、L 返回地表、K 保存。地牢和 T 试炼仍使用独立战斗界面；在战斗结束前不能通过此面板返回标题。</dd>
  <dt>安全与暂停</dt><dd>营地和 NPC 周围有安全区。地表倒下会被救回起始营地。设置面板打开时暂停操作与战斗；目前以键盘和鼠标为主，尚无完整手机触控方案。</dd>
@@ -60,8 +61,8 @@ export function installAudio(game:Phaser.Game):void{
  let last=0;game.events.on('step',(time:number)=>{if(time-last<500)return;last=time;
   let mood:MusicMood='title';
   if(game.scene.isActive('OverworldScene')){const s=game.scene.getScene('OverworldScene') as Phaser.Scene&{surface?:{engaged:boolean;targets:()=>{engaged:boolean;elite?:boolean;boss?:boolean}[]}};mood=s.surface?.targets().some(e=>e.engaged&&(e.elite||e.boss))?'boss':s.surface?.engaged?'battle':'explore';}
-  else if(game.scene.isActive('DungeonScene')||game.scene.isActive('TowerScene')||game.scene.isActive('AshForgeScene'))mood='dungeon';
-  else if(game.scene.isActive('TestRoomScene')){const s=game.scene.getScene('TestRoomScene') as Phaser.Scene&{encounter?:{forge?:{room:string};dungeon?:{boss?:boolean};tower?:{floor:number}}};mood=s.encounter?.forge?.room==='boss'||s.encounter?.dungeon?.boss||(s.encounter?.tower?.floor??0)>0&&(s.encounter!.tower!.floor%5===0)?'boss':'battle';}
+  else if(game.scene.isActive('DungeonScene')||game.scene.isActive('TowerScene')||game.scene.isActive('AshForgeScene')||game.scene.isActive('TidalVaultScene'))mood='dungeon';
+  else if(game.scene.isActive('TestRoomScene')){const s=game.scene.getScene('TestRoomScene') as Phaser.Scene&{encounter?:{vault?:{room:string};forge?:{room:string};dungeon?:{boss?:boolean};tower?:{floor:number}}};mood=s.encounter?.vault?.room==='boss'||s.encounter?.forge?.room==='boss'||s.encounter?.dungeon?.boss||(s.encounter?.tower?.floor??0)>0&&(s.encounter!.tower!.floor%5===0)?'boss':'battle';}
   audio.setMood(mood);
  });
  (window as unknown as {__audio:typeof audio}).__audio=audio;

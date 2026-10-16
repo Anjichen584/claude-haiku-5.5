@@ -1,3 +1,4 @@
+import {expeditionPreparation} from '../dungeon/preparation';
 import Phaser from 'phaser';
 import {audio} from '../audio/AudioDirector';
 import {panel,text,button} from '../ui/theme';
@@ -51,7 +52,7 @@ export class AshForgeScene extends Phaser.Scene {
   if(!r){
    this.draw(panel(this,28,112,1224,510,0));
    this.draw(text(this,52,139,'路线、机关、精英与定向刷装',25,'#edc38d'));
-   this.draw(text(this,52,192,forgeUnlocked(this.session)?'已解锁 · 建议 Lv.5 以上，带上护甲、技能与药剂':'尚未解锁：完成第二章「灰烬之路」',17,'#cfbba0'));
+   this.draw(text(this,52,192,forgeUnlocked(this.session)?'已解锁 · '+expeditionPreparation(this.session):'尚未解锁：完成第二章「灰烬之路」',17,'#cfbba0'));
    this.draw(text(this,52,228,'熔渣长廊 → 冷却阀室 → 炉心 Boss → 宝匣结算。\n阀门按提示顺序操作；误操作提高炉压，强化 Boss 攻击（最多 +9）。\n普通：直接路线 3 余烬 / 支库路线 5 余烬；清理支库使 Boss 生命降低 20%。\n挑战：普通宝匣结算后解锁，双火圈与增援；直接 6 / 支库 8 余烬，建议强化装备。\n只有打开最终宝匣才结算；战败或放弃失去本轮收益，已持有余烬保留。',16,'#bdaea3').setLineSpacing(6));
    this.draw(text(this,52,378,`房间补给：H 治疗 ×${this.session.world.getItemCount('health_potion')} / M 回魔 ×${this.session.world.getItemCount('mana_potion')} · 共享 8 秒药剂冷却，正常消耗背包`,15,'#c9bba9'));
    FORGE_GEAR.forEach((id,i)=>{

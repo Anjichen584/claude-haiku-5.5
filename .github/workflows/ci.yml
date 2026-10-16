@@ -64,6 +64,7 @@ jobs:
           python scripts/e2e/save_tools_e2e.py
           python scripts/e2e/ash_forge_e2e.py
           python scripts/e2e/forge_challenge_e2e.py
+          python scripts/e2e/tidal_vault_e2e.py
           python scripts/e2e/forge_balance_sample.py
           python scripts/e2e/tower_hazards_e2e.py
           python scripts/e2e/tower_e2e.py

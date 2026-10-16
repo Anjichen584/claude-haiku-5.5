@@ -33,7 +33,7 @@ export function mountSaveTools(root:HTMLElement,game:Phaser.Game):{open:()=>void
   try{
    if(game.scene.isActive('TitleScene')){message('当前已在标题界面，可以选择文件导入。');return;}
    type ReturnScene=Phaser.Scene&{surface?:{engaged:boolean};talk?:unknown;pendingChoice?:unknown;shopOpen?:boolean;shop?:{visible:boolean};saveGame?:()=>boolean;saveCheckpoint?:()=>boolean};
-   const scene=game.scene.getScenes(true).find(s=>['OverworldScene','DungeonScene','TowerScene','AshForgeScene'].includes(s.scene.key)) as ReturnScene|undefined;
+   const scene=game.scene.getScenes(true).find(s=>['OverworldScene','DungeonScene','TowerScene','AshForgeScene','TidalVaultScene'].includes(s.scene.key)) as ReturnScene|undefined;
    if(!scene||scene.surface?.engaged||scene.talk||scene.pendingChoice||scene.shopOpen||scene.shop?.visible)throw new Error('请先结束战斗、对话或交易，再保存并返回标题。');
    const ok=scene.scene.key==='OverworldScene'?scene.saveGame?.():scene.saveCheckpoint?.();
    if(!ok)throw new Error('保存失败，已留在当前游戏；请先解决存储空间问题，不要刷新。');

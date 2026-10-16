@@ -16,7 +16,7 @@ export interface ForgeProgress {version:1;attempts:number;clears:number;challeng
 export const newForge=():ForgeProgress=>({version:1,attempts:0,clears:0,challengeClears:0,embers:0,run:null});
 export function forgeUnlocked(s:GameSession):boolean{return s.world.questStatus('main_02_ash_road')==='completed';}
 export function canStartForge(s:GameSession):boolean{
- return forgeUnlocked(s)&&!s.tower?.run&&s.dungeon?.activeFloor==null&&Number.isFinite(s.player.tileX)&&Number.isFinite(s.player.tileY)&&Math.hypot(s.player.tileX-4,s.player.tileY-4)<=10;
+ return forgeUnlocked(s)&&!s.vault?.run&&!s.tower?.run&&s.dungeon?.activeFloor==null&&Number.isFinite(s.player.tileX)&&Number.isFinite(s.player.tileY)&&Math.hypot(s.player.tileX-4,s.player.tileY-4)<=10;
 }
 export function startForge(s:GameSession,difficulty:ForgeDifficulty='normal'):boolean{
  if(!canStartForge(s))return false;const p=s.forge??=newForge();if(p.run||p.attempts>=1000000||!['normal','challenge'].includes(difficulty)||(difficulty==='challenge'&&p.clears<1))return false;

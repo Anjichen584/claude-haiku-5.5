@@ -82,7 +82,7 @@ async def main():
         assert await page.evaluate(f"{O}.world.questStatus('side_01_lost_map')==='completed'")
         state=await page.evaluate(f"[ {O}.session.player.gold,{O}.world.getItemCount('rift_shard'),{O}.world.getItemCount('health_potion') ]")
         await page.reload();await page.wait_for_function("window.__game?.scene.isActive('TitleScene')")
-        await page.wait_for_timeout(400);await page.keyboard.press('s');await page.keyboard.press('Enter')
+        await page.wait_for_timeout(400);await page.keyboard.press('s');await page.wait_for_function("window.__game.scene.getScene('TitleScene').selected===1");await page.keyboard.press('Enter')
         await page.wait_for_function(f'{O}.scene.isActive()')
         assert await page.evaluate(f"[ {O}.session.player.gold,{O}.world.getItemCount('rift_shard'),{O}.world.getItemCount('health_potion') ]")==state,'reload changed settled rewards/supplies'
         reputation=await page.evaluate(f"{O}.world.getReputation('ashguard')")
@@ -112,7 +112,7 @@ async def main():
             snapshot=await page.evaluate(f"[...{O}.session.defeated]")
             await page.keyboard.press('k');await page.reload()
             await page.wait_for_function("window.__game?.scene.isActive('TitleScene')")
-            await page.wait_for_timeout(400);await page.keyboard.press('s');await page.keyboard.press('Enter')
+            await page.wait_for_timeout(400);await page.keyboard.press('s');await page.wait_for_function("window.__game.scene.getScene('TitleScene').selected===1");await page.keyboard.press('Enter')
             await page.wait_for_function(f'{O}.scene.isActive()')
             assert await page.evaluate(f"{O}.world.questStatus('main_03')==='completed'")
             assert sorted(await page.evaluate(f"[...{O}.session.defeated]"))==sorted(snapshot)

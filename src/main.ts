@@ -1,3 +1,4 @@
+import {TidalVaultScene} from './scenes/TidalVaultScene';
 import {AshForgeScene} from './scenes/AshForgeScene';
 import {TowerScene} from './scenes/TowerScene';
 import {installAudio} from './audio/installAudio';
@@ -19,7 +20,7 @@ const game = new Phaser.Game({
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  scene: [BootScene, TitleScene, AshForgeScene, TowerScene, OverworldScene, TestRoomScene, DungeonScene],
+  scene: [BootScene, TitleScene, TidalVaultScene, AshForgeScene, TowerScene, OverworldScene, TestRoomScene, DungeonScene],
 });
 
 // 便于调试时在控制台访问

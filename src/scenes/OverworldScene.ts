@@ -1,3 +1,4 @@
+import {vaultUnlocked} from '../dungeon/tidalVault';
 import {forgeUnlocked} from '../dungeon/ashForge';
 import {buildHuntJournal,type HuntJournalEntry} from '../world/huntJournal';
 import {placeHunts,huntState,huntProgress,startHunt,type HuntSpawn} from '../world/hunts';
@@ -150,6 +151,7 @@ export class OverworldScene extends Phaser.Scene {
   private keyN!: Phaser.Input.Keyboard.Key;
   private keyX!: Phaser.Input.Keyboard.Key;
   private keyV!: Phaser.Input.Keyboard.Key;
+  private keyO!:Phaser.Input.Keyboard.Key;
   private keyU!:Phaser.Input.Keyboard.Key;
   private keyY!:Phaser.Input.Keyboard.Key;
   private keyF!: Phaser.Input.Keyboard.Key;
@@ -322,7 +324,7 @@ export class OverworldScene extends Phaser.Scene {
     this.keyX = keyboard.addKey('X');
     this.keyF = keyboard.addKey('F');
     this.keyY = keyboard.addKey('Y');
-    this.keyU = keyboard.addKey('U');
+    this.keyU = keyboard.addKey('U');this.keyO=keyboard.addKey('O');
     this.keyV = keyboard.addKey('V');
     this.bindSlot=0;
     this.skillPanel = this.add.text(16, 300, '', {
@@ -397,6 +399,7 @@ export class OverworldScene extends Phaser.Scene {
     const craftRefresh=()=>{const lines=this.rewardLines([]);if(lines.length)this.showToast(lines.join('\n'));if(this.equipPanelOpen)this.refreshEquipPanel();if(this.invPanelOpen)this.refreshInventoryPanel();};
     this.events.on('craft-updated',craftRefresh);
     this.events.once('shutdown',()=>this.events.off('craft-updated',craftRefresh));
+    this.add.text(0,-100,'◇ 霜潮档案馆\n完成第三章 · O',{fontFamily:'sans-serif',fontSize:'13px',color:'#b9e1eb',backgroundColor:'#12333ddd',padding:{x:8,y:6}}).setDepth(12).setOrigin(.5).setInteractive({useHandCursor:true}).on('pointerdown',()=>this.enterVault());
     const towerSign=this.add.text(160,64,'◇ 裂隙试炼塔\n营地附近按 Y',{fontFamily:'sans-serif',fontSize:'13px',color:'#d9c4ff',backgroundColor:'#15263cdd',padding:{x:8,y:6}}).setDepth(12).setOrigin(.5).setInteractive({useHandCursor:true});
     towerSign.on('pointerdown',()=>this.enterTower());
     this.add.text(-96,64,'◇ 灰烬熔炉\n完成第二章 · U',{fontFamily:'sans-serif',fontSize:'13px',color:'#efbc82',backgroundColor:'#34242bdd',padding:{x:8,y:6}}).setDepth(12).setOrigin(.5).setInteractive({useHandCursor:true}).on('pointerdown',()=>this.enterForge());
@@ -465,6 +468,7 @@ export class OverworldScene extends Phaser.Scene {
       this.syncToSession();this.updateEnvironment();return;
     }
 
+    if(pressed(this.keyO)){this.enterVault();if(this.transitioning)return;}
     if(pressed(this.keyU)){this.enterForge();if(this.transitioning)return;}
     if(pressed(this.keyY)){this.enterTower();if(this.transitioning)return;}
     if(pressed(this.keyF))this.startNearbyHunt();
@@ -874,10 +878,21 @@ export class OverworldScene extends Phaser.Scene {
     if(this.surfaceSavePending){this.surfaceSavePending=false;this.rewardLines([]);this.persistProgress();}
   }
 
+  private enterVault():void{
+    if(this.surfaceBlocked())return;
+    if(this.surface.engaged){this.showToast('请先脱战再进入档案馆');return;}
+    if(!vaultUnlocked(this.session)){this.showToast('完成第三章「灰烬之路的哨兵」后解锁霜潮档案馆');return;}
+    if(this.session.forge?.run||this.session.tower?.run){this.showToast('请先完成或放弃其他活动挑战');return;}
+    if(Math.hypot(this.tileX-4,this.tileY-4)>10){this.showToast('返回起始营地商人十格内，按 O 进入档案馆');return;}
+    this.syncToSession();if(!persistSession(this.session)){this.showToast('保存失败，未进入档案馆，请按 K 重试');return;}
+    this.transitioning=true;this.scene.start('TidalVaultScene');
+  }
+
   private enterForge():void{
     if(this.surfaceBlocked())return;
     if(this.surface.engaged){this.showToast('请先脱战再进入熔炉');return;}
     if(!forgeUnlocked(this.session)){this.showToast('完成第二章「灰烬之路」后解锁熔炉副本');return;}
+    if(this.session.vault?.run){this.showToast('请先完成或放弃霜潮档案馆远征');return;}
     if(this.session.tower?.run){this.showToast('请先结算或放弃当前试炼塔挑战');return;}
     if(Math.hypot(this.tileX-4,this.tileY-4)>10){this.showToast('返回起始营地商人附近十格内，按 U 进入灰烬熔炉');return;}
     this.syncToSession();if(!persistSession(this.session)){this.showToast('保存失败，未进入熔炉，请按 K 重试');return;}
@@ -887,6 +902,7 @@ export class OverworldScene extends Phaser.Scene {
   private enterTower():void{
     if(this.surfaceBlocked())return;
     if(this.surface.engaged){this.showToast('请先脱战，再进入试炼塔');return;}
+    if(this.session.vault?.run){this.showToast('请先完成或放弃霜潮档案馆远征');return;}
     if(this.session.forge?.run){this.showToast('请先完成或放弃灰烬熔炉远征');return;}
     if(Math.hypot(this.tileX-4,this.tileY-4)>10){this.showToast('返回起始营地商人附近十格内，按 Y 进入试炼塔');return;}
     this.syncToSession();if(!persistSession(this.session)){this.showToast('保存失败，未进入试炼塔，请按 K 重试');return;}

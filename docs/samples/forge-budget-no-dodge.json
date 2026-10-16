@@ -1,0 +1,351 @@
+{
+  "fixture": "Two main quest rewards only (800XP/320gold), actual shop transactions; Lv4, one legal fireball, starter/mixed gear; each route starts full; consecutive attempts carry HP/mana/potions/cooldown; no refill. Stationary auto-approach J plus fireball, no dodging; NOT natural exploration or optimal play. Canvas.",
+  "runs": [
+    {
+      "elite_route": false,
+      "won": false,
+      "wall_seconds": 9.44,
+      "rooms": [
+        {
+          "room": "hall",
+          "won": true,
+          "combat_seconds": 2.7
+        },
+        {
+          "room": "boss",
+          "won": false,
+          "combat_seconds": 5.53
+        }
+      ],
+      "before": {
+        "hp": 100,
+        "mana": 80,
+        "gold": 88,
+        "exp": 800,
+        "health": 6,
+        "magic": 5,
+        "embers": 0
+      },
+      "after": {
+        "hp": 30,
+        "mana": 79.39933999999982,
+        "gold": 88,
+        "exp": 800,
+        "health": 5,
+        "magic": 5,
+        "embers": 0
+      },
+      "health_used": 1,
+      "mana_used": 0,
+      "gold_delta": 0,
+      "potion_replacement_cost": 18,
+      "gold_minus_used_potion_cost": -18,
+      "loadout": "starter",
+      "attempt": 1
+    },
+    {
+      "elite_route": false,
+      "won": false,
+      "wall_seconds": 8.15,
+      "rooms": [
+        {
+          "room": "hall",
+          "won": true,
+          "combat_seconds": 2.67
+        },
+        {
+          "room": "boss",
+          "won": false,
+          "combat_seconds": 4.28
+        }
+      ],
+      "before": {
+        "hp": 30,
+        "mana": 79.39933999999982,
+        "gold": 88,
+        "exp": 800,
+        "health": 5,
+        "magic": 5,
+        "embers": 0
+      },
+      "after": {
+        "hp": 30,
+        "mana": 71.89981999999992,
+        "gold": 88,
+        "exp": 800,
+        "health": 4,
+        "magic": 5,
+        "embers": 0
+      },
+      "health_used": 1,
+      "mana_used": 0,
+      "gold_delta": 0,
+      "potion_replacement_cost": 18,
+      "gold_minus_used_potion_cost": -18,
+      "loadout": "starter",
+      "attempt": 2
+    },
+    {
+      "elite_route": true,
+      "won": false,
+      "wall_seconds": 14.35,
+      "rooms": [
+        {
+          "room": "hall",
+          "won": true,
+          "combat_seconds": 2.7
+        },
+        {
+          "room": "cache",
+          "won": true,
+          "combat_seconds": 8.22
+        },
+        {
+          "room": "boss",
+          "won": false,
+          "combat_seconds": 1.7
+        }
+      ],
+      "before": {
+        "hp": 100,
+        "mana": 80,
+        "gold": 88,
+        "exp": 800,
+        "health": 6,
+        "magic": 5,
+        "embers": 0
+      },
+      "after": {
+        "hp": 30,
+        "mana": 72.1991599999998,
+        "gold": 88,
+        "exp": 800,
+        "health": 5,
+        "magic": 5,
+        "embers": 0
+      },
+      "health_used": 1,
+      "mana_used": 0,
+      "gold_delta": 0,
+      "potion_replacement_cost": 18,
+      "gold_minus_used_potion_cost": -18,
+      "loadout": "starter",
+      "attempt": 1
+    },
+    {
+      "elite_route": true,
+      "won": false,
+      "wall_seconds": 9.2,
+      "rooms": [
+        {
+          "room": "hall",
+          "won": true,
+          "combat_seconds": 2.67
+        },
+        {
+          "room": "cache",
+          "won": false,
+          "combat_seconds": 5.14
+        }
+      ],
+      "before": {
+        "hp": 30,
+        "mana": 72.1991599999998,
+        "gold": 88,
+        "exp": 800,
+        "health": 5,
+        "magic": 5,
+        "embers": 0
+      },
+      "after": {
+        "hp": 30,
+        "mana": 74.05729999999954,
+        "gold": 88,
+        "exp": 800,
+        "health": 4,
+        "magic": 5,
+        "embers": 0
+      },
+      "health_used": 1,
+      "mana_used": 0,
+      "gold_delta": 0,
+      "potion_replacement_cost": 18,
+      "gold_minus_used_potion_cost": -18,
+      "loadout": "starter",
+      "attempt": 2
+    },
+    {
+      "elite_route": false,
+      "won": false,
+      "wall_seconds": 9.45,
+      "rooms": [
+        {
+          "room": "hall",
+          "won": true,
+          "combat_seconds": 2.7
+        },
+        {
+          "room": "boss",
+          "won": false,
+          "combat_seconds": 5.53
+        }
+      ],
+      "before": {
+        "hp": 100,
+        "mana": 80,
+        "gold": 14,
+        "exp": 800,
+        "health": 4,
+        "magic": 3,
+        "embers": 0
+      },
+      "after": {
+        "hp": 30,
+        "mana": 79.49953999999984,
+        "gold": 14,
+        "exp": 800,
+        "health": 3,
+        "magic": 3,
+        "embers": 0
+      },
+      "health_used": 1,
+      "mana_used": 0,
+      "gold_delta": 0,
+      "potion_replacement_cost": 18,
+      "gold_minus_used_potion_cost": -18,
+      "loadout": "mixed",
+      "attempt": 1
+    },
+    {
+      "elite_route": false,
+      "won": false,
+      "wall_seconds": 7.78,
+      "rooms": [
+        {
+          "room": "hall",
+          "won": true,
+          "combat_seconds": 2.27
+        },
+        {
+          "room": "boss",
+          "won": false,
+          "combat_seconds": 4.28
+        }
+      ],
+      "before": {
+        "hp": 30,
+        "mana": 79.49953999999984,
+        "gold": 14,
+        "exp": 800,
+        "health": 3,
+        "magic": 3,
+        "embers": 0
+      },
+      "after": {
+        "hp": 30,
+        "mana": 72.10969999999988,
+        "gold": 14,
+        "exp": 800,
+        "health": 2,
+        "magic": 3,
+        "embers": 0
+      },
+      "health_used": 1,
+      "mana_used": 0,
+      "gold_delta": 0,
+      "potion_replacement_cost": 18,
+      "gold_minus_used_potion_cost": -18,
+      "loadout": "mixed",
+      "attempt": 2
+    },
+    {
+      "elite_route": true,
+      "won": false,
+      "wall_seconds": 15.14,
+      "rooms": [
+        {
+          "room": "hall",
+          "won": true,
+          "combat_seconds": 2.66
+        },
+        {
+          "room": "cache",
+          "won": true,
+          "combat_seconds": 6.98
+        },
+        {
+          "room": "boss",
+          "won": false,
+          "combat_seconds": 3.62
+        }
+      ],
+      "before": {
+        "hp": 100,
+        "mana": 80,
+        "gold": 14,
+        "exp": 800,
+        "health": 4,
+        "magic": 3,
+        "embers": 0
+      },
+      "after": {
+        "hp": 30,
+        "mana": 61.59901999999998,
+        "gold": 14,
+        "exp": 800,
+        "health": 3,
+        "magic": 3,
+        "embers": 0
+      },
+      "health_used": 1,
+      "mana_used": 0,
+      "gold_delta": 0,
+      "potion_replacement_cost": 18,
+      "gold_minus_used_potion_cost": -18,
+      "loadout": "mixed",
+      "attempt": 1
+    },
+    {
+      "elite_route": true,
+      "won": false,
+      "wall_seconds": 8.59,
+      "rooms": [
+        {
+          "room": "hall",
+          "won": true,
+          "combat_seconds": 2.25
+        },
+        {
+          "room": "cache",
+          "won": false,
+          "combat_seconds": 5.15
+        }
+      ],
+      "before": {
+        "hp": 30,
+        "mana": 61.59901999999998,
+        "gold": 14,
+        "exp": 800,
+        "health": 3,
+        "magic": 3,
+        "embers": 0
+      },
+      "after": {
+        "hp": 30,
+        "mana": 60.99697999999983,
+        "gold": 14,
+        "exp": 800,
+        "health": 2,
+        "magic": 3,
+        "embers": 0
+      },
+      "health_used": 1,
+      "mana_used": 0,
+      "gold_delta": 0,
+      "potion_replacement_cost": 18,
+      "gold_minus_used_potion_cost": -18,
+      "loadout": "mixed",
+      "attempt": 2
+    }
+  ]
+}

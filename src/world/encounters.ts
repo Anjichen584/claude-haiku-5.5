@@ -79,6 +79,7 @@ export function surfaceSpawnsForChunk(
 /** 从地表进入战斗场景时传递的参数 */
 export interface EncounterRequest {
   tower?:{id:number;floor:number};
+  vault?:{id:number;room:import('../dungeon/tidalVault').VaultRoom};
   forge?:{id:number;room:import('../dungeon/ashForge').ForgeRoom};
   enemyIds: string[];
   /** 对应 SurfaceSpawn.key；胜利后写入会话的 defeated 集合（地牢战斗不写入） */

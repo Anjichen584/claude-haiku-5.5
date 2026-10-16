@@ -1,3 +1,4 @@
+import {parseVault,type VaultProgress} from '../dungeon/tidalVault';
 import {parseForge,type ForgeProgress} from '../dungeon/ashForge';
 import {parseTower,towerProfile,type TowerProgress} from '../tower/run';
 import {parseCrafting,cloneCrafting,type GearCrafting} from '../items/gearCraft';
@@ -50,6 +51,7 @@ export interface PlayerState {
 export interface GameSession {
   tower?:TowerProgress;
   forge?:ForgeProgress;
+  vault?:VaultProgress;
   trackedQuestId?: string;
   dungeon?: DungeonProgress;
   world: WorldState;
@@ -68,6 +70,7 @@ export const SAVE_VERSION = 1;
 export interface SaveFile {
   tower?:TowerProgress;
   forge?:ForgeProgress;
+  vault?:VaultProgress;
   trackedQuestId?: string;
   dungeon?: DungeonSnapshot;
   version: number;
@@ -103,6 +106,7 @@ export function newSession(quests: readonly QuestDef[]): GameSession {
 
 export function toSaveFile(session: GameSession, savedAt: Date = new Date()): SaveFile {
   return {
+    ...(session.vault?{vault:parseVault(session.vault)}:{}),
     ...(session.forge?{forge:parseForge(session.forge)}:{}),
     ...(session.tower?{tower:parseTower(session.tower)}:{}),
     ...(session.dungeon?{dungeon:snapshotDungeon(session.dungeon)}:{}),
@@ -138,7 +142,9 @@ export function parseSave(raw: string): SaveFile {
   if(data.tower!==undefined){try{tower=parseTower(data.tower);}catch(e){throw new SaveError(e instanceof Error?e.message:'试炼存档错误');}}
   let forge:ForgeProgress|undefined;
   if(data.forge!==undefined){try{forge=parseForge(data.forge);}catch(e){throw new SaveError(e instanceof Error?e.message:'熔炉存档错误');}}
-  if(tower?.run&&forge?.run)throw new SaveError('不能同时拥有试炼塔和熔炉的活动挑战');
+  let vault:VaultProgress|undefined;
+  if(data.vault!==undefined){try{vault=parseVault(data.vault);}catch(e){throw new SaveError(e instanceof Error?e.message:'档案馆存档错误');}}
+  if([tower?.run,forge?.run,vault?.run].filter(Boolean).length>1)throw new SaveError('不能同时拥有试炼塔、熔炉或档案馆的活动挑战');
   const player = data.player;
   if (!isRecord(player) || !isFiniteNumber(player.tileX) || !isFiniteNumber(player.tileY) || !isFiniteNumber(player.hp)) {
     throw new SaveError('玩家数据缺失');
@@ -206,6 +212,7 @@ export function parseSave(raw: string): SaveFile {
   let dungeon:DungeonSnapshot|undefined;
   if(data.dungeon!==undefined){try{dungeon=parseDungeon(data.dungeon,dungeonFloor);}catch(error){throw new SaveError(`地牢进度错误：${error instanceof Error?error.message:'结构错误'}`);}}
   return {
+    ...(vault?{vault}:{}),
     ...(forge?{forge}:{}),
     ...(tower?{tower}:{}),
     ...(dungeon?{dungeon}:{}),
@@ -225,6 +232,7 @@ export function parseSave(raw: string): SaveFile {
 export function fromSaveFile(file: SaveFile, quests: readonly QuestDef[]): GameSession {
   const world = WorldState.restore(file.world);
   return {
+    ...(file.vault?{vault:parseVault(file.vault)}:{}),
     ...(file.forge?{forge:parseForge(file.forge)}:{}),
     ...(file.tower?{tower:parseTower(file.tower)}:{}),
     ...(file.dungeon?{dungeon:restoreDungeon(file.dungeon)}:{}),
