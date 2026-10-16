@@ -1,3 +1,4 @@
+import {forgeUnlocked} from '../dungeon/ashForge';
 import {buildHuntJournal,type HuntJournalEntry} from '../world/huntJournal';
 import {placeHunts,huntState,huntProgress,startHunt,type HuntSpawn} from '../world/hunts';
 import {KillStreak} from '../combat/KillStreak';
@@ -149,6 +150,7 @@ export class OverworldScene extends Phaser.Scene {
   private keyN!: Phaser.Input.Keyboard.Key;
   private keyX!: Phaser.Input.Keyboard.Key;
   private keyV!: Phaser.Input.Keyboard.Key;
+  private keyU!:Phaser.Input.Keyboard.Key;
   private keyY!:Phaser.Input.Keyboard.Key;
   private keyF!: Phaser.Input.Keyboard.Key;
   private bindSlot=0;
@@ -320,6 +322,7 @@ export class OverworldScene extends Phaser.Scene {
     this.keyX = keyboard.addKey('X');
     this.keyF = keyboard.addKey('F');
     this.keyY = keyboard.addKey('Y');
+    this.keyU = keyboard.addKey('U');
     this.keyV = keyboard.addKey('V');
     this.bindSlot=0;
     this.skillPanel = this.add.text(16, 300, '', {
@@ -366,7 +369,7 @@ export class OverworldScene extends Phaser.Scene {
       fontFamily: 'monospace', fontSize: '14px', color: '#f4f0ff',
       backgroundColor: '#00000066', padding: { x: 8, y: 6 },
     }).setScrollFactor(0).setDepth(200);
-    this.add.text(16, display.baseHeight - 28, 'WASD 移动 · E 对话/进入 · Q 任务 · I 背包 · Y 试炼塔 · K 存档', {
+    this.add.text(16, display.baseHeight - 28, 'WASD 移动 · E 对话/进入 · Q 任务 · I 背包 · Y 塔 / U 熔炉 · K 存档', {
       fontFamily: 'sans-serif', fontSize: '14px', color: '#c9c3dd',
       backgroundColor: '#00000066', padding: { x: 6, y: 3 },
     }).setScrollFactor(0).setDepth(200);
@@ -396,6 +399,7 @@ export class OverworldScene extends Phaser.Scene {
     this.events.once('shutdown',()=>this.events.off('craft-updated',craftRefresh));
     const towerSign=this.add.text(160,64,'◇ 裂隙试炼塔\n营地附近按 Y',{fontFamily:'sans-serif',fontSize:'13px',color:'#d9c4ff',backgroundColor:'#15263cdd',padding:{x:8,y:6}}).setDepth(12).setOrigin(.5).setInteractive({useHandCursor:true});
     towerSign.on('pointerdown',()=>this.enterTower());
+    this.add.text(-96,64,'◇ 灰烬熔炉\n完成第二章 · U',{fontFamily:'sans-serif',fontSize:'13px',color:'#efbc82',backgroundColor:'#34242bdd',padding:{x:8,y:6}}).setDepth(12).setOrigin(.5).setInteractive({useHandCursor:true}).on('pointerdown',()=>this.enterForge());
     bufferSceneKeys(this);
     this.updateEnvironment();
   }
@@ -461,6 +465,7 @@ export class OverworldScene extends Phaser.Scene {
       this.syncToSession();this.updateEnvironment();return;
     }
 
+    if(pressed(this.keyU)){this.enterForge();if(this.transitioning)return;}
     if(pressed(this.keyY)){this.enterTower();if(this.transitioning)return;}
     if(pressed(this.keyF))this.startNearbyHunt();
     let mx = 0;
@@ -869,9 +874,20 @@ export class OverworldScene extends Phaser.Scene {
     if(this.surfaceSavePending){this.surfaceSavePending=false;this.rewardLines([]);this.persistProgress();}
   }
 
+  private enterForge():void{
+    if(this.surfaceBlocked())return;
+    if(this.surface.engaged){this.showToast('请先脱战再进入熔炉');return;}
+    if(!forgeUnlocked(this.session)){this.showToast('完成第二章「灰烬之路」后解锁熔炉副本');return;}
+    if(this.session.tower?.run){this.showToast('请先结算或放弃当前试炼塔挑战');return;}
+    if(Math.hypot(this.tileX-4,this.tileY-4)>10){this.showToast('返回起始营地商人附近十格内，按 U 进入灰烬熔炉');return;}
+    this.syncToSession();if(!persistSession(this.session)){this.showToast('保存失败，未进入熔炉，请按 K 重试');return;}
+    this.transitioning=true;this.scene.start('AshForgeScene');
+  }
+
   private enterTower():void{
     if(this.surfaceBlocked())return;
     if(this.surface.engaged){this.showToast('请先脱战，再进入试炼塔');return;}
+    if(this.session.forge?.run){this.showToast('请先完成或放弃灰烬熔炉远征');return;}
     if(Math.hypot(this.tileX-4,this.tileY-4)>10){this.showToast('返回起始营地商人附近十格内，按 Y 进入试炼塔');return;}
     this.syncToSession();if(!persistSession(this.session)){this.showToast('保存失败，未进入试炼塔，请按 K 重试');return;}
     this.transitioning=true;this.scene.start('TowerScene');

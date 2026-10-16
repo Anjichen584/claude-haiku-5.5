@@ -19,6 +19,7 @@ export class TitleScene extends Phaser.Scene {
   private selected = 0;
   private message!: Phaser.GameObjects.Text;
   private continueFloor:number|null=null;
+  private continueForge=false;
   private continueError: string | null = null;
   private newGamePrompt: Phaser.GameObjects.Container | null = null;
 
@@ -43,12 +44,12 @@ export class TitleScene extends Phaser.Scene {
     text(this, 1100, 663, '无缝战斗 · 0.2', 12, '#a7b6a1');
 
     const saved=readSaveState(),raw=saved.raw;
-    this.continueFloor=null;
+    this.continueFloor=null;this.continueForge=false;
     this.choices = ['new'];
     this.continueError = null;
     if (raw !== null) {
       try {
-        this.continueFloor=parseSave(raw).dungeon?.activeFloor??null;
+        const checkpoint=parseSave(raw);this.continueFloor=checkpoint.dungeon?.activeFloor??null;this.continueForge=!!checkpoint.forge?.run;
         this.choices.push('continue');
       } catch (e) {
         this.continueError = e instanceof SaveError ? e.message : '存档无法读取';
@@ -58,7 +59,7 @@ export class TitleScene extends Phaser.Scene {
     if(raw===null)text(this,122,475,'尚无存档 · 从第一道裂隙开始',14,'#7f9a8b');
     this.choices.forEach((choice, i) => {
       const label = this.add
-        .text(122, 403 + i * 62, choice === 'new' ? '启程  /  新的旅途' : this.continueFloor!==null?`继续  /  地牢第 ${this.continueFloor} 层`:'继续  /  重返世界', {
+        .text(122, 403 + i * 62, choice === 'new' ? '启程  /  新的旅途' : this.continueFloor!==null?`继续  /  地牢第 ${this.continueFloor} 层`:this.continueForge?'继续  /  灰烬熔炉':'继续  /  重返世界', {
           fontFamily: UI.font, fontSize: '22px', color: '#c9c3dd',
         })
         .setOrigin(0,0)
@@ -133,7 +134,7 @@ export class TitleScene extends Phaser.Scene {
       const raw = readSaveRaw();
       if (raw === null) throw new SaveError('没有找到存档');
       const session=fromSaveFile(parseSave(raw),quests);setSession(session);
-      this.scene.start(session.dungeon?.activeFloor!=null?'DungeonScene':session.tower?.run?'TowerScene':'OverworldScene',{resume:true});
+      this.scene.start(session.dungeon?.activeFloor!=null?'DungeonScene':session.forge?.run?'AshForgeScene':session.tower?.run?'TowerScene':'OverworldScene',{resume:true});
     } catch (e) {
       this.message.setText(`无法继续：${e instanceof Error ? e.message : '未知错误'}`);
     }

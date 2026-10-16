@@ -10,7 +10,7 @@ export function inspectSaveTransfer(raw:string):SaveInspection{
  const save=parseSave(raw);
  const date=new Date(save.savedAt),stamp=Number.isFinite(date.getTime())?date.toLocaleString('zh-CN'):'未知时间';
  const completed=Object.values(save.world.quests).filter(q=>q.status==='completed').length;
- const location=save.tower?.run?`试炼塔（已通过 ${save.tower.run.cleared} 层）`:save.dungeon?.activeFloor!=null?`地牢第 ${save.dungeon.activeFloor} 层`:'地表';
+ const location=save.dungeon?.activeFloor!=null?`地牢第 ${save.dungeon.activeFloor} 层`:save.forge?.run?'灰烬熔炉':save.tower?.run?`试炼塔（已通过 ${save.tower.run.cleared} 层）`:'地表';
  return {raw,save,summary:`Lv.${levelForExp(save.player.exp)} · ${save.player.gold} 金币 · ${location}\n已完成 ${completed} 个任务 · 保存于 ${stamp}`};
 }
 export function prepareSaveImport(raw:string,storage:SaveStorage|null):ImportPlan{
