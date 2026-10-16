@@ -61,7 +61,13 @@ async def main():
   if os.environ.get('SAVE_SCREENSHOT'):await page.screenshot(path=os.environ['SAVE_SCREENSHOT'])
   await page.get_by_role('button',name='返回游戏',exact=True).click()
   assert await page.evaluate("document.activeElement?.tagName==='CANVAS'"), 'closing settings did not restore game keyboard focus'
-  await page.keyboard.press('s');await page.keyboard.press('Enter');await page.wait_for_function(f'{O}.scene.isActive()')
+  # Import restarts the title scene asynchronously; wait for the scene/input frame,
+  # then assert navigation before confirming instead of racing two immediate taps.
+  await page.evaluate('()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))')
+  await page.mouse.move(1200,600)
+  await page.keyboard.press('s')
+  await page.wait_for_function("window.__game.scene.getScene('TitleScene').selected===1")
+  await page.keyboard.press('Enter');await page.wait_for_function(f'{O}.scene.isActive()')
   assert await page.evaluate(f"{O}.session.player.gold===777 && {O}.world.hasFlag('transfer-fixture')")
   await page.keyboard.press('k')
   assert await page.evaluate(f"localStorage.getItem('{KEY}-before-import')")==original

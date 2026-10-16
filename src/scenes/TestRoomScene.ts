@@ -1,3 +1,4 @@
+import {TowerHazards,hazardContains} from '../tower/hazards';
 import {finishTowerFloor,towerProfile,towerEnemies} from '../tower/run';
 import {audio} from '../audio/AudioDirector';
 import { retreatDungeon } from '../dungeon/checkpoint';
@@ -82,6 +83,8 @@ export class TestRoomScene extends Phaser.Scene {
   private keys!: Record<'W' | 'A' | 'S' | 'D' | 'SHIFT' | 'SPACE' | 'J' | 'R', Phaser.Input.Keyboard.Key>;
   private playerBody!: Phaser.GameObjects.Image;
   private effects!: Phaser.GameObjects.Graphics;
+  private hazards:TowerHazards|null=null;
+  private hazardGraphics!:Phaser.GameObjects.Graphics;
   private health!: Phaser.GameObjects.Graphics;
   private exitKey!: Phaser.Input.Keyboard.Key;
   private playerActor!: Actor;
@@ -150,6 +153,9 @@ export class TestRoomScene extends Phaser.Scene {
     this.skillKeys=[1,2,3,4].map(n=>kb.addKey(48+n));
     bufferSceneKeys(this);
     this.resetRoom();
+    this.hazards=this.encounter?.tower?new TowerHazards(this.encounter.tower.floor):null;
+    this.hazardGraphics=this.add.graphics().setDepth(2);
+    if(this.hazards?.rule)this.add.text(640,124,`${this.hazards.rule.name}：${this.hazards.rule.hint}`,{fontFamily:UI.font,fontSize:14,color:'#f0c18b',backgroundColor:'#172f39',padding:{x:10,y:6}}).setOrigin(.5).setDepth(205);
   }
 
   update(_time: number, deltaMs: number): void {
@@ -181,6 +187,8 @@ export class TestRoomScene extends Phaser.Scene {
     if (this.openingLeftMs > 0) this.openingLeftMs = Math.max(0, this.openingLeftMs-deltaMs);
     else this.updateEnemies(deltaMs);
     this.checkEncounterEnd();
+    if(!this.finished&&this.openingLeftMs<=0)this.updateTowerHazards(deltaMs);
+    this.checkEncounterEnd();
     this.render();
   }
 
@@ -192,9 +200,34 @@ export class TestRoomScene extends Phaser.Scene {
     else if(this.enemies.every(e=>!e.alive))this.finishEncounter(true);
   }
 
+  private updateTowerHazards(deltaMs:number):void{
+    if(!this.hazards)return;
+    this.hazardGraphics.clear();
+    const strike=this.hazards.tick(deltaMs,{x:this.px,y:this.py});
+    // One pulse is one attack even where the two final-floor circles overlap.
+    if(strike&&strike.zones.some(z=>hazardContains(z,{x:this.px,y:this.py}))){
+      const applied=this.runtime.receiveAttack(strike.attack,strike.element);
+      if(applied>0){audio.play('hurt');this.floatText(this.px,this.py-82,`场地 −${applied}`,'#edb799');this.pushLog(`${this.hazards.rule!.name} 命中：${applied}`);}
+    }
+    const warning=this.hazards.warning;if(!warning)return;
+    const color=this.hazards.floor===20?0x83c8ed:this.hazards.floor===30?0xdca6ff:0xf0a263;
+    const progress=1-warning.remainingMs/warning.durationMs,g=this.hazardGraphics;
+    for(const zone of warning.zones){
+      g.fillStyle(color,.08+progress*.22);g.lineStyle(3,color,.95);
+      if(zone.kind==='circle'){
+        g.fillCircle(zone.x,zone.y,zone.radius);g.strokeCircle(zone.x,zone.y,zone.radius);
+        g.lineStyle(5,0xffe6ba,.95);g.beginPath();g.arc(zone.x,zone.y,zone.radius,-Math.PI/2,-Math.PI/2+Math.PI*2*progress);g.strokePath();
+      }else{
+        g.fillRect(zone.left,zone.top,zone.right-zone.left,zone.bottom-zone.top);g.strokeRect(zone.left,zone.top,zone.right-zone.left,zone.bottom-zone.top);
+        g.fillStyle(0xe3f4ff,.7);g.fillRect(zone.left,zone.bottom-5,(zone.right-zone.left)*progress,5);
+      }
+    }
+  }
+
   private finishEncounter(won: boolean): void {
     if(this.finished)return;
     this.finished = true;
+    this.hazardGraphics?.clear();
     this.won = won;
     // 地牢战斗不写入地表的击败记录
     if (won && this.encounter && this.session && !this.encounter.dungeon && !this.encounter.tower) this.session.defeated.add(this.encounter.spawnKey);
