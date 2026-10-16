@@ -1,3 +1,4 @@
+import {mountHuntTools} from '../ui/HuntTools';
 import {mountForgeTools} from '../ui/ForgeTools';
 import {mountSaveTools} from '../ui/SaveTools';
 import type Phaser from 'phaser';
@@ -12,13 +13,13 @@ export function installAudio(game:Phaser.Game):void{
  const toggle=document.createElement('button');toggle.className='rift-audio-button';toggle.textContent='♫ 声音设置';toggle.setAttribute('aria-haspopup','dialog');document.body.append(toggle);
  const overlay=document.createElement('div');overlay.className='rift-audio-dialog';overlay.hidden=true;overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','声音设置');
  overlay.innerHTML=`<section class="rift-audio-card">
- <nav aria-label="设置分类"><button id="tab-audio">声音</button><button id="tab-saves">存档</button><button id="tab-forge">工坊</button><button id="tab-help">操作帮助</button><button id="rift-audio-close">返回游戏</button></nav>
+ <nav aria-label="设置分类"><button id="tab-audio">声音</button><button id="tab-saves">存档</button><button id="tab-forge">工坊</button><button id="tab-hunts">讨伐</button><button id="tab-help">操作帮助</button><button id="rift-audio-close">返回游戏</button></nav>
  <div id="panel-audio"><h2>声音与音乐</h2><p>暂停片刻，调整旅途的声音。</p><div id="rift-audio-sliders"></div><small>原创合成配乐 · 无外部音频请求<br>首次点击或按键后播放，切到后台自动暂停。<br>设置仅保存在当前浏览器。</small><button id="rift-mute">静音</button></div>
- <div id="panel-saves" hidden></div><div id="panel-forge" hidden></div>
+ <div id="panel-saves" hidden></div><div id="panel-forge" hidden></div><div id="panel-hunts" hidden></div>
  <div id="panel-help" hidden><h2>旅人操作手册</h2><dl>
  <dt>WASD 移动 · J 挥砍 · Space 闪避</dt><dd>地表直接打怪。按住 J，静止时会靠近附近敌人；走出红色预警圈可躲避攻击。Z 切换原地自动攻击。</dd>
  <dt>1–4 技能 · G 学习与装配</dt><dd>先升级获得技能点，再学习主动技能并装入技能栏。空槽不能施法；技能消耗魔力或耐力，有独立冷却。</dd>
- <dt>H / M 药剂 · E 互动 · F 讨伐</dt><dd>H 治疗，M 回魔。靠近 NPC、商人或地牢入口按 E。主线解锁金色旗帜后，靠近按 F 主动接受精英讨伐；推荐先准备装备与药剂。</dd>
+ <dt>H / M 药剂 · E 互动 · F 讨伐</dt><dd>H 治疗，M 回魔。靠近 NPC、商人或地牢入口按 E。主线解锁金色旗帜后，靠近按 F 主动接受精英讨伐；推荐先准备装备与药剂。“讨伐”页可查看全部六处挑战的解锁条件、位置与完整奖励，不会远程接受挑战。</dd>
  <dt>Q 任务 · I 背包 · C 装备 · R 声望</dt><dd>任务面板可选追踪，B/N 翻页，V 查看详情。Esc 关闭面板。对话时数字键选择、空格继续。</dd>
  <dt>营地装备工坊</dt><dd>在起始营地商人附近打开“工坊”：可对比装备、精炼至 +5、重铸非隐藏词条、分解背包中的多余装备。同款共享图谱，碎片也是任务材料，操作前请看确认提示。</dd>
  <dt>K 存档 · 存档面板备份</dt><dd>导出的是最近成功保存的检查点。切换设备前先保存、再下载 JSON，在新设备标题界面导入；不需要清理浏览器数据。</dd>
@@ -28,16 +29,18 @@ export function installAudio(game:Phaser.Game):void{
  document.body.append(overlay);
  const saveTools=mountSaveTools(overlay.querySelector<HTMLElement>('#panel-saves')!,game);
  const forgeTools=mountForgeTools(overlay.querySelector<HTMLElement>('#panel-forge')!,game);
+ const huntTools=mountHuntTools(overlay.querySelector<HTMLElement>('#panel-hunts')!,game);
  const systemToggle=document.createElement('button');systemToggle.className='rift-audio-button rift-system-button';systemToggle.textContent='存档 / 帮助';systemToggle.setAttribute('aria-haspopup','dialog');document.body.append(systemToggle);
- const selectTab=(tab:'audio'|'saves'|'help'|'forge')=>{
+ const selectTab=(tab:'audio'|'saves'|'help'|'forge'|'hunts')=>{
   saveTools.cancel();forgeTools.cancel();
-  for(const id of ['audio','saves','help','forge']){overlay.querySelector<HTMLElement>('#panel-'+id)!.hidden=id!==tab;overlay.querySelector('#tab-'+id)!.setAttribute('aria-pressed',String(id===tab));}
-  overlay.setAttribute('aria-label',tab==='audio'?'声音设置':tab==='saves'?'存档管理':tab==='forge'?'装备工坊':'操作帮助');
+  for(const id of ['audio','saves','help','forge','hunts']){overlay.querySelector<HTMLElement>('#panel-'+id)!.hidden=id!==tab;overlay.querySelector('#tab-'+id)!.setAttribute('aria-pressed',String(id===tab));}
+  overlay.setAttribute('aria-label',tab==='audio'?'声音设置':tab==='saves'?'存档管理':tab==='forge'?'装备工坊':tab==='hunts'?'讨伐手册':'操作帮助');
   if(tab==='saves')saveTools.open();
   if(tab==='forge')forgeTools.open();
+  if(tab==='hunts')huntTools.open();
   overlay.querySelector<HTMLElement>('.rift-audio-card')!.scrollTop=0;
  };
- for(const tab of ['audio','saves','help','forge'] as const)overlay.querySelector<HTMLButtonElement>('#tab-'+tab)!.onclick=()=>selectTab(tab);
+ for(const tab of ['audio','saves','help','forge','hunts'] as const)overlay.querySelector<HTMLButtonElement>('#tab-'+tab)!.onclick=()=>selectTab(tab);
  selectTab('audio');
  for(const [key,label]of [['master','总音量'],['music','背景音乐'],['sfx','音效']] as const){
   const row=document.createElement('label'),name=document.createElement('span'),input=document.createElement('input'),out=document.createElement('output');name.textContent=label;input.type='range';input.min='0';input.max='100';input.value=String(Math.round(audio.settings[key]*100));input.setAttribute('aria-label',label);out.textContent=input.value+'%';

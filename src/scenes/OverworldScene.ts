@@ -1,3 +1,4 @@
+import {buildHuntJournal,type HuntJournalEntry} from '../world/huntJournal';
 import {placeHunts,huntState,huntProgress,startHunt,type HuntSpawn} from '../world/hunts';
 import {KillStreak} from '../combat/KillStreak';
 import {roamingPacks} from '../world/roamingPacks';
@@ -861,6 +862,11 @@ export class OverworldScene extends Phaser.Scene {
     const slots=skillLoadout(p.skills,this.skillDefs).map(id=>this.skillDefs.find(s=>s.id===id));
     this.surfaceSlots.forEach((v,i)=>{const s=slots[i],cd=s?r.cooldowns.get(s.id)??0:0;v.bg.setVisible(!hidden);v.label.setVisible(!hidden).setText(s?`${i+1}  ${s.name}\n${cd>0?`冷却 ${(cd/1000).toFixed(1)} 秒`:`${s.manaCost??0} 魔力`}`:`${i+1}  空技能槽\nG 学习 / 装配`);v.bg.setFillStyle(s&&!r.canCast(s.id)?0x2a5047:0x132e33);});
     if(this.surfaceSavePending){this.surfaceSavePending=false;this.rewardLines([]);this.persistProgress();}
+  }
+
+  /** Read-only snapshot used by the paused DOM journal; never accepts a hunt remotely. */
+  getHuntJournal():HuntJournalEntry[]{
+    return buildHuntJournal(this.session,this.hunts,this.questDefs,this.itemNames);
   }
 
   private createHuntMarkers():void {

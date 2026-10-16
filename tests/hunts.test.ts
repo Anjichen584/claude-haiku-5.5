@@ -16,8 +16,8 @@ function unlock(s:ReturnType<typeof create>,q:string){s.world.setQuest(q,{status
 function battle(){return new SurfaceCombat(combatProfile({},data.items,data.affixes,data.itemSets),data.skills,[],data.combos,100,80);}
 
 describe('optional elite hunts',()=>{
- it('places three deterministic independent events outside settlements and water',()=>{
-  expect(hunts).toHaveLength(3);expect(placeHunts([...places].reverse(),npcs,data.biomes,seed)).toEqual(hunts);
+ it('places six deterministic independent events outside settlements and water',()=>{
+  expect(hunts).toHaveLength(6);expect(placeHunts([...places].reverse(),npcs,data.biomes,seed)).toEqual(hunts);
   for(const h of hunts){
    expect(h.key.startsWith('hunt:')).toBe(true);expect(h.enemyIds).toHaveLength(3);
    expect(h.enemyIds.some(id=>data.enemies.find(e=>e.id===id)?.elite)).toBe(true);

@@ -13,6 +13,9 @@ const DEFINITIONS=[
  {id:'ash-drake',place:'ash_road_camp',quest:'main_02_ash_road',title:'灰烬幼龙讨伐',level:5,enemyIds:['elite_ash_drake','ember_hound','ember_hound'],reward:{exp:160,gold:90,items:['ash_gloves','health_potion']}},
  {id:'frost-alpha',place:'snow_gate',quest:'main_03',title:'霜狼首领讨伐',level:5,enemyIds:['elite_frost_alpha','frost_wolf','frost_wolf'],reward:{exp:200,gold:110,items:['wild_amulet','health_potion']}},
  {id:'dust-titan',place:'dune_outpost',quest:'main_03',title:'尘暴巨人讨伐',level:6,enemyIds:['elite_dust_titan','sand_scorpion','dust_hyena'],reward:{exp:260,gold:150,items:['scholar_amulet','mana_potion']}},
+ {id:'grove-witch',place:'thorn_grove',quest:'main_04',title:'荆棘女巫讨伐',level:6,enemyIds:['elite_grove_witch','thorn_sprite','moss_boar'],reward:{exp:280,gold:170,items:['scholar_gloves','mana_potion']}},
+ {id:'ice-warden',place:'frozen_bell',quest:'main_05',title:'寒冰守卫讨伐',level:6,enemyIds:['elite_ice_warden','frost_wolf','icicle_slime'],reward:{exp:300,gold:180,items:['ash_plate','health_potion']}},
+ {id:'mire-shaman',place:'mire_shrine',quest:'main_07',title:'泥沼萨满讨伐',level:6,enemyIds:['elite_mire_shaman','mire_toad','rot_crawler'],reward:{exp:320,gold:200,items:['wild_gloves','health_potion','mana_potion']}},
 ] as const;
 /** Opt-in challenges have independent keys and never replace quest patrols or normal spawns. */
 export function placeHunts(places:readonly PlacedLocation[],npcs:ReadonlyMap<string,PlacedNpc>,biomes:readonly BiomeDef[],seed:number):HuntSpawn[]{
